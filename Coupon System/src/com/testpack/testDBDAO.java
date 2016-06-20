@@ -1,5 +1,6 @@
 package com.testpack;
 
+import java.awt.font.ShapeGraphicAttribute;
 import java.sql.*;
 import java.util.*;
 
@@ -502,17 +503,17 @@ public class testDBDAO {
     		 
 	     		
     		System.out.println("Update Company:" + "\n");
-    		System.out.println("Please type your Company NAME and Password.");
+    		System.out.println("Please type your current Company ID and Password.");
     		//System.out.println("\n" + "Type The OLD Company Name:");
      		
-    		System.out.print("Company Name: ");
-            SharingData.setVarchar1(userInputString());;
+    		System.out.print("Company ID: ");
+            SharingData.setLongNum1(userInputLong());
             System.out.print("Comapny Password:");
-            SharingData.setVarchar2(userInputString());
+            SharingData.setVarchar1(userInputString());
             
      		// Check if the NAME exist..
-     		IsExistDB.namePasswordExist(SharingData.getVarchar1(), SharingData.getVarchar2());
-     		if(IsExistDB.getAnswer() == false) {
+            IsExistDB.idPasswordExist(SharingData.getLongNum1(), SharingData.getVarchar1());
+            if(IsExistDB.getAnswer() == false) {
      				
      		printNAMEnotExist();
      		printUsageMainOptions();
@@ -531,7 +532,7 @@ public class testDBDAO {
      	    		System.out.print("NEW Email: ");
      	    		//SharingData.setVarchar2(userInputString());
      	    		String email = userInputString();
-     	    		
+     	    		long id = SharingData.getLongNum1();
      	    		
      	    		//System.out.print("New Password: ");
      	    		// Update Company!
@@ -542,6 +543,7 @@ public class testDBDAO {
      		     	
      	    		c.setCompName(name);
      	    		c.setEmail(email);
+     	    		c.setId(id);
      	    		//c.setPassword(password);
      	    		
      	     		coDBdao.updateCompany(c);
@@ -563,77 +565,6 @@ public class testDBDAO {
     	} // while loop
     	
     } // updateCompany
-    
-    private static void updateCompany_T2() throws SQLException {
-    	
-    	while(true) {
-     		
-    		System.out.println("Update Company:" + "\n");
-    		
-    		System.out.print("Company Name: ");
-            SharingData.setVarchar1(userInputString());;
-            System.out.print("Comapny Password:");
-            SharingData.setVarchar2(userInputString());
-            
-         // Check if the NAME exist..
-     		IsExistDB.namePasswordExist(SharingData.getVarchar1(), SharingData.getVarchar2());
-     		if(IsExistDB.getAnswer() == false) {
-     				
-     		printNAMEnotExist();
-     		printUsageMainOptions();
-     		break;
-     		} // if
-    		
-     		/*
-     		 * From here this is test for new Update functions.. the others dosen't working..
-     		 */
-
-     		ResultSet rs = null;
-     		
-     		try {
-     			
-     			System.out.println("New Company Name: ");
-     			SharingData.setVarchar4(userInputString());
-     			
-     			System.out.print("New Company Email: ");
-                SharingData.setVarchar3(userInputString());
-         		
-                String Oldname = SharingData.getVarchar1();
-         		String Newname = SharingData.getVarchar4();
-         		String email = SharingData.getVarchar3();
-         		String password = SharingData.getVarchar2();
-//         		long id;
-//         		
-         		Company c = new Company();
-         		c.setCompName(Newname);
-         		c.setEmail(email);
-         		c.setPassword(password);
-//         		
-         		DBconnector.getCon();
-         		
-         		String sql1 = "UPDATE company SET Comp_name=?, email= ?, password=? WHERE Comp_ID=?";
-         		PreparedStatement pr = DBconnector.getInstatce().prepareStatement(sql1);
-         		pr.setString(1, c.getCompName());
-         		pr.setString(2, c.getEmail());
-         		pr.setString(3, c.getPassword());
-         		pr.setLong(4, c.getId());
-         		
-     			
-				System.out.println("Company Updated!");
-				break;
-			} catch (SQLException e) {
-				e.printStackTrace();
-				System.out.println("Somthing went wrong!");
-				break;
-			}
-     		
-     		finally {
-     			DBconnector.getInstatce().close();	
-     		}
-     		
-    	} // while loop
-    	
-    } // updateCompany_T2
     
     public static void getCompanyID_T() {
     	

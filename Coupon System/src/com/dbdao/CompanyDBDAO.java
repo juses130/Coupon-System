@@ -153,8 +153,8 @@ public class CompanyDBDAO implements CompanyDAO {
 			
 		    // Letting the others (if the asking) that the Company update Succsefully.
 		    SharingData.setFlag1(true);
-		    long tostring = company.getId();
-			SharingData.setLongNum1(tostring);
+		    String tostring = company.toString();
+			SharingData.setVarchar4(tostring);
 
 			} catch (SQLException e) {
 			e.printStackTrace();
