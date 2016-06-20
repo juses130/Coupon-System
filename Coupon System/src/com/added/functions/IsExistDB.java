@@ -9,7 +9,7 @@ import java.sql.SQLException;
  * @author Raziel
  * This Class is A Helper Class.
  * is checks IF the ID | NAME | PASSWORD is exist in the DataBase of this program.
- * Is based on the SELECT syntax.
+ * It's based on the SELECT syntax.
  * And this Class is running first and before any other class that connected to the DataBase.
  * It is giving us the option to check ANY USER INPUT and COMPARE IT 
  * before we try to change something in the DataBase.
