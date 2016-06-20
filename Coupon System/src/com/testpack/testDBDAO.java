@@ -2,6 +2,9 @@ package com.testpack;
 
 import java.sql.*;
 import java.util.*;
+
+import javax.naming.spi.DirStateFactory.Result;
+
 import com.added.functions.*;
 import com.dbdao.*;
 import com.javabeans.*;
@@ -284,7 +287,7 @@ public class testDBDAO {
     		break;
     	}
     	case 3: {
-    		updateCompany_T2();
+    		updateCompany_T();
     		break;
     	}
     	case 4: {
@@ -541,7 +544,7 @@ public class testDBDAO {
      	    		c.setEmail(email);
      	    		//c.setPassword(password);
      	    		
-     	     		coDBdao.updateComp2(c);
+     	     		coDBdao.updateCompany(c);
 
      	     		if(SharingData.isFlag1() == true) {
      	    			System.out.println("\n" + "------------ Company Updated Successfully ----------" + "\n");
@@ -585,6 +588,8 @@ public class testDBDAO {
      		 * From here this is test for new Update functions.. the others dosen't working..
      		 */
 
+     		ResultSet rs = null;
+     		
      		try {
      			
      			System.out.println("New Company Name: ");
@@ -596,22 +601,30 @@ public class testDBDAO {
                 String Oldname = SharingData.getVarchar1();
          		String Newname = SharingData.getVarchar4();
          		String email = SharingData.getVarchar3();
-         		//long id = SharingData.getLongNum1();
-         		
+         		String password = SharingData.getVarchar2();
+//         		long id;
+//         		
+         		Company c = new Company();
+         		c.setCompName(Newname);
+         		c.setEmail(email);
+         		c.setPassword(password);
+//         		
          		DBconnector.getCon();
-         		String sql = "UPDATE company SET Comp_name=?, email= ? WHERE Comp_name=?";
-         		PreparedStatement pr = DBconnector.getInstatce().prepareStatement(sql);
-         		pr.setString(1, Newname);
-         		pr.setString(2, email);
-         		pr.setString(3, Oldname);
          		
-         		pr.executeUpdate();
-         		pr.close();
+         		String sql1 = "UPDATE company SET Comp_name=?, email= ?, password=? WHERE Comp_ID=?";
+         		PreparedStatement pr = DBconnector.getInstatce().prepareStatement(sql1);
+         		pr.setString(1, c.getCompName());
+         		pr.setString(2, c.getEmail());
+         		pr.setString(3, c.getPassword());
+         		pr.setLong(4, c.getId());
+         		
      			
 				System.out.println("Company Updated!");
+				break;
 			} catch (SQLException e) {
 				e.printStackTrace();
 				System.out.println("Somthing went wrong!");
+				break;
 			}
      		
      		finally {
