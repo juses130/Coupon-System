@@ -42,7 +42,7 @@ public class testDBDAO {
 			switch (userChoiceOfSideWork) {
 			
 			case 1: {
-				CompanySwitch();
+				CompanyMenu();
 				break;
 			} // case 1
 			case 2: {
@@ -222,10 +222,6 @@ public class testDBDAO {
 		
 	}
 	
-	private static void checker() {
-		
-	}
-	
 	private static String userInputString(){
 		System.out.print("->> ");
 		Scanner scanner = new Scanner(System.in);
@@ -270,7 +266,7 @@ public class testDBDAO {
 		
 	}
 
-    private static void CompanySwitch() throws SQLException {
+    private static void CompanyMenu() throws SQLException {
     	
     	printUsageCompany();
     	short choice = userInputShort();
@@ -288,7 +284,7 @@ public class testDBDAO {
     		break;
     	}
     	case 3: {
-    		updateCompany_T();
+    		updateCompany_T2();
     		break;
     	}
     	case 4: {
@@ -564,6 +560,67 @@ public class testDBDAO {
     	} // while loop
     	
     } // updateCompany
+    
+    private static void updateCompany_T2() throws SQLException {
+    	
+    	while(true) {
+     		
+    		System.out.println("Update Company:" + "\n");
+    		
+    		System.out.print("Company Name: ");
+            SharingData.setVarchar1(userInputString());;
+            System.out.print("Comapny Password:");
+            SharingData.setVarchar2(userInputString());
+            
+         // Check if the NAME exist..
+     		IsExistDB.namePasswordExist(SharingData.getVarchar1(), SharingData.getVarchar2());
+     		if(IsExistDB.getAnswer() == false) {
+     				
+     		printNAMEnotExist();
+     		printUsageMainOptions();
+     		break;
+     		} // if
+    		
+     		/*
+     		 * From here this is test for new Update functions.. the others dosen't working..
+     		 */
+
+     		try {
+     			
+     			System.out.println("New Company Name: ");
+     			SharingData.setVarchar4(userInputString());
+     			
+     			System.out.print("New Company Email: ");
+                SharingData.setVarchar3(userInputString());
+         		
+                String Oldname = SharingData.getVarchar1();
+         		String Newname = SharingData.getVarchar4();
+         		String email = SharingData.getVarchar3();
+         		//long id = SharingData.getLongNum1();
+         		
+         		DBconnector.getCon();
+         		String sql = "UPDATE company SET Comp_name=?, email= ? WHERE Comp_name=?";
+         		PreparedStatement pr = DBconnector.getInstatce().prepareStatement(sql);
+         		pr.setString(1, Newname);
+         		pr.setString(2, email);
+         		pr.setString(3, Oldname);
+         		
+         		pr.executeUpdate();
+         		pr.close();
+     			
+				System.out.println("Company Updated!");
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.out.println("Somthing went wrong!");
+			}
+     		
+     		finally {
+     			DBconnector.getInstatce().close();	
+     		}
+     		
+    	} // while loop
+    	
+    } // updateCompany_T2
     
     public static void getCompanyID_T() {
     	
