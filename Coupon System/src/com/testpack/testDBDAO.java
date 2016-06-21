@@ -1,5 +1,6 @@
 package com.testpack;
 
+import java.awt.dnd.DnDConstants;
 import java.awt.font.ShapeGraphicAttribute;
 import java.sql.*;
 import java.util.*;
@@ -181,11 +182,11 @@ public class testDBDAO {
 		
 		try {
 			short choice = scanner.nextShort();
-			if (choice < 0 || choice > 8) {
-				throw (new IllegalArgumentException());
+			if (choice < 8 && choice > -1 || choice == 822) {
+				return choice;
 			} // IF - choice
 			else {
-				return choice;
+				throw (new IllegalArgumentException());
 			} // else
 		} // try
 		// Catch the two problems we can get. Strings and Numbers.
@@ -295,6 +296,12 @@ public class testDBDAO {
     		getCompanyID_T();
     		break;
     	}
+    	case 822: { // Developers Option: Reset Table Company
+    		resetTable_T();
+    		printUsageMainOptions();
+    		break;
+    	}
+
     	case 0: {
     		printUsageMainOptions();
     		break;
@@ -501,9 +508,9 @@ public class testDBDAO {
     	
     	while(true) {
     		 
-	     		
     		System.out.println("Update Company:" + "\n");
     		System.out.println("Please type your current Company ID and Password.");
+    		System.out.println("Note: only because it's beta version test - we asking for Company ID.");
     		//System.out.println("\n" + "Type The OLD Company Name:");
      		
     		System.out.print("Company ID: ");
@@ -525,24 +532,20 @@ public class testDBDAO {
      				
      	    		
                     System.out.print("NEW Company Name: ");
-     	    		//SharingData.setVarchar1(userInputString());
                     String name = userInputString();
      	    		
-     	    		
      	    		System.out.print("NEW Email: ");
-     	    		//SharingData.setVarchar2(userInputString());
      	    		String email = userInputString();
+     	    		     	    		
      	    		long id = SharingData.getLongNum1();
-     	    		
-     	    		//System.out.print("New Password: ");
-     	    		// Update Company!
-     	    		//String password = userInputString();
+     	            String password = SharingData.getVarchar1();
      	    		
      	    		Company c = new Company();
      	    		CompanyDBDAO coDBdao = new CompanyDBDAO(); 
      		     	
      	    		c.setCompName(name);
      	    		c.setEmail(email);
+     	    		c.setPassword(password);
      	    		c.setId(id);
      	    		//c.setPassword(password);
      	    		
@@ -566,7 +569,7 @@ public class testDBDAO {
     	
     } // updateCompany
     
-    public static void getCompanyID_T() {
+    private static void getCompanyID_T() {
     	
     	while(true) {
         	System.out.println("Type The Company ID:");
@@ -595,4 +598,44 @@ public class testDBDAO {
 
     	} // getCompanyID_T - Function
 
+    private static void resetTable_T() throws SQLException {
+    	
+    	System.out.println("This is a Developer method - Truncate Tabels (reset)");
+    	System.out.println("Would you like to rest the Company Table?");
+		System.out.println("1. YES (delete and rest all the table data)."
+				+ "\n" + "2. NO (exit to the main usage)"
+				+ "\n");
+		short choice = userInputShort();
+		
+		switch (choice) {
+		
+		case 1: { // Delete and Reset the Table
+			
+			try {
+				DBconnector.getCon();
+				String sql = "truncate table company";
+				Statement stat = DBconnector.getInstatce().createStatement();
+				stat.executeUpdate(sql);
+				System.out.println("The table has been RESET!");
+				
+				stat.close();
+				
+			} catch (SQLException e) {
+				e.getMessage();
+			} // catch
+			finally {
+				DBconnector.getInstatce().close();
+			}
+		
+			printGoingBackToUsage();
+			break;
+		} // case 1
+		case 2: {
+			
+			break;
+		}
+		} // switch
+    	
+    }
+    
 } // Class	
