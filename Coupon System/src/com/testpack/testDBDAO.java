@@ -552,10 +552,11 @@ public class testDBDAO {
      	     		coDBdao.updateCompany(c);
 
      	     		if(SharingData.isFlag1() == true) {
-     	    			System.out.println("\n" + "------------ Company Updated Successfully ----------" + "\n");
-     	    			System.out.println(SharingData.getVarchar4());
-     	    			
-     	    		}
+     	     			System.out.println("\n" + SharingData.getVarchar4());
+     	     			System.out.println("------------ Company Updated Successfully ----------" + "\n");
+     	     			printGoingBackToUsage();
+     	     			printUsageMainOptions();
+     	    		} // if - is updated
      	    		else {
      	    			System.out.println("\n" + "****************************************************");
      	    			System.out.println("Error - No Changes Were Made :(");

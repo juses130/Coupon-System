@@ -208,7 +208,7 @@ public static boolean isAnswer2() {
 
 public static boolean getAnswer2() {
 	// TODO Auto-generated method stub
-	return false;
+	return answer2;
 }
 
 	
