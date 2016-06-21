@@ -573,11 +573,17 @@ public class testDBDAO {
     	
     	while(true) {
         	System.out.println("Type The Company ID:");
-        	
         	SharingData.setLongNum1(userInputLong());
-        	IsExistDB.idExist(SharingData.getLongNum1());
         	
-        	if (IsExistDB.getAnswer() == false) {
+        	IsExistDB.idExist(SharingData.getLongNum1());
+        	if(SharingData.getLongNum1() == 0) {
+        		System.out.println("Typing 'Zero' is mean = quit..");
+        		printGoingBackToUsage();
+        		printUsageMainOptions();
+        		break;
+        	} // if - it 0 the program will break from this function.
+        	
+        	if (IsExistDB.getAnswer2() == false) { // checks if the ID exist in the DB.
         		printIDnotExist();
     			printUsageMainOptions();
     			break;
@@ -600,8 +606,8 @@ public class testDBDAO {
 
     private static void resetTable_T() throws SQLException {
     	
-    	System.out.println("This is a Developer method - Truncate Tabels (reset)");
-    	System.out.println("Would you like to rest the Company Table?");
+    	System.out.println("\n" + "This is a Developer method - Truncate Tabels (reset)");
+    	System.out.println("Would you like to rest the Company Table?" + "\n");
 		System.out.println("1. YES (delete and rest all the table data)."
 				+ "\n" + "2. NO (exit to the main usage)"
 				+ "\n");
