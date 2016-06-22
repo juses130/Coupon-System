@@ -1,11 +1,9 @@
 package com.testpack;
 
-import java.awt.dnd.DnDConstants;
-import java.awt.font.ShapeGraphicAttribute;
 import java.sql.*;
 import java.util.*;
 
-import javax.naming.spi.DirStateFactory.Result;
+import javax.print.attribute.standard.PrinterMoreInfoManufacturer;
 
 import com.added.functions.*;
 import com.dbdao.*;
@@ -41,40 +39,45 @@ public class testDBDAO {
 		boolean on = true;
 		
 		while (on) {
+			
+			
 			short userChoiceOfSideWork = userInputShort();
 			
 			//Check the user choice and switch it:
 			switch (userChoiceOfSideWork) {
+			
 			
 			case 1: {
 				CompanyMenu();
 				break;
 			} // case 1
 			case 2: {
+				//printUsageMainOptions();
 				System.out.println("Still not ready..");
 				break;
 			}
 			case 3: {
-				//vote();
+				//printUsageMainOptions();
 				System.out.println("Still not ready..");
 				break;
 			}
 			case 4: {
-				//getAllMoives();
+				//printUsageMainOptions();
 				System.out.println("Still not ready..");
 				break;
 			}
 			case 5: {
-				//getTopMovie();
+				//printUsageMainOptions();
 				System.out.println("Still not ready..");
 				break;
 			}
 			case 6: {
-				//Load();
+				//printUsageMainOptions();
 				System.out.println("Still not ready..");
 				break;
 			}
 			case 7: {
+				//printUsageMainOptions();
 				System.out.println("Still not ready..");
 				break;
 
@@ -122,21 +125,22 @@ public class testDBDAO {
 		
 	}
 	
-	public static void printIDnotExist() {
+	public static void printIDnotExist(String userType) {
 		System.out.println("\n" + "****************************************************");
 		System.out.println("Access Denied :( ");
-		System.out.println("Error - The ID number dosen't exist in the DataBase :(");
+		System.out.println("Error - your " + userType + " dosen't exist in the DataBase :(");
 		System.out.println("****************************************************" + "\n");
 		printGoingBackToUsage();
 	}
 	
-	public static void printNAMEnotExist() {
+	public static void printNoExistOrCurrect() {
 		System.out.println("\n" + "****************************************************");
 		System.out.println("Access Denied :( ");
-		System.out.println("Error - ONE or More of the parameters: ' ID | NAME | PASSWORD ' dosen't match OR exist in the DataBase :(");
+		System.out.println("Error - ONE or More of the parameters: ' ID | NAME | PASSWORD | USER ' dosen't match OR exist in the DataBase!");
 		System.out.println("****************************************************" + "\n");
-		printGoingBackToUsage();
+		//printGoingBackToUsage();
 	}
+	
 	public static void printEMAILnotExist() {
 		System.out.println("\n" + "****************************************************");
 		System.out.println("Error - The Email dosen't exist in the DataBase :(");
@@ -149,12 +153,12 @@ public class testDBDAO {
 		System.out.println("Your Company ID Was Found In The DataBase :)");
 		System.out.println("****************************************************" + "\n");
 
-	}
+	} 
 
-	public static void printFoundNAME() {
+	public static void printFoundInDB(String userType) {
 		System.out.println("\n" + "****************************************************");
 		System.out.println("Access Granted :)");
-		System.out.println("Your Company Name Was Found In The DataBase.");
+		System.out.println("Your "  + userType + " Was Found In The DataBase.");
 		System.out.println("****************************************************" + "\n");
 
 	}
@@ -273,45 +277,69 @@ public class testDBDAO {
 
     private static void CompanyMenu() throws SQLException {
     	
-    	printUsageCompany();
-    	short choice = userInputShort();
-    	
-    	switch (choice) {
-    	
-    	case 1: {
-    		addCompnay_T();
-    		//printUsageMainOptions();
-    		break;
-    	}
-    	case 2: {
-    		removeCompany_T();
-    		// TODO: Still need to add Remove By Company Object.
-    		break;
-    	}
-    	case 3: {
-    		updateCompany_T();
-    		break;
-    	}
-    	case 4: {
-    		getCompanyID_T();
-    		break;
-    	}
-    	case 5: {
-    		getAllCompanies_T();
-    		break;
-    	}
-    	case 822: { // Developers Option: Reset Table Company
-    		resetTable_T();
-    		printUsageMainOptions();
-    		break;
-    	}
+    	/**
+    	 * Here the program will go to the login() in the CompanyDBDAO and compare
+    	 * the inputs to the Database.
+    	 **/
 
-    	case 0: {
-    		printUsageMainOptions();
-    		break;
-    	}
+    	System.out.println("\n" + "Please type your Company-User and Password." + "\n");
+    	System.out.print("Type Your Company Name: ");
+    	String compName = userInputString();
+    	System.out.print("Type Your Company Password: ");
+    	String password = userInputString();
     	
-    	} // switch
+    	CompanyDBDAO db = new CompanyDBDAO();
+    	boolean existOrNot = db.login(compName, password);
+    	
+    	while(true) {
+    		if(existOrNot == false){
+        	printNoExistOrCurrect();
+        	printUsageMainOptions();
+        	break;
+        	} // if
+        	else {
+        		printFoundInDB("Company");
+        		printUsageCompany();
+        		
+        		short choice = userInputShort();
+        	switch (choice) {
+        	
+        	case 1: {
+        		addCompnay_T();
+        		//printUsageMainOptions();
+        		//break;
+        	}
+        	case 2: {
+        		removeCompany_T();
+        		// TODO: Still need to add Remove By Company Object.
+        		break;
+        	}
+        	case 3: {
+        		updateCompany_T();
+        		break;
+        	}
+        	case 4: {
+        		getCompanyID_T();
+        		break;
+        	}
+        	case 5: {
+        		getAllCompanies_T();
+        		break;
+        	}
+        	case 822: { // Developers Option: Reset Table Company
+        		resetTable_T();
+        		printUsageMainOptions();
+        		break;
+        	}
+
+        	case 0: {
+        		printUsageMainOptions();
+        		break;
+        	}
+        	
+        	} // switch
+        	} // else
+    	}
     	
     	
     } // CompanySwitch Function
@@ -377,6 +405,7 @@ public class testDBDAO {
     	// TODO: I need to build the removeFunction first.
     	
     	while(true) {
+    		
     		CompanyDBDAO coDBdao = new CompanyDBDAO();
     		
     		// Options menu:
@@ -403,12 +432,12 @@ public class testDBDAO {
     			
     			IsExistDB.idPasswordExist(SharingData.getLongNum1(), SharingData.getVarchar1());
     			if(IsExistDB.getAnswer() == false && IsExistDB.getAnswer2() == false) {		
-         		printNAMEnotExist();
+         		printNoExistOrCurrect();
          		printUsageMainOptions();
          		break;
 //    			IsExistDB.idExist(SharingData.getLongNum1());
 //    					if(IsExistDB.getAnswer() == false){
-//    						printNAMEnotExist();
+//    						printNoExistOrCurrect();
 //    		         		printUsageMainOptions();
 //    		         		break;
          		} // if
@@ -435,7 +464,7 @@ public class testDBDAO {
     			IsExistDB.namePasswordExist(SharingData.getVarchar1(), SharingData.getVarchar2());
     			if(IsExistDB.getAnswer() == false) {
          				
-         		printNAMEnotExist();
+         		printNoExistOrCurrect();
          		printUsageMainOptions();
          		break;
          		} // if
@@ -457,6 +486,7 @@ public class testDBDAO {
     		 */
     		else if (choice == 3) { // Delete By Object (Company)
     			
+    			System.out.println("Developers Only! Deleting By Company Object..");
     			System.out.print("Type Your Company ID: ");
     			SharingData.setLongNum1(userInputLong());
     			if (SharingData.getLongNum1() == 0) {
@@ -471,7 +501,7 @@ public class testDBDAO {
     			
     			IsExistDB.idPasswordExist(SharingData.getLongNum1(), SharingData.getVarchar1());
     			if(IsExistDB.getAnswer() == false) {		
-         		printNAMEnotExist();
+         		printNoExistOrCurrect();
          		printUsageMainOptions();
          		break;
          		} // if
@@ -487,6 +517,33 @@ public class testDBDAO {
 					} // catch
     			} // else
     		} // else if - choice 3
+    		else if(choice == 4) {
+    			CompanyDBDAO db = new CompanyDBDAO();
+    			Company c = new Company();
+    			System.out.println("Developers Only! Deleting By Company Object..");
+    			
+    			System.out.println("Please enter the information below for verification" + "\n");
+    			System.out.print("Type Your Company Name: ");
+    			c.setCompName(userInputString());
+    	    	System.out.print("Type Your Company Password: ");
+    			c.setPassword(userInputString());
+    			   			
+    			boolean lastCheck = db.login(c.getCompName(), c.getPassword());
+    			if(lastCheck == false) {
+    				printIDnotExist("Company");
+    				break;
+    			}
+    			else {
+    				
+    				try {
+    					db.removeCompany(c);
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+    				
+    				
+    			}
+			}// else if - choice 4
     		else {
     			printGoingBackToUsage();
     			printUsageMainOptions();
@@ -503,7 +560,6 @@ public class testDBDAO {
 				printUsageMainOptions();
 				break;
 			} // else
-
     		} // while loop
     		
     	} // removeCompany - plan
@@ -526,13 +582,13 @@ public class testDBDAO {
             IsExistDB.idPasswordExist(SharingData.getLongNum1(), SharingData.getVarchar1());
             if(IsExistDB.getAnswer() == false) {
      				
-     		printNAMEnotExist();
+     		printNoExistOrCurrect();
      		printUsageMainOptions();
      		break;
      		} // if
      		else { // Move on to this block if we got 'TRUE' in the IF condition:
  	
-     		printFoundNAME(); 
+     		printFoundInDB("Company"); 
      				
      	    		
                     System.out.print("NEW Company Name: ");
@@ -589,7 +645,7 @@ public class testDBDAO {
         	} // if - it 0 the program will break from this function.
         	
         	if (IsExistDB.getAnswer2() == false) { // checks if the ID exist in the DB.
-        		printIDnotExist();
+        		printNoExistOrCurrect();
     			printUsageMainOptions();
     			break;
         	} // if - isExist
@@ -619,7 +675,8 @@ public class testDBDAO {
     		if(password == 123456789) {
        			CompanyDBDAO db = new CompanyDBDAO();
     			System.out.println("Here is your Companeis List: " + "\n");
-       			System.out.println(db.getAllCompanies().toString());
+       			
+    			System.out.println(db.getAllCompanies().toString());
     			break;
     		} // if
     		else {
