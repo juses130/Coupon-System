@@ -240,6 +240,29 @@ public class testDBDAO {
 
 	} // userInputString
 	
+	private boolean login_T() {
+
+    	System.out.println("\n" + "Please type your Company-User and Password." + "\n");
+    	System.out.print("Type Your Company Name: ");
+    	String compName = userInputString();
+    	System.out.print("Type Your Company Password: ");
+    	String password = userInputString();
+    	
+    	CompanyDBDAO db = new CompanyDBDAO();
+    	boolean existOrNot = db.login(compName, password);
+    	
+   		if(existOrNot == false){
+        	printNoExistOrCurrect();
+        	printUsageMainOptions();
+        	return false;
+        	} // if
+        	else {
+        		printFoundInDB("Company");
+        		printUsageCompany();
+        		return true;
+        	}
+    		}
+	
 	private static void loadDriver() {
 		// Loading JDBC Driver - Function.
 				try {
@@ -281,26 +304,9 @@ public class testDBDAO {
     	 * Here the program will go to the login() in the CompanyDBDAO and compare
     	 * the inputs to the Database.
     	 **/
-
-    	System.out.println("\n" + "Please type your Company-User and Password." + "\n");
-    	System.out.print("Type Your Company Name: ");
-    	String compName = userInputString();
-    	System.out.print("Type Your Company Password: ");
-    	String password = userInputString();
-    	
-    	CompanyDBDAO db = new CompanyDBDAO();
-    	boolean existOrNot = db.login(compName, password);
     	
     	while(true) {
-    		if(existOrNot == false){
-        	printNoExistOrCurrect();
-        	printUsageMainOptions();
-        	break;
-        	} // if
-        	else {
-        		printFoundInDB("Company");
-        		printUsageCompany();
-        		
+ 
         		short choice = userInputShort();
         	switch (choice) {
         	
@@ -338,7 +344,6 @@ public class testDBDAO {
         	}
         	
         	} // switch
-        	} // else
     	}
     	
     	
