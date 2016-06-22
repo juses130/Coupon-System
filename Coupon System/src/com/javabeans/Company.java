@@ -6,10 +6,10 @@ public class Company {
 	
 	// Attributes
 	
-	private long id;
-	private String compName;
-	private String password;
-	private String email;
+	private long id = 0;
+	private String compName = null;
+	private String password = null;
+	private String email = null;
 	private Collection<Coupon> coupons;
 	
 	// My new Instance only for the choice parts in the main Class.
