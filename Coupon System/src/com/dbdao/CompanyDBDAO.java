@@ -11,6 +11,7 @@ import com.added.functions.DBconnector;
 import com.added.functions.SharingData;
 import com.dao.interfaces.*;
 import com.javabeans.*;
+import com.mysql.jdbc.util.ResultSetUtil;
 
 public class CompanyDBDAO implements CompanyDAO {
 	
@@ -72,14 +73,17 @@ public class CompanyDBDAO implements CompanyDAO {
 	@Override
 	public void removeCompany(Company company) throws SQLException {
 			
+		ResultSet rs = null;
+		Statement stat = null;
 		try {
 			
 			DBconnector.getCon();
-			String sqlDELobject = "DELETE FROM coupon.company WHERE Comp_ID =?" ;
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlDELobject);
-			prep.setLong(1, company.getId());
+			String sqlDELobject = "DELETE FROM coupon.company WHERE Comp_ID = "
+					+ company.getId() ;
+			stat = DBconnector.getInstatce().createStatement();
+			rs = stat.executeQuery(sqlDELobject);
+			rs.next();
 			
-			prep.executeUpdate();
 			
 		} catch (SQLException e) {
 			// TODO: handle exception
@@ -285,14 +289,49 @@ public class CompanyDBDAO implements CompanyDAO {
 
 	@Override
 	public Collection<Coupon> getCoupons() {
-		// TODO Auto-generated method stub
+		
+		
+		
 		return null;
 	}
 
 	@Override
-	public boolean login(Company compName, Company password) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean login(String compName, String password) {
+		
+		ResultSet rs1 = null;
+		Statement stat1 = null;
+
+		boolean hasRows = false;
+try {
+			
+			DBconnector.getCon();
+			String sqlName = "SELECT Comp_name, password FROM company WHERE "
+					+ "Comp_name= '" + compName + "'" + " AND " + "password= '" 
+					+ password + "'";
+			stat1 = DBconnector.getInstatce().createStatement();
+		    rs1 = stat1.executeQuery(sqlName);
+		    rs1.next();
+
+			if (rs1.getRow() != 0) {
+				hasRows = true;
+				
+				System.out.println(hasRows);
+			}
+
+            } catch (SQLException e) {
+	        e.printStackTrace();
+	        
+            } // catch
+		finally {
+			try {
+				DBconnector.getInstatce().close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+			}
+		}// finally
+
+	return hasRows;
 	}	
+	
 
 }
