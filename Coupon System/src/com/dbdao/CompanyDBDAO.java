@@ -8,6 +8,7 @@ import java.util.HashSet;
 import javax.naming.spi.DirStateFactory.Result;
 
 import com.added.functions.DBconnector;
+import com.added.functions.IsExistDB;
 import com.added.functions.SharingData;
 import com.dao.interfaces.*;
 import com.javabeans.*;
@@ -72,25 +73,32 @@ public class CompanyDBDAO implements CompanyDAO {
 	//1. By Company.
 	@Override
 	public void removeCompany(Company company) throws SQLException {
+		
+		IsExistDB.idExist(company.getId());
+		if(IsExistDB.getAnswer2() == true) {
+
+			ResultSet rs = null;
+			Statement stat = null;
 			
-		ResultSet rs = null;
-		Statement stat = null;
-		try {
+			try {
+				
+				DBconnector.getCon();
+				String sqlDELobject = "DELETE FROM company WHERE Comp_ID = "
+						+ company.getId() ;
+				stat = DBconnector.getInstatce().createStatement();
+				rs = stat.executeQuery(sqlDELobject);
+				rs.next();
+				
+				
+			} catch (SQLException e) {
+				// TODO: handle exception
+			} // catch
 			
-			DBconnector.getCon();
-			String sqlDELobject = "DELETE FROM coupon.company WHERE Comp_ID = "
-					+ company.getId() ;
-			stat = DBconnector.getInstatce().createStatement();
-			rs = stat.executeQuery(sqlDELobject);
-			rs.next();
-			
-			
-		} catch (SQLException e) {
-			// TODO: handle exception
+			finally {
+				DBconnector.getInstatce().close();
+			} // finally
 		}
-		finally {
-			DBconnector.getInstatce().close();
-		} // finally
+
 		
 	}
 	
@@ -227,7 +235,7 @@ public class CompanyDBDAO implements CompanyDAO {
 			String companyInfo = c.toString();
 			SharingData.setVarchar2(companyInfo);
 
-			// Letting the others (if the asking) that the getID Function was run Succsefully.
+			// Letting the other Classes (if they asking) that the getID Function was run Succsefully.
 			SharingData.setFlag1(true);
 			
 		}
