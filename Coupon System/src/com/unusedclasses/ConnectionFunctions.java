@@ -8,7 +8,9 @@ public class ConnectionFunctions {
 	// 
 	private static Connection connection;
 	private static boolean conRunningOrNot = false;
-	
+	/*
+	 * 
+	 */
 	/* Private Constructor - we can't let the user or the program use a default constructor.
 	 * because with a default constructor we can created more then 1 ConnectionPool Object.
 	 */
