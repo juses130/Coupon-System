@@ -3,6 +3,7 @@ package com.added.functions;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * 
@@ -23,7 +24,7 @@ public class IsExistDB {
 	 */
 	
 	// Attributes
-	private static boolean answer;
+	private static boolean answer = false;
 	
 	/**
 	 * This instatce is Only for this class. 
@@ -160,6 +161,78 @@ public class IsExistDB {
    	
    }
    
+   //ID AND Password Checker V2
+   public static boolean idPassExistV2(long id, String password) {
+	   
+	   Statement stat = null;
+	   ResultSet rs = null;
+	   //boolean hasRows = false;
+	   try {
+		
+		   DBconnector.getCon();
+			String sqlName = "SELECT Comp_ID, password FROM company WHERE "
+					+ "Comp_ID= " + id + " AND " + "password= '" 
+					+ password + "'";
+			stat = DBconnector.getInstatce().createStatement();
+			rs = stat.executeQuery(sqlName);
+			rs.next();
+		   
+			if (rs.getRow() != 0) {
+				answer = true;
+			}
+			else {
+				answer = false;
+			}
+
+            } catch (SQLException e) {
+	        e.printStackTrace();
+	        
+            } // catch
+		finally {
+			try {
+				DBconnector.getInstatce().close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+			}
+		}// finally
+	   
+	   return answer;
+   
+   }
+	   
+   public static boolean namePassExistV2(String name, String password) {
+	   Statement stat = null;
+	   ResultSet rs = null;
+	   //boolean hasRows = false;
+	   try {
+		
+		   DBconnector.getCon();
+			String sqlName = "SELECT Comp_name, password FROM company WHERE "
+					+ "Comp_name= '" + name + "' AND " + "password= '" 
+					+ password + "'";
+			stat = DBconnector.getInstatce().createStatement();
+			rs = stat.executeQuery(sqlName);
+			rs.next();
+		   
+			if (rs.getRow() != 0) {
+				answer = true;
+			}
+
+            } catch (SQLException e) {
+	        e.printStackTrace();
+	        
+            } // catch
+		finally {
+			try {
+				DBconnector.getInstatce().close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+			}
+		}// finally
+   return answer;
+	   
+   }
+   
    public static void emailExist(String email){
 		
    	try {
@@ -202,14 +275,11 @@ public class IsExistDB {
     	return answer;
     }
 
-public static boolean isAnswer2() {
-	return answer2;
-}
 
-public static boolean getAnswer2() {
+   public static boolean getAnswer2() {
 	// TODO Auto-generated method stub
 	return answer2;
-}
+    }
 
 	
 }
