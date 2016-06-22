@@ -17,7 +17,7 @@ public class DataRowGetter {
 	private DataRowGetter() {};
 	
 	// Main Function
-	public static Company getRow (Company c) throws SQLException {
+	public static Company getCompanyRow (Company c) throws SQLException {
 		
 		// now we need a new Company Object for the next checks.
 		
@@ -72,7 +72,7 @@ public class DataRowGetter {
 				// If it's ALL set (4 parameters), we just return the newComp Object.
 				if (countANDcalculate == 1111) {
 					
-					IsExistDB.namePassExistV2(c.getCompName(), c.getPassword());
+					IsExistDB.namePassExistV2Company(c.getCompName(), c.getPassword());
 					if(IsExistDB.getAnswer() == true) {
 						DBconnector.getCon();
 						
@@ -127,7 +127,7 @@ public class DataRowGetter {
 					 * (even if the user put's somthing alse) 
 					 */
 					
-					IsExistDB.namePassExistV2(c.getCompName(), c.getPassword());
+					IsExistDB.namePassExistV2Company(c.getCompName(), c.getPassword());
 					if(IsExistDB.getAnswer() != false) {
 						
 		
@@ -164,7 +164,7 @@ public class DataRowGetter {
 				// IF - 2 pramaters: User && Password
 				if(countANDcalculate == 11) {
 					
-					IsExistDB.namePassExistV2(c.getCompName(), c.getPassword());
+					IsExistDB.namePassExistV2Company(c.getCompName(), c.getPassword());
 					if(IsExistDB.getAnswer() == true) {
 						
 						DBconnector.getCon();
@@ -193,7 +193,7 @@ public class DataRowGetter {
 				}
 				if (countANDcalculate == 1011) {
 					
-					IsExistDB.namePassExistV2(c.getCompName(), c.getPassword());
+					IsExistDB.namePassExistV2Company(c.getCompName(), c.getPassword());
 					if(IsExistDB.getAnswer() != false) {
 						
 		

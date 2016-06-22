@@ -71,14 +71,14 @@ public class IsExistDB {
 				try {
 					DBconnector.getInstatce().close();
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
+					
 				}
 			} // finally
 
 	}
 	
    public static void namePasswordExist(String name, String password){
-		// TODO: when we add to the project 'passwordHASH' we will need an update here.
+		
     	try {
 			
 			ResultSet rs = null;
@@ -115,7 +115,7 @@ public class IsExistDB {
 			try {
 				DBconnector.getInstatce().close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+				
 			}
 		} // finally
     	
@@ -155,14 +155,14 @@ public class IsExistDB {
 			try {
 				DBconnector.getInstatce().close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+				
 			}
 		} // finally
    	
    }
    
    //ID AND Password Checker V2
-   public static boolean idPassExistV2(long id, String password) {
+   public static boolean idPassExistV2Company(long id, String password) {
 	   
 	   Statement stat = null;
 	   ResultSet rs = null;
@@ -192,7 +192,7 @@ public class IsExistDB {
 			try {
 				DBconnector.getInstatce().close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+				
 			}
 		}// finally
 	   
@@ -200,7 +200,7 @@ public class IsExistDB {
    
    }
 	   
-   public static boolean namePassExistV2(String name, String password) {
+   public static boolean namePassExistV2Company(String name, String password) {
 	   Statement stat = null;
 	   ResultSet rs = null;
 	   //boolean hasRows = false;
@@ -226,12 +226,87 @@ public class IsExistDB {
 			try {
 				DBconnector.getInstatce().close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+				
 			}
 		}// finally
    return answer;
 	   
    }
+   
+ //ID AND Password Checker V2
+   public static boolean idPassExistV2Customer(long id, String password) {
+	   
+	   Statement stat = null;
+	   ResultSet rs = null;
+	   //boolean hasRows = false;
+	   try {
+		
+		   DBconnector.getCon();
+			String sqlName = "SELECT Cust_ID, password FROM customer WHERE "
+					+ "Cust_ID= " + id + " AND " + "password= '" 
+					+ password + "'";
+			stat = DBconnector.getInstatce().createStatement();
+			rs = stat.executeQuery(sqlName);
+			rs.next();
+		   
+			if (rs.getRow() != 0) {
+				answer = true;
+			}
+			else {
+				answer = false;
+			}
+
+            } catch (SQLException e) {
+	        e.printStackTrace();
+	        
+            } // catch
+		finally {
+			try {
+				DBconnector.getInstatce().close();
+			} catch (SQLException e) {
+				
+			}
+		}// finally
+	   
+	   return answer;
+   
+   }
+   
+   public static boolean namePassExistV2Customer(String name, String password) {
+	   Statement stat = null;
+	   ResultSet rs = null;
+	   //boolean hasRows = false;
+	   try {
+		
+		   DBconnector.getCon();
+			String sqlName = "SELECT Cust_name, password FROM customer WHERE "
+					+ "Cust_name= '" + name + "' AND " + "password= '" 
+					+ password + "'";
+			stat = DBconnector.getInstatce().createStatement();
+			rs = stat.executeQuery(sqlName);
+			rs.next();
+		   
+			if (rs.getRow() != 0) {
+				answer = true;
+			}
+
+            } catch (SQLException e) {
+	        e.printStackTrace();
+	        
+            } // catch
+		finally {
+			try {
+				DBconnector.getInstatce().close();
+			} catch (SQLException e) {
+				
+			}
+		}// finally
+   return answer;
+	   
+   }
+      
+
+
    
    public static void emailExist(String email){
 		
@@ -264,7 +339,7 @@ public class IsExistDB {
 			try {
 				DBconnector.getInstatce().close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+				
 			}
 		} // finally
    	
@@ -277,7 +352,7 @@ public class IsExistDB {
 
 
    public static boolean getAnswer2() {
-	// TODO Auto-generated method stub
+	
 	return answer2;
     }
 

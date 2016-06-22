@@ -10,6 +10,7 @@ public class Customer {
 	private String custName;
 	private String password;
 	private Collection<Coupon> coupons;
+	private String email = null;
 	
 	// Constructor
 	public Customer() {}
@@ -48,6 +49,18 @@ public class Customer {
 	@Override
 	public String toString() {
 		return "Customer [id=" + id + ", custName=" + custName + ", coupons=" + coupons + "]";
+	}
+
+	public String getPassword() {
+		return password;
+	}
+	
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	
 	

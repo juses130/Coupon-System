@@ -1,18 +1,14 @@
 package com.dbdao;
 
-import java.awt.dnd.DnDConstants;
 import java.sql.*;
 import java.util.Collection;
 import java.util.HashSet;
-
-import javax.naming.spi.DirStateFactory.Result;
 
 import com.added.functions.DBconnector;
 import com.added.functions.IsExistDB;
 import com.added.functions.SharingData;
 import com.dao.interfaces.*;
 import com.javabeans.*;
-import com.mysql.jdbc.util.ResultSetUtil;
 
 public class CompanyDBDAO implements CompanyDAO {
 	
@@ -24,9 +20,6 @@ public class CompanyDBDAO implements CompanyDAO {
 		
 		// creating ResultSet
 		ResultSet rs = null;
-
-		// Be aware, this is a Temporary method-connections. 
-		// we will change the method of the connections in the next weeks.
 		
 		try {
 			DBconnector.getCon();
@@ -91,7 +84,7 @@ public class CompanyDBDAO implements CompanyDAO {
 				
 				
 			} catch (SQLException e) {
-				// TODO: handle exception
+				
 			} // catch
 			
 			finally {
@@ -129,7 +122,7 @@ public class CompanyDBDAO implements CompanyDAO {
 	//.3 By Name (String)
 	@Override
 	public void removeCompany(String name) throws SQLException {
-		// TODO: Add here - IsExist
+		
 		try {
 			DBconnector.getCon();
 			String sqlDELname = "DELETE FROM coupon.company WHERE Comp_name =?" ;
@@ -188,32 +181,10 @@ public class CompanyDBDAO implements CompanyDAO {
 		
 	} // updateCompany - Function
 
-	public void updateComp2(Company c) {
-		try {
-			
-			DBconnector.getCon();
-			
-			String sqlCmdStr = "UPDATE coupon.company SET Comp_name=?, email=? WHERE Comp_ID=?";
-			PreparedStatement stat = DBconnector.getInstatce().prepareStatement (sqlCmdStr);
-			stat.setString(1, c.getCompName());
-			stat.setString(2, c.getEmail());
-			stat.setLong(3, c.getId());
-			stat.executeUpdate();
-			
-			long tostring = c.getId();
-			SharingData.setLongNum1(tostring);
-			
-			
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 	
 	@Override
 	public Company getCompany(long id) {
-		// TODO:
+		
 		Company c = null;
 		String compName, email, password;
 		
@@ -291,7 +262,7 @@ public class CompanyDBDAO implements CompanyDAO {
 			} // catch
 		} // finally
 		
-		// TODO: change the NULL
+		
 		return companies;
 	} // getAllCompanies
 
@@ -334,7 +305,7 @@ try {
 			try {
 				DBconnector.getInstatce().close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+				
 			}
 		}// finally
 

@@ -20,7 +20,7 @@ public class testCo {
 	 */
 	
 	public static void main(String[] args) throws SQLException {
-		// TODO Auto-generated method stub
+		
 
 		Company c = new Company();
 		c.setCompName("asus");
@@ -28,7 +28,7 @@ public class testCo {
 		c.setPassword("1234");
 		c.setId(456634);
 		
-		DataRowGetter.getRow(c);
+		DataRowGetter.getCompanyRow(c);
 		if(DataRowGetter.isVerificationExistInDataB() == true) {
 			System.out.println(c.toString() + "\n");
 		}

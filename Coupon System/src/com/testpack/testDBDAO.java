@@ -26,7 +26,7 @@ public class testDBDAO {
     
 	
 	public static void main(String[] args) throws SQLException {
-		// TODO Auto-generated method stub
+		
 		
 		// Printing wellcom, loading JDBC Driver, Printing Main Usage.
 		printWellcom();
@@ -40,7 +40,7 @@ public class testDBDAO {
 		
 		while (on) {
 			
-			
+			//printUsageMainOptions();
 			short userChoiceOfSideWork = userInputShort();
 			
 			//Check the user choice and switch it:
@@ -53,12 +53,13 @@ public class testDBDAO {
 			} // case 1
 			case 2: {
 				//printUsageMainOptions();
-				System.out.println("Still not ready..");
+				CustomerMenu();
 				break;
 			}
 			case 3: {
 				//printUsageMainOptions();
 				System.out.println("Still not ready..");
+				
 				break;
 			}
 			case 4: {
@@ -168,6 +169,11 @@ public class testDBDAO {
 
 	}
 	
+	public static void printCustomerRemoved() {
+		System.out.println("\n" + "------------ Customer Removed Successfully ----------" + "\n");
+
+	}
+	
 	public static void printGoingBackToUsage() {
 		
 		System.out.println("Going back to Main Usage.." + "\n");
@@ -200,6 +206,8 @@ public class testDBDAO {
 			int counterLEFT = 3 - counterWorngTimes;
 			System.out.println("You have" + " ** " + counterLEFT + " ** " + "More Attempts To Fail.");
 
+			printGoingBackToUsage();
+			printUsageMainOptions();
 			// Counting the worng times of the user inputs:
 			counterWorngTimes++;
 			
@@ -281,7 +289,11 @@ public class testDBDAO {
 	 * The Next Functions is For The Objects.
 	*/
 	
-	//1. Companies List Functions.
+	/************************************************
+	 * Company Section ******************************
+	 * **********************************************
+	 */
+	
     public static void printUsageCompany() {
 
 		
@@ -299,25 +311,19 @@ public class testDBDAO {
 	}
 
     private static void CompanyMenu() throws SQLException {
-    	
-    	/**
-    	 * Here the program will go to the login() in the CompanyDBDAO and compare
-    	 * the inputs to the Database.
-    	 **/
-    	
-    	while(true) {
- 
-        		short choice = userInputShort();
+    	printUsageCompany();
+
+        	short choice = userInputShort();
         	switch (choice) {
         	
         	case 1: {
         		addCompnay_T();
         		//printUsageMainOptions();
-        		//break;
+        		break;
         	}
         	case 2: {
         		removeCompany_T();
-        		// TODO: Still need to add Remove By Company Object.
+        		
         		break;
         	}
         	case 3: {
@@ -330,6 +336,7 @@ public class testDBDAO {
         	}
         	case 5: {
         		getAllCompanies_T();
+        		printUsageMainOptions();
         		break;
         	}
         	case 822: { // Developers Option: Reset Table Company
@@ -339,12 +346,11 @@ public class testDBDAO {
         	}
 
         	case 0: {
-        		printUsageMainOptions();
+        		//printUsageMainOptions();
         		break;
         	}
         	
         	} // switch
-    	}
     	
     	
     } // CompanySwitch Function
@@ -381,7 +387,6 @@ public class testDBDAO {
 			if(SharingData.isFlag1() == true) {
 				System.out.println(c.toString());
 				System.out.println("------------ Company Added Successfully ----------" + "\n");
-				printUsageCompany();
 				
 			}
 			else {
@@ -395,19 +400,18 @@ public class testDBDAO {
 			System.out.println("Whould you keep adding companies? Type '1' for YES or any other Number for NO.");
 			short choice1 = userInputShort();
 			
-			if (choice1 == 1) {
-				continue;
-			} // if 
-			else {
+			if (choice1 != 1) {
 				printUsageMainOptions();
 				break;
+			} // if 
+			else {
+				continue;
 			}
-		
 		} // while loop
 	} // addCompnay - Function
 	
     private static void removeCompany_T() {
-    	// TODO: I need to build the removeFunction first.
+    	
     	
     	while(true) {
     		
@@ -435,18 +439,12 @@ public class testDBDAO {
     			System.out.print("Type Your Company Password: ");
     			SharingData.setVarchar1(userInputString());
     			
-    			IsExistDB.idPasswordExist(SharingData.getLongNum1(), SharingData.getVarchar1());
+    			IsExistDB.idPassExistV2Company(SharingData.getLongNum1(), SharingData.getVarchar1());
     			if(IsExistDB.getAnswer() == false && IsExistDB.getAnswer2() == false) {		
          		printNoExistOrCurrect();
          		printUsageMainOptions();
          		break;
-//    			IsExistDB.idExist(SharingData.getLongNum1());
-//    					if(IsExistDB.getAnswer() == false){
-//    						printNoExistOrCurrect();
-//    		         		printUsageMainOptions();
-//    		         		break;
-         		} // if
-    			
+    			}
     			else {	
     			      try {
 				      coDBdao.removeCompany(SharingData.getLongNum1());
@@ -456,14 +454,14 @@ public class testDBDAO {
 						System.out.println(e.getMessage());
 					  }
         			  
-    			      printCompanyRemoved();
+    			      printCustomerRemoved();
     			} // else
     		} // if - choice = 1
     		else if(choice == 2) { // Delete By name:
     			
-    			System.out.print("Type Your Company Name: ");
+    			System.out.print("Type Your Customer Name: ");
     			SharingData.setVarchar1(userInputString());
-    			System.out.print("Type Your Company Password: ");
+    			System.out.print("Type Your Customer Password: ");
     			SharingData.setVarchar2(userInputString());
     			
     			IsExistDB.namePasswordExist(SharingData.getVarchar1(), SharingData.getVarchar2());
@@ -476,7 +474,7 @@ public class testDBDAO {
     		    else {
     			     try {
 				     coDBdao.removeCompany(SharingData.getVarchar1());
-				     printCompanyRemoved();
+				     printCustomerRemoved();
 				     } catch (SQLException e) {
 				     System.out.println("Error:");
 			         System.out.println(e.getMessage());
@@ -518,11 +516,11 @@ public class testDBDAO {
 						coDBdao.removeCompany(c);
 						printCompanyRemoved();
 					} catch (SQLException e) {
-						// TODO: handle exception
+						
 					} // catch
     			} // else
     		} // else if - choice 3
-    		else if(choice == 4) {
+    		else if(choice == 4) { 
     			CompanyDBDAO db = new CompanyDBDAO();
     			Company c = new Company();
     			System.out.println("Developers Only! Deleting By Company Object..");
@@ -549,7 +547,7 @@ public class testDBDAO {
     				
     			}
 			}// else if - choice 4
-    		else {
+    		else { // TODO
     			printGoingBackToUsage();
     			printUsageMainOptions();
     			break;
@@ -698,6 +696,277 @@ public class testDBDAO {
     	} // while loop
     	
     } // getAllCompanies_T - Function
+    
+	
+	/************************************************
+	 * Customer Section *****************************
+	 * **********************************************
+	 */
+    
+    public static void printUsageCustomer() {
+
+		
+		System.out.println( "\n" + 
+				 "Customer Side: " + "\n"
+				 + "You Have Couple of Options Here (DB is DataBase): " + "\n");
+		System.out.println("1. Add a Customer to the DB."
+				+ "\n" + "2. Remove a Customer from the DB."
+				+ "\n" + "3. Update a Customer in the DB."
+				+ "\n" + "4. Get a Specific Customer (By ID) from the DB."
+				+ "\n" + "5. Get the List of all Customers in the DB."
+				+ "\n" + "0. To Quit" 
+				+ "\n");
+		
+	}
+
+    private static void CustomerMenu() throws SQLException {
+    
+    		printUsageCustomer();
+        	short choice = userInputShort();
+        	switch (choice) {
+        	
+        	case 1: {
+        		addCustomer_T();
+        		break;
+        	}
+        	case 2: {
+        		removeCustomer_T();
+        		break;
+        	}
+        	case 3: {
+        		updateCustomer_T();
+        		break;
+        	}
+        	case 4: {
+        		break;
+        	}
+        	case 5: {
+        		break;
+        	}
+        	case 822: { // Developers Option: Reset Table Company
+        		resetTable_T();
+        		printUsageMainOptions();
+        		break;
+        	}
+
+        	case 0: {
+        		printUsageMainOptions();
+        		break;
+        	}
+        	
+        	} // switch
+    	
+    } // CompanyMenu - Function
+
+    private static void addCustomer_T() throws SQLException {
+	
+	while (true){
+		
+        System.out.print("NEW Customer Name: ");
+		String name = (userInputString());
+		
+        System.out.print("NEW Customer Password: ");
+        String password = (userInputString());
+		
+		// check if the user put's somthing empty...
+		
+		if(name.isEmpty() || password.isEmpty()) {
+			System.out.println("\n" + "Error - the fields are empty!");
+			printGoingBackToUsage();
+			printUsageMainOptions();
+			break;
+		}
+		Customer c = new Customer();
+		CustomerDBDAO cdb = new CustomerDBDAO();
+		
+		c.setCustName(name);
+		c.setPassword(password);
+		cdb.createCustomer(c);
+		
+		if(SharingData.isFlag1() == true) {
+			System.out.println(c.toString());
+			System.out.println("------------ Company Added Successfully ----------" + "\n");
+			printUsageCompany();
+			
+		}
+		else {
+			System.out.println(cdb.toString());
+			System.out.println("\n" + "****************************************************");
+			System.out.println("Error - No Changes Were Made :(");
+			System.out.println("\n" + "****************************************************");
+		} // else
+		
+		
+		System.out.println("Whould you keep adding Customers? Type '1' for YES or any other Number for NO.");
+		short choice1 = userInputShort();
+		
+		if (choice1 == 1) {
+			continue;
+		} // if 
+		else {
+			printUsageMainOptions();
+			break;
+		}
+	
+	} // while loop
+} // addCompnay - Function
+    
+    private static void removeCustomer_T() {
+	
+	
+	while(true) {
+		
+		CustomerDBDAO cusDB = new CustomerDBDAO();
+		
+		// Options menu:
+		System.out.println("You can Delete a Customer By 2 Option:");
+		System.out.println("1. By The Customer ID."
+				+ "\n" + "2. By The Customer NAME."
+				+ "\n");
+		
+		// User Choice and 'if' checker.
+		short choice = userInputShort();
+		if (choice == 1) { // Delete By ID:
+			
+			System.out.print("Type Your Customer ID: ");
+			SharingData.setLongNum1(userInputLong());
+			if (SharingData.getLongNum1() == 0) {
+				
+				printGoingBackToUsage();
+				printUsageMainOptions();
+				break;
+			}
+			
+			System.out.print("Type Your Customer Password: ");
+			SharingData.setVarchar1(userInputString());
+			
+			IsExistDB.idPassExistV2Customer(SharingData.getLongNum1(), SharingData.getVarchar1());
+			if(IsExistDB.getAnswer() == false && IsExistDB.getAnswer2() == false) {		
+     		printNoExistOrCurrect();
+     		printUsageMainOptions();
+     		break;
+			}
+			else {	
+			      try {
+			      cusDB.removeCustomer(SharingData.getLongNum1());
+			      //System.out.println(SharingData.getVarchar4());
+				  } catch (SQLException e) {
+					System.out.println("Error:");
+					System.out.println(e.getMessage());
+				  }
+    			  
+			      printCompanyRemoved();
+			} // else
+		} // if - choice = 1
+		else if(choice == 2) { // Delete By name:
+			
+			System.out.print("Type Your Customer Name: ");
+			SharingData.setVarchar1(userInputString());
+			System.out.print("Type Your Customer Password: ");
+			SharingData.setVarchar2(userInputString());
+			
+			IsExistDB.namePassExistV2Customer(SharingData.getVarchar1(), SharingData.getVarchar2());
+			if(IsExistDB.getAnswer() == false) {
+     				
+     		printNoExistOrCurrect();
+     		printUsageMainOptions();
+     		break;
+     		} // if
+		    else {
+			     try {
+			    	 cusDB.removeCustomer(SharingData.getVarchar1());
+			    	 printCompanyRemoved();
+			     } catch (SQLException e) {
+			     System.out.println("Error:");
+		         System.out.println(e.getMessage());
+			     } // catch
+			
+			     //System.out.println(c.toString());
+			     
+		    } // else
+		} // else if - choice = 2
+		else { 
+			printGoingBackToUsage();
+			printUsageMainOptions();
+			break;
+		
+		} // switch
+		System.out.println("Whould you like to Removing more Customers? Type '1' for YES or any other Number for NO.");
+		short choice1 = userInputShort();
+		
+		if (choice1 == 1) {
+			continue;
+		} // if 
+		else {
+			printUsageMainOptions();
+			break;
+		} // else
+		} // while loop
+		
+	} // removeCompany - plan
+   
+    private static void updateCustomer_T() {
+    	
+    	while(true) {
+    		 
+    		System.out.println("Update Customer:" + "\n");
+    		System.out.println("Please type your current Customer ID and Password.");
+    		System.out.println("Note: only because it's beta version test - we asking for Customer ID.");
+    		//System.out.println("\n" + "Type The OLD Company Name:");
+     		
+    		System.out.print("Customer ID: ");
+            SharingData.setLongNum1(userInputLong());
+            System.out.print("Customer Password:");
+            SharingData.setVarchar1(userInputString());
+            
+     		// Check if the NAME exist..
+            IsExistDB.idPassExistV2Customer(SharingData.getLongNum1(), SharingData.getVarchar1());
+            if(IsExistDB.getAnswer() == false) {
+     				
+     		printNoExistOrCurrect();
+     		printUsageMainOptions();
+     		break;
+     		} // if
+     		else { // Move on to this block if we got 'TRUE' in the IF condition:
+ 	
+     		printFoundInDB("Customer"); 
+     				
+     	    		
+                    System.out.print("NEW Customer Name: ");
+                    String name = userInputString();
+     	    		
+     	    		System.out.print("NEW Password: ");
+     	    		String password = userInputString();
+     	    		     	    		
+     	    		long id = SharingData.getLongNum1();
+     	    		
+     	    		Customer c = new Customer();
+     	    		CustomerDBDAO cusDB = new CustomerDBDAO(); 
+     		     	
+     	    		c.setCustName(name);
+     	    		c.setPassword(password);
+     	    		c.setId(id);
+     	    		
+     	    		cusDB.updateCustomer(c);
+
+     	     		if(SharingData.isFlag1() == true) {
+     	     			System.out.println("\n" + SharingData.getVarchar4());
+     	     			System.out.println("------------ Customer Updated Successfully ----------" + "\n");
+     	     			printGoingBackToUsage();
+     	     			printUsageMainOptions();
+     	    		} // if - is updated
+     	    		else {
+     	    			System.out.println("\n" + "****************************************************");
+     	    			System.out.println("Error - No Changes Were Made :(");
+     	    			System.out.println("****************************************************" + "\n");
+     	    			printGoingBackToUsage();
+     	    		} // else - flag
+     			} // else
+
+     		break;
+    	} // while loop
+    	
+    } // updateCompany
     
     private static void resetTable_T() throws SQLException {
     	
