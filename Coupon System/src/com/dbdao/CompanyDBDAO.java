@@ -1,7 +1,11 @@
 package com.dbdao;
 
+import java.awt.dnd.DnDConstants;
 import java.sql.*;
 import java.util.Collection;
+import java.util.HashSet;
+
+import javax.naming.spi.DirStateFactory.Result;
 
 import com.added.functions.DBconnector;
 import com.added.functions.SharingData;
@@ -241,9 +245,43 @@ public class CompanyDBDAO implements CompanyDAO {
 
 	@Override
 	public Collection<Company> getAllCompanies() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		
+		String sql = "SELECT * FROM company";
+		Collection<Company> companies = new HashSet<>();
+		Company c = null;
+		ResultSet rs = null;
+		
+		try {
+			DBconnector.getCon();
+			Statement stat = DBconnector.getInstatce().createStatement();
+			rs = stat.executeQuery(sql);
+			
+			while(rs.next()) {
+				c = new Company();
+				c.setId(rs.getLong("Comp_ID"));
+				c.setCompName(rs.getString("Comp_name"));
+				c.setPassword(rs.getString("password"));
+				c.setEmail(rs.getString("email"));
+				
+				companies.add(c);
+			} // while loop
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} // catch
+		
+		finally {
+			try {
+				rs.close();
+				DBconnector.getInstatce().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} // catch
+		} // finally
+		
+		// TODO: change the NULL
+		return companies;
+	} // getAllCompanies
 
 	@Override
 	public Collection<Coupon> getCoupons() {

@@ -12,9 +12,9 @@ public class DBconnector {
 	 */
 	
 	private static Connection con;
-	private static String url = "jdbc:mysql://localhost:3306/coupon";
-	private static String userDBname = "root";
-	private static String passowrdDB = "12345";
+	private static final String url = "jdbc:mysql://localhost:3306/coupon";
+	private static final String userDBname = "root";
+	private static final String passowrdDB = "12345";
 
 	private DBconnector () {}
 	

@@ -296,6 +296,10 @@ public class testDBDAO {
     		getCompanyID_T();
     		break;
     	}
+    	case 5: {
+    		getAllCompanies_T();
+    		break;
+    	}
     	case 822: { // Developers Option: Reset Table Company
     		resetTable_T();
     		printUsageMainOptions();
@@ -605,6 +609,34 @@ public class testDBDAO {
 
     	} // getCompanyID_T - Function
 
+    private static void getAllCompanies_T() {
+
+    	while(true) {
+    		
+    		System.out.println("Please Type Your Admin Password:");
+    		long password = userInputLong();
+    		
+    		if(password == 123456789) {
+       			CompanyDBDAO db = new CompanyDBDAO();
+    			System.out.println("Here is your Companeis List: " + "\n");
+       			System.out.println(db.getAllCompanies().toString());
+    			break;
+    		} // if
+    		else {
+ 
+    			System.out.println("Error: worng password!");
+    			printGoingBackToUsage();
+    			break;
+    			
+    		} // else
+    		
+    		
+    		
+    		
+    	} // while loop
+    	
+    } // getAllCompanies_T - Function
+    
     private static void resetTable_T() throws SQLException {
     	
     	System.out.println("\n" + "This is a Developer method - Truncate Tabels (reset)");

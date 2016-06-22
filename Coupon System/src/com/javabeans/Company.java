@@ -74,7 +74,7 @@ public class Company {
 	// ToString
 	@Override
 	public String toString() {
-		return "Company [ID=" + id + ", Name=" + compName + ", Email=" + email + "]";
+		return "\n" + "Company [ID=" + id + ", Name=" + compName + ", Email=" + email + "]";
 	}
 
 	
