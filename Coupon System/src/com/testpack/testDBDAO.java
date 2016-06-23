@@ -769,9 +769,11 @@ public class testDBDAO {
         		break;
         	}
         	case 4: {
+        		getCustomerID_T();
         		break;
         	}
         	case 5: {
+        		getAllCustomers_T();
         		break;
         	}
         	case 822: { // Developers Option: Reset Table Company
@@ -816,8 +818,8 @@ public class testDBDAO {
 		
 		if(SharingData.isFlag1() == true) {
 			System.out.println(c.toString());
-			System.out.println("------------ Company Added Successfully ----------" + "\n");
-			printUsageCompany();
+			System.out.println("------------ Customer Added Successfully ----------" + "\n");
+    		printUsageCustomer();
 			
 		}
 		else {
@@ -886,7 +888,7 @@ public class testDBDAO {
 					System.out.println(e.getMessage());
 				  }
     			  
-			      printCompanyRemoved();
+			      printCustomerRemoved();
 			} // else
 		} // if - choice = 1
 		else if(choice == 2) { // Delete By name:
@@ -906,7 +908,7 @@ public class testDBDAO {
 		    else {
 			     try {
 			    	 cusDB.removeCustomer(SharingData.getVarchar1());
-			    	 printCompanyRemoved();
+			    	 printCustomerRemoved();
 			     } catch (SQLException e) {
 			     System.out.println("Error:");
 		         System.out.println(e.getMessage());
@@ -998,6 +1000,70 @@ public class testDBDAO {
     	} // while loop
     	
     } // updateCompany
+    
+    private static void getCustomerID_T() {
+    	
+    	while(true) {
+        	System.out.println("Type The Customer ID:");
+        	SharingData.setLongNum1(userInputLong());
+        	
+        	IsExistDB.idExistV2Customer(SharingData.getLongNum1());
+        	if(SharingData.getLongNum1() == 0) {
+        		System.out.println("Typing 'Zero' is mean = quit..");
+        		printGoingBackToUsage();
+        		printUsageMainOptions();
+        		break;
+        	} // if - it 0 the program will break from this function.
+        	
+        	if (IsExistDB.getAnswer2() == false) { // checks if the ID exist in the DB.
+        		printNoExistOrCurrect();
+    			printUsageMainOptions();
+    			break;
+        	} // if - isExist
+        	else {
+        		CustomerDBDAO cust = new CustomerDBDAO();
+        		cust.getCustomer(SharingData.getLongNum1());
+        		
+        		// Print the Customer:
+        		System.out.println(SharingData.getVarchar2());
+        		
+        		if(SharingData.isFlag1() == true) {
+	    			System.out.println("\n" + "------------ Company Function (getID) Was Run Successfully ----------" + "\n");
+        	}
+        	} // else
+        	
+    	} // while loop
+
+    	} // getCompanyID_T - Function
+    
+    private static void getAllCustomers_T() {
+
+    	while(true) {
+    		
+    		System.out.println("Please Type Your Admin Password:");
+    		long password = userInputLong();
+    		
+    		if(password == 123456789) {
+       			CustomerDBDAO db = new CustomerDBDAO();
+    			System.out.println("Here is your Companeis List: " + "\n");
+       			
+    			System.out.println(db.getAllCustomers().toString());
+    			break;
+    		} // if
+    		else {
+ 
+    			System.out.println("Error: worng password!");
+    			printGoingBackToUsage();
+    			break;
+    			
+    		} // else
+    		
+    		
+    		
+    		
+    	} // while loop
+    	
+    } // getAllCompanies_T - Function
     
     /************************************************
 	 *****      Miscellaneous Section            ****
