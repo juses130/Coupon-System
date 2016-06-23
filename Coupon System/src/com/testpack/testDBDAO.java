@@ -33,7 +33,7 @@ public class testDBDAO {
 	private static short counterWorngTimes = 0;
     
 	/************************************************
-	 ********      Main Section            **********
+	 ********     Section A: Main Class     *********
 	 ************************************************
 	 */
 	
@@ -112,7 +112,7 @@ public class testDBDAO {
 
 	
 	/************************************************
-	 ********      Print Section           **********
+	 ********      Section B: Print Part     ********
 	 ************************************************
 	 *
 	 * This is a Multi-Use Functions - Main Prints, userInputs, loadDriver and more.
@@ -198,7 +198,7 @@ public class testDBDAO {
 	}
 	
 	/************************************************
-	 ********    Scanner-INPUT Section     **********
+	 ******   Section C: Scanner-INPUT Section  *****
 	 ************************************************
 	 *
 	 * The next functions, allows us to create and close Scanners and Choices (for the menu)
@@ -311,7 +311,7 @@ public class testDBDAO {
 	
 	
 	/************************************************
-	 ********      Company Section         **********
+	 ********      Section D: CompanyDB & DAO  ******
 	 ************************************************
 	 *
 	 * This the section of all the company function and method.
@@ -725,7 +725,7 @@ public class testDBDAO {
     
 	
     /************************************************
-	 ********      Customer Section         *********
+	 ********   Section D: Customer Section   *******
 	 ************************************************
 	 *
 	 * This the section of all the customer function and method.
