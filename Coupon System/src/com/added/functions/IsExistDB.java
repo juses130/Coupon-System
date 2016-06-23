@@ -76,7 +76,47 @@ public class IsExistDB {
 			} // finally
 
 	}
-	
+
+   public static void idExistV2Customer(long id) {
+		
+		try {
+			
+			ResultSet rs = null;
+			
+			DBconnector.getCon();
+			String sqlSEL = "SELECT cust_ID FROM customer WHERE cust_ID= ?" ;
+			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlSEL);
+			prep.setLong(1, id);
+			rs = prep.executeQuery();
+			
+			boolean hasRows = false;
+			
+			while(rs.next()) {
+			 hasRows = true;
+			 
+//			 answer = true;
+			 answer2 = true;
+			}
+			if(!hasRows) {
+//				answer = false;
+				answer2 = false;
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} // catch
+		
+		finally {
+			try {
+				DBconnector.getInstatce().close();
+			} catch (SQLException e) {
+				
+			}
+		} // finally
+
+}
+
+   
    public static void namePasswordExist(String name, String password){
 		
     	try {

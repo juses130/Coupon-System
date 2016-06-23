@@ -5,10 +5,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
+import java.util.HashSet;
 
 import com.added.functions.DBconnector;
 import com.added.functions.SharingData;
 import com.dao.interfaces.CustomerDAO;
+import com.javabeans.Company;
 import com.javabeans.Coupon;
 import com.javabeans.Customer;
 
@@ -144,16 +146,87 @@ public class CustomerDBDAO implements CustomerDAO {
 	}
 
 	@Override
-	public Customer getCustomer() {
+	public Customer getCustomer(long id) {
 		
-		return null;
+
+		Customer c = null;
+		String custName, password;
+		
+		try {
+
+			DBconnector.getCon();
+			String sqlSEL = "SELECT * FROM customer WHERE Cust_ID= ?" ;
+			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlSEL);
+			prep.setLong(1, id);
+			
+			ResultSet rs = prep.executeQuery();
+			rs.next();
+			custName = rs.getString("Cust_name");
+			//email = rs.getString("Email");
+			password = rs.getString("password");
+			
+
+			c = new Customer(id, custName, password);
+			String customerInfo = c.toString();
+			SharingData.setVarchar2(customerInfo);
+
+			// Letting the other Classes (if they asking) that the getID Function was run Succsefully.
+			SharingData.setFlag1(true);
+			
+		}
+		catch (SQLException e) {
+			e.getStackTrace();
+		}
+		
+		finally {
+			try {
+				DBconnector.getInstatce().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} // finally
+		return c;
 	}
 
 	@Override
-	public Collection<Customer> getAllCustomers() {
+    public Collection<Customer> getAllCustomers() {
 		
-		return null;
-	}
+		String sql = "SELECT * FROM customer";
+		Collection<Customer> customers = new HashSet<>();
+		Customer c = null;
+		ResultSet rs = null;
+		
+		try {
+			DBconnector.getCon();
+			Statement stat = DBconnector.getInstatce().createStatement();
+			rs = stat.executeQuery(sql);
+			
+			while(rs.next()) {
+				c = new Customer();
+				c.setId(rs.getLong("Cust_ID"));
+				c.setCustName(rs.getString("Cust_name"));
+				c.setPassword(rs.getString("password"));
+				//c.setEmail(rs.getString("email"));
+				
+				customers.add(c);
+			} // while loop
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} // catch
+		
+		finally {
+			try {
+				rs.close();
+				DBconnector.getInstatce().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} // catch
+		} // finally
+		
+		
+		return customers;
+	} // getAllCompanies
 
 	@Override
 	public Collection<Coupon> getCoupons() {
