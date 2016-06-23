@@ -11,10 +11,18 @@ import com.javabeans.*;
 
 /**
  * 
+ * Read the next Description before using this program.
+ * 
  * @author Raziel
  * This is a Test Class for our Project. 
  * Attention! -> THIS IS NOT THE REQUESTED TEST IN THE PROJECT GUIDE INSTRUCTIONS - it's only for us, the Developers.
  *
+ * This Test-Class is divided to Sections.
+ * Every section has couple of methods and functions.
+ * Every section has a job here.
+ * It is my first real program - so be nice.
+ * If you just want to test the program as a user, click play and run it.
+ * But if you want to test it as a developer, PLEASE READ the notes and 
  */
 
 public class testDBDAO {
@@ -24,6 +32,10 @@ public class testDBDAO {
 	// This static short is helping to the function userInputwww
 	private static short counterWorngTimes = 0;
     
+	/************************************************
+	 ********      Main Section            **********
+	 ************************************************
+	 */
 	
 	public static void main(String[] args) throws SQLException {
 		
@@ -99,9 +111,14 @@ public class testDBDAO {
 	} // main
 
 	
-/*
- *  This is Multi-Use Functions - Main Prints, userInputs, loadDriver and more.
- */
+	/************************************************
+	 ********      Print Section           **********
+	 ************************************************
+	 *
+	 * This is a Multi-Use Functions - Main Prints, userInputs, loadDriver and more.
+	 *
+	 */
+
 
 	public static void printWellcom() {
 		System.out.println("Wellcom To Our Basic Program - Working with DataBase (SQL) :)");
@@ -179,6 +196,15 @@ public class testDBDAO {
 		System.out.println("Going back to Main Usage.." + "\n");
 
 	}
+	
+	/************************************************
+	 ********    Scanner-INPUT Section     **********
+	 ************************************************
+	 *
+	 * The next functions, allows us to create and close Scanners and Choices (for the menu)
+	 * in any place on the test.`
+	 *
+	 */
 	
 	private static short userInputShort() {
 
@@ -284,14 +310,14 @@ public class testDBDAO {
 	}
 	
 	
-	
-	/* 
-	 * The Next Functions is For The Objects.
-	*/
-	
 	/************************************************
-	 * Company Section ******************************
-	 * **********************************************
+	 ********      Company Section         **********
+	 ************************************************
+	 *
+	 * This the section of all the company function and method.
+	 * Here we create the connection between all the methods of CompanyDB and CompanyDAO 
+	 * from the packages in the Coupon System Project.
+	 *
 	 */
 	
     public static void printUsageCompany() {
@@ -698,9 +724,14 @@ public class testDBDAO {
     } // getAllCompanies_T - Function
     
 	
-	/************************************************
-	 * Customer Section *****************************
-	 * **********************************************
+    /************************************************
+	 ********      Customer Section         *********
+	 ************************************************
+	 *
+	 * This the section of all the customer function and method.
+	 * Here we create the connection between all the methods of CustomerDB and CustomerDAO 
+	 * from the packages in the Coupon System Project.
+	 *
 	 */
     
     public static void printUsageCustomer() {
@@ -967,6 +998,16 @@ public class testDBDAO {
     	} // while loop
     	
     } // updateCompany
+    
+    /************************************************
+	 *****      Miscellaneous Section            ****
+	 ************************************************
+	 *
+	 * All the methods and the functions in this section are not requested by
+	 * the project guide.
+	 * They are only for help and maintenance.
+	 *
+	 */
     
     private static void resetTable_T() throws SQLException {
     	
