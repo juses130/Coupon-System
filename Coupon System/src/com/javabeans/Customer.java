@@ -13,8 +13,14 @@ public class Customer {
 	private String email = null;
 	
 	// Constructor
-	public Customer() {}
+	public Customer(long id, String custName, String password) {
+		this.id = id;
+		this.custName = custName;
+		this.password = password;
+	}
 
+	public Customer() {}
+	
 	//Getters && Setters
 	
 	public long getId() {
@@ -48,7 +54,7 @@ public class Customer {
 	// ToString
 	@Override
 	public String toString() {
-		return "Customer [id=" + id + ", custName=" + custName + ", coupons=" + coupons + "]";
+		return "\n" + "Customer [id=" + id + ", custName=" + custName + ", coupons=" + coupons + "]";
 	}
 
 	public String getPassword() {
