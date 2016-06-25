@@ -116,6 +116,43 @@ public class IsExistDB {
 
 }
 
+   public static void idExistV2Coupon(long id) {
+		
+		try {
+			
+			ResultSet rs = null;
+			
+			DBconnector.getCon();
+			String sqlSEL = "SELECT coup_ID FROM coupon WHERE coup_ID= ?" ;
+			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlSEL);
+			prep.setLong(1, id);
+			rs = prep.executeQuery();
+			
+			boolean hasRows = false;
+			
+			while(rs.next()) {
+			 hasRows = true;
+			 answer2 = true;
+			}
+			if(!hasRows) {
+				answer2 = false;
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} // catch
+		
+		finally {
+			try {
+				DBconnector.getInstatce().close();
+			} catch (SQLException e) {
+				
+			}
+		} // finally
+
+} // idExistV2Coupon
+
+   
    
    public static void namePasswordExist(String name, String password){
 		
