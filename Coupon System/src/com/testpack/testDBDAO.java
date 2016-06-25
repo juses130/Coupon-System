@@ -1,9 +1,8 @@
 package com.testpack;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.*;
-
-import javax.print.attribute.standard.PrinterMoreInfoManufacturer;
 
 import com.added.functions.*;
 import com.dbdao.*;
@@ -69,9 +68,7 @@ public class testDBDAO {
 				break;
 			}
 			case 3: {
-				//printUsageMainOptions();
-				System.out.println("Still not ready..");
-				
+				CouponMenu();
 				break;
 			}
 			case 4: {
@@ -130,6 +127,7 @@ public class testDBDAO {
 
 	public static void printUsageMainOptions() {
 
+
 		
 		System.out.println( "\n" + 
 				 "Main Usage: " + "\n"
@@ -143,6 +141,7 @@ public class testDBDAO {
 		
 	}
 	
+
 	public static void printIDnotExist(String userType) {
 		System.out.println("\n" + "****************************************************");
 		System.out.println("Access Denied :( ");
@@ -166,7 +165,8 @@ public class testDBDAO {
 		printGoingBackToUsage();
 	}
 	
-	public static void printFoundID() {
+	
+    public static void printFoundID() {
 		System.out.println("\n" + "****************************************************");
 		System.out.println("Your Company ID Was Found In The DataBase :)");
 		System.out.println("****************************************************" + "\n");
@@ -181,8 +181,14 @@ public class testDBDAO {
 
 	}
 	
+
 	public static void printCompanyRemoved() {
 		System.out.println("\n" + "------------ Company Removed Successfully ----------" + "\n");
+
+	}
+	
+	public static void printCouponRemoved() {
+		System.out.println("\n" + "------------ Coupon Removed Successfully ----------" + "\n");
 
 	}
 	
@@ -197,6 +203,7 @@ public class testDBDAO {
 
 	}
 	
+
 	/************************************************
 	 ******   Section C: Scanner-INPUT Section  *****
 	 ************************************************
@@ -206,6 +213,7 @@ public class testDBDAO {
 	 *
 	 */
 	
+
 	private static short userInputShort() {
 
 		/*
@@ -274,7 +282,36 @@ public class testDBDAO {
 
 	} // userInputString
 	
+	private static int userInputInt() {
+		
+		
+		Scanner scanner = new Scanner(System.in);
+		System.out.print("->> ");
+		
+		try {
+			int input = scanner.nextInt();
+			return input;
+		} catch ( InputMismatchException e) {
+			System.out.println("\n" + "Error - YOU SHOULD TYPE A *NUMBERS ONLY* AND NOT A STRING!");
+			System.out.println("When an ERROR like this occurs - the program will send ZERO (number) as default." + "\n");
+		} // catch
+
+	return 0;
+	
+}
+
+	/************************************************
+	 ********     Section d: login & LoadDrive   ****
+	 ************************************************
+	 *
+	 * This is the function Login and loadDriver.
+	 * The login() will helps us in the next stages
+	 * here.
+	 *
+	 */
+	
 	private boolean login_T() {
+
 
     	System.out.println("\n" + "Please type your Company-User and Password." + "\n");
     	System.out.print("Type Your Company Name: ");
@@ -310,8 +347,10 @@ public class testDBDAO {
 	}
 	
 	
+
+	
 	/************************************************
-	 ********      Section D: CompanyDB & DAO  ******
+	 ********      Section E: CompanyDB & DAO  ******
 	 ************************************************
 	 *
 	 * This the section of all the company function and method.
@@ -447,6 +486,7 @@ public class testDBDAO {
     		System.out.println("You can Delete a Company By 2 Option:");
     		System.out.println("1. By The Company ID."
     				+ "\n" + "2. By The Company NAME."
+    			    + "\n" + "3. By The Company Object."
     				+ "\n");
     		
     		// User Choice and 'if' checker.
@@ -573,7 +613,7 @@ public class testDBDAO {
     				
     			}
 			}// else if - choice 4
-    		else { // TODO
+    		else { 
     			printGoingBackToUsage();
     			printUsageMainOptions();
     			break;
@@ -725,7 +765,7 @@ public class testDBDAO {
     
 	
     /************************************************
-	 ********   Section D: Customer Section   *******
+	 ********   Section E: Customer Section   *******
 	 ************************************************
 	 *
 	 * This the section of all the customer function and method.
@@ -1028,14 +1068,13 @@ public class testDBDAO {
         		System.out.println(SharingData.getVarchar2());
         		
         		if(SharingData.isFlag1() == true) {
-	    			System.out.println("\n" + "------------ Company Function (getID) Was Run Successfully ----------" + "\n");
+	    			System.out.println("\n" + "------------ Customer Function (getID) Was Run Successfully ----------" + "\n");
         	}
         	} // else
         	
     	} // while loop
 
     	} // getCompanyID_T - Function
-    
     private static void getAllCustomers_T() {
 
     	while(true) {
@@ -1064,6 +1103,326 @@ public class testDBDAO {
     	} // while loop
     	
     } // getAllCompanies_T - Function
+    
+    /************************************************
+	 ********   Section E: Coupon Section   *******
+	 ************************************************
+	 *
+	 * This the section of all the coupon function and method.
+	 * Here we create the connection between all the methods of CouponDB and CouponDAO 
+	 * from the packages in the Coupon System Project.
+	 *
+	 */
+    
+    public static void printUsageCoupon() {
+
+		
+		System.out.println( "\n" + 
+				 "Coupon Side: " + "\n"
+				 + "You Have Couple of Options Here (DB is DataBase): " + "\n");
+		System.out.println("1. Add a Coupon to the DB."
+				+ "\n" + "2. Remove a Coupon from the DB."
+				+ "\n" + "3. Update a Coupon in the DB."
+				+ "\n" + "4. Get a Specific Coupon (By ID) from the DB."
+				+ "\n" + "5. Get the List of all Coupons in the DB."
+				+ "\n" + "0. To Quit" 
+				+ "\n");
+		
+	}
+    
+    private static void CouponMenu() throws SQLException {
+        
+    	printUsageCoupon();
+    	short choice = userInputShort();
+    	switch (choice) {
+    	
+    	case 1: {
+    		addCoupon_T();
+    		break;
+    	}
+    	case 2: {
+    		removeCoupon_T();
+    		break;
+    	}
+    	case 3: {
+    		updateCoupon_T();
+    		break;
+    	}
+    	case 4: {
+    		getCouponID_T();
+    		break;
+    	}
+    	case 5: {
+    		
+    		break;
+    	}
+    	case 822: { // Developers Option: Reset Table Company
+    		resetTable_T();
+    		printUsageMainOptions();
+    		break;
+    	}
+
+    	case 0: {
+    		printUsageMainOptions();
+    		break;
+    	}
+    	
+    	} // switch
+	
+} // CompanyMenu - Function
+    
+    private static void addCoupon_T() throws SQLException {
+    	
+	while (true){
+
+		Coupon coup = new Coupon();
+		CouponDBDAO cdb = new CouponDBDAO();
+		
+		System.out.print("NEW Title: ");
+        String title = userInputString();
+    	
+    	System.out.print("NEW Coupon StartDate.. ");
+		LocalDate startDate = null;
+		System.out.print("Day: ");
+		int startDay = userInputInt();
+		System.out.print("Month: ");
+		int startMonth = userInputInt();
+		System.out.print("Year: ");
+		int startYear = userInputInt();
+		startDate = LocalDate.of(startYear, startMonth, startDay);
+		
+		System.out.print("NEW Coupon EndDate.. ");
+		LocalDate endDate = null;
+		System.out.print("Day: ");
+		int endDay = userInputInt();
+		System.out.print("Month: ");
+		int endMonth = userInputInt();
+		System.out.print("Year: ");
+		int endYear = userInputInt();
+		endDate = LocalDate.of(endYear, endMonth, endDay);
+    	
+		System.out.print("NEW Amount: ");
+        int amount = userInputInt();
+		
+//        System.out.print("NEW Category: ");
+//        String category = userInputString();
+        
+        System.out.print("NEW Massage: ");
+        String message = userInputString();
+        
+        System.out.print("NEW Price: ");
+        Scanner sc = new Scanner(System.in);
+        double price = sc.nextDouble();
+        //sc.close();
+        
+        System.out.print("NEW Imag link: ");
+        String imag = userInputString();
+        
+        
+        // TODO: keep it - and be aware to the category.
+		// putting all the variables 
+       
+		coup = new Coupon(title, startDate, endDate, amount, CouponType.TRAVEL, message, price, imag);
+        
+		// check if the user put's somthing empty...
+		
+		if(title.isEmpty() || message.isEmpty()) {
+			
+			System.out.println("\n" + "Error - the fields are empty!");
+			printGoingBackToUsage();
+			printUsageMainOptions();
+			break;
+		}
+		
+		
+		cdb.createCoupon(coup);
+		
+		if(SharingData.isFlag1() == true) {
+			System.out.println(coup.toString());
+			System.out.println("------------ Customer Added Successfully ----------" + "\n");
+    		
+			
+		}
+		else {
+			System.out.println(cdb.toString());
+			System.out.println("\n" + "****************************************************");
+			System.out.println("Error - No Changes Were Made :(");
+			System.out.println("\n" + "****************************************************");
+		} // else
+		
+		
+		System.out.println("Whould you keep adding Coupons? Type '1' for YES or any other Number for NO.");
+		short choice1 = userInputShort();
+		
+		if (choice1 == 1) {
+			continue;
+		} // if 
+		else {
+			printUsageMainOptions();
+			break;
+		}
+	
+	} // while loop
+} // addCompnay - Function
+    
+    private static void removeCoupon_T() {
+    	
+    	while(true) { // Delete By Object (Company)
+    		
+    		CouponDBDAO db = new CouponDBDAO();
+    		
+    		System.out.println("Developers Only! Deleting By Coupon Object..");
+    		System.out.print("Type Your Coupon ID: ");
+    		SharingData.setLongNum1(userInputLong());
+    		if (SharingData.getLongNum1() == 0) {
+    			
+    			printGoingBackToUsage();
+    			printUsageMainOptions();
+    			break;
+    		}
+    		
+//    		System.out.print("Type Your Company Password: ");
+//    		SharingData.setVarchar1(userInputString());
+    		
+    		IsExistDB.idExistV2Coupon(SharingData.getLongNum1());
+    		if(IsExistDB.getAnswer2() == false) {		
+    			printNoExistOrCurrect();
+    			printUsageMainOptions();
+    			break;
+    			} // if
+    		else {
+    			Coupon c = new Coupon();
+				c.setId(SharingData.getLongNum1());
+				System.out.println(c.toString());
+				db.removeCoupon(c);
+				printCouponRemoved();
+    		} // else
+    	} // while loop
+    	
+    } // removeCoupon
+    
+    private static void updateCoupon_T() {
+    	
+    	while(true) {
+    	
+//    	System.out.println("Update Coupon:" + "\n");
+//		System.out.println("Please type your current Coupon ID and Password.");
+		//System.out.println("Note: only because it's beta version test - we asking for Customer ID.");
+		//System.out.println("\n" + "Type The OLD Company Name:");
+ 		
+		System.out.print("Coupon ID: ");
+        SharingData.setLongNum1(userInputLong());
+    	
+        // Check if the NAME exist..
+        IsExistDB.idExistV2Coupon(SharingData.getLongNum1());
+        if(IsExistDB.getAnswer2() == false) {
+ 				
+ 		printNoExistOrCurrect();
+ 		printUsageMainOptions();
+ 		break;
+ 		} // if
+        else {
+        	printFoundInDB("Coupon");
+        	
+        	// Object Coupon
+        	Coupon coup;
+        	
+        	// DBDAO Coupon
+        	CouponDBDAO dbcou = new CouponDBDAO();
+        	
+        	//System.out.print("Please Provide The ID Coupon: ");
+            long id = SharingData.getLongNum1();
+        	
+        	System.out.print("NEW Title: ");
+            String title = userInputString();
+	    	
+	    	System.out.print("NEW Coupon StartDate.. ");
+			LocalDate startDate = null;
+			System.out.print("Day: ");
+			int startDay = userInputInt();
+			System.out.print("Month: ");
+			int startMonth = userInputInt();
+			System.out.print("Year: ");
+			int startYear = userInputInt();
+			startDate = LocalDate.of(startYear, startMonth, startDay);
+			
+			System.out.print("NEW Coupon EndDate.. ");
+			LocalDate endDate = null;
+			System.out.print("Day: ");
+			int endDay = userInputInt();
+			System.out.print("Month: ");
+			int endMonth = userInputInt();
+			System.out.print("Year: ");
+			int endYear = userInputInt();
+			endDate = LocalDate.of(endYear, endMonth, endDay);
+	    	
+			System.out.print("NEW Amount: ");
+            int amount = userInputInt();
+			
+//            System.out.print("NEW Category: ");
+//            String category = userInputString();
+            
+            System.out.print("NEW Massage: ");
+            String massage = userInputString();
+            
+            System.out.print("NEW Price: ");
+            Scanner sc = new Scanner(System.in);
+            double price = sc.nextDouble();
+            //sc.close();
+            
+            System.out.print("NEW Imag link: ");
+            String imag = userInputString();
+            
+            
+            
+            
+            // TODO: keep it - and be aware to the category.
+			// putting all the variables 
+           
+			coup = new Coupon(title, startDate, endDate, amount, CouponType.TRAVEL, massage, price, imag);
+			coup.setId(id);
+			dbcou.updateCoupon(coup);
+			System.out.println("\n" + coup.toString() + "\n");
+			break;
+        }
+        
+    	} // while loop
+    }
+    
+    private static void getCouponID_T() {
+    	
+    	while(true) {
+        	System.out.println("Type The Coupon ID:");
+        	SharingData.setLongNum1(userInputLong());
+        	
+        	IsExistDB.idExistV2Coupon(SharingData.getLongNum1());
+        	if(SharingData.getLongNum1() == 0) {
+        		System.out.println("Typing 'Zero' is mean = quit..");
+        		printGoingBackToUsage();
+        		printUsageMainOptions();
+        		break;
+        	} // if - it 0 the program will break from this function.
+        	
+        	if (IsExistDB.getAnswer2() == false) { // checks if the ID exist in the DB.
+        		printNoExistOrCurrect();
+    			printUsageMainOptions();
+    			break;
+        	} // if - isExist
+        	else {
+        		CouponDBDAO coup = new CouponDBDAO();
+        		coup.getCoupon(SharingData.getLongNum1());
+        		
+        		// Print the Coupon:
+        		System.out.println(SharingData.getVarchar2());
+        		
+        		if(SharingData.isFlag1() == true) {
+	    			System.out.println("\n" + "------------ Coupon Function (getID) Was Run Successfully ----------" + "\n");
+        	}
+        	} // else
+        	
+    	} // while loop
+
+    	} // getCouponID_T - Function
     
     /************************************************
 	 *****      Miscellaneous Section            ****
