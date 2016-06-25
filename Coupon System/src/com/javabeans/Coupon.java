@@ -1,19 +1,21 @@
 package com.javabeans;
+import java.sql.*;
+import java.time.LocalDate;
 
-import java.awt.Window.Type;
-import java.sql.Date;
-import java.util.Collection;
+
 
 public class Coupon {
 
 	// Attributes
 
+	
+	
 	private long id;
 	private String title;
-	private Date startDate;
-	private Date endDate;
+	private LocalDate startDate;
+	private LocalDate endDate;
 	private int amount;
-	private Enum<CouponType> type ;
+	private CouponType type ;
 	private String message;
 	private double price;
 	private String image;
@@ -21,7 +23,31 @@ public class Coupon {
 	
 	// Constructor
 	public Coupon(){}
+	
+	public Coupon(String title, LocalDate startDate, LocalDate endDate, int amount, CouponType type, String message, double price, String image){
+		this.title = title;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.amount = amount;
+		this.type = type;
+		this.message = message;
+		this.price = price;
+		this.image = image;
+	}
 
+	public Coupon(long id, String title, LocalDate stDate, LocalDate enDate, int amount, CouponType type,  String message, double price, String image) {
+		this.id = id;
+		this.title = title;
+		this.startDate = stDate;
+		this.amount = amount;
+		this.type = type;
+		this.endDate = enDate;
+		this.message = message;
+		this.price = price;
+		this.image = image;
+		
+	}
+	
 	//Getters && Setters
 
 	public long getId() {
@@ -44,22 +70,22 @@ public class Coupon {
 	}
 
 
-	public Date getStartDate() {
+	public LocalDate getStartDate() {
 		return startDate;
 	}
 
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 
 
-	public Date getEndDate() {
+	public LocalDate getEndDate() {
 		return endDate;
 	}
 
 
-	public void setEndDate(Date endDate) {
+	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
 	}
 
@@ -107,6 +133,14 @@ public class Coupon {
 	@Override
 	public String toString() {
 		return "Coupon [id=" + id + ", title=" + title + ", startDate=" + startDate + ", endDate=" + endDate
-				+ ", amount=" + amount + ", message=" + message + ", price=" + price + ", image=" + image + "]";
+				+ ", Category= " + type + ", amount=" + amount + ", message=" + message + ", price=" + price + ", image=" + image + "]";
+	}
+
+	public CouponType getType() {
+		return type;
+	}
+
+	public void setType(CouponType type) {
+		this.type = type;
 	}
 }
