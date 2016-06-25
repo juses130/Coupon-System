@@ -70,21 +70,20 @@ public class CompanyDBDAO implements CompanyDAO {
 		IsExistDB.idExist(company.getId());
 		if(IsExistDB.getAnswer2() == true) {
 
-			ResultSet rs = null;
-			Statement stat = null;
+			//ResultSet rs = null;
+			PreparedStatement prep = null;
 			
 			try {
 				
 				DBconnector.getCon();
-				String sqlDELobject = "DELETE FROM company WHERE Comp_ID = "
-						+ company.getId() ;
-				stat = DBconnector.getInstatce().createStatement();
-				rs = stat.executeQuery(sqlDELobject);
-				rs.next();
+				String sqlDELobject = "DELETE FROM company WHERE Comp_ID =?";
+				prep = DBconnector.getInstatce().prepareStatement(sqlDELobject);
+				prep.setLong(1, company.getId());
+				prep.executeUpdate();
 				
 				
 			} catch (SQLException e) {
-				
+				e.printStackTrace();
 			} // catch
 			
 			finally {
