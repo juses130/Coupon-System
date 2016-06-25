@@ -63,9 +63,7 @@ public class CustomerDBDAO implements CustomerDAO {
 			} // createCompany - Function
 	
 
-	public CustomerDBDAO() {
-	// TODO Auto-generated constructor stub
-}
+	public CustomerDBDAO() {}
 	
 	public void removeCustomer(long id) throws SQLException{
 		// test
