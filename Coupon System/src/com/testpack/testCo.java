@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import com.added.functions.*;
 import com.javabeans.*;
 import com.mysql.fabric.xmlrpc.base.Data;
-import com.testpack.testDBDAO;
+import com.testpack.testDeveloers;
 
 public class testCo {
 
@@ -33,7 +33,7 @@ public class testCo {
 			System.out.println(c.toString() + "\n");
 		}
 		else {
-			testDBDAO.printNoExistOrCurrect();
+			testDeveloers.printNoExistOrCurrect();
 			System.out.println("Pay Attention, Type ONLY ACCORDING to the instructions Below: "
 					+ "\n" + "1. UserName, Password." 
 					+ "\n" + "2. UserName, Password, Email. "

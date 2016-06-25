@@ -24,7 +24,7 @@ import com.javabeans.*;
  * But if you want to test it as a developer, PLEASE READ the notes and 
  */
 
-public class testDBDAO {
+public class testDeveloers {
 
 	
 	
