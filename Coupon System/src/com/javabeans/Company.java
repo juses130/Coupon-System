@@ -77,5 +77,13 @@ public class Company {
 		return "\n" + "Company [ID=" + id + ", Name=" + compName + ", Email=" + email + "]";
 	}
 
+	public Collection<Coupon> getCoupons() {
+		return coupons;
+	}
+
+	public void setCoupons(Collection<Coupon> coupons) {
+		this.coupons = coupons;
+	}
+
 	
 }
