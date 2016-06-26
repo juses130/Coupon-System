@@ -1,7 +1,9 @@
 package com.testpack;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
+import com.added.functions.DBconnector;
 import com.added.functions.IsExistDB;
 import com.added.functions.SharingData;
 import com.dbdao.CompanyDBDAO;
@@ -56,6 +58,22 @@ public class shortTest {
 //		//dbcoup.getCoupon(1);
 //		System.out.println(c5);
 		
+		CouponType type = null;
+//		
+//		DBconnector.getCon();
+//		try {
+//			
+//			
+//			String sql = "insert into coupon (coup_id, title, Category) " + "values ('7', 'Hilton', %s)".format(type.name());
+//			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sql);
+//			prep.executeUpdate();
+//			
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//		}
+		
+		Coupon coup = dbcoup.getCoupon(3);
+		System.out.println(coup.toString());
 		dbcoup.getAllCoupon();
 		
 	}

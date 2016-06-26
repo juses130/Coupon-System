@@ -2,9 +2,7 @@ package com.dbdao;
 
 import java.sql.*;
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.*;
-
 
 import com.added.functions.DBconnector;
 import com.added.functions.IsExistDB;
@@ -12,7 +10,6 @@ import com.added.functions.SharingData;
 import com.dao.interfaces.CouponDAO;
 import com.javabeans.Coupon;
 import com.javabeans.CouponType;
-import com.javabeans.Customer;
 
 public class CouponDBDAO implements CouponDAO{
 
@@ -28,7 +25,7 @@ public class CouponDBDAO implements CouponDAO{
 			
 			DBconnector.getCon();
 			String sqlQuery = "INSERT INTO coupon (Title, Start_Date, End_Date, " + 
-			"Amount, Category, Massage, Price, Image)" + "VALUES(?,?,?,?,?,?,?,?)";	
+			"Amount, Category, Message, Price, Image)" + "VALUES(?,?,?,?,?,?,?,?)";	
 			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
 			prep.setString(1, coupon.getTitle());
 			prep.setDate(2, Date.valueOf(coupon.getStartDate()));
@@ -108,7 +105,7 @@ public class CouponDBDAO implements CouponDAO{
 			
 			
 			String sql = "UPDATE Coupon SET Title=?, Start_Date=?, End_Date=?, Amount=?, "
-					+ "Category=?, Massage=?, Price=?, Image=? WHERE Coup_ID=?";
+					+ "Category=?, Message=?, Price=?, Image=? WHERE Coup_ID=?";
 			PreparedStatement prep = DBconnector.getInstatce().prepareStatement (sql);
 			prep.setString(1, coupon.getTitle());
 			prep.setDate(2, Date.valueOf(coupon.getStartDate()));
@@ -149,44 +146,35 @@ public class CouponDBDAO implements CouponDAO{
 		String title, message, image;
 		Date stDate, enDate ;	
 		int amount;
-		CouponType type;
+		CouponType type = null;
 		double price;
-		
 		
 		DBconnector.getCon();
 		
 		try {
-			
-			
+
 			String sqlSEL = "SELECT * FROM Coupon WHERE Coup_ID= ?" ;
 			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlSEL);
 			prep.setLong(1, id);
 			
 			ResultSet rs = prep.executeQuery();
 			rs.next();
+			
 			title = rs.getString("Title");
 			stDate = rs.getDate("start_date");
 			enDate = rs.getDate("end_date");
 			amount = rs.getInt("amount");
-			
-			type = CouponType.valueOf(rs.getString("TYPE"));
-			
-			message = rs.getString("message");
-			
+			type = CouponType.valueOf(rs.getString("Category").toUpperCase());
+			message = rs.getString("Message");
 			price = rs.getDouble("Price");
-			
 			image = rs.getString("image");
-			
-			
-			
-			coupon = new Coupon(id, title, stDate.toLocalDate(), enDate.toLocalDate(), amount, type,  message, price, image);
-			//String customerInfo = coupon.toString();
-			//SharingData.setVarchar2(customerInfo);
 
-			//System.out.println(customerInfo);
+			coupon = new Coupon(id, title, stDate.toLocalDate(), enDate.toLocalDate(), amount, type,  message, price, image);
+			String customerInfo = coupon.toString();
+			SharingData.setVarchar2(customerInfo);
+
 			// Letting the other Classes (if they asking) that the getID Function was run Succsefully.
 			SharingData.setFlag1(true);
-			System.out.println("V5");
 			
 		}
 		catch (SQLException e) {
@@ -217,7 +205,6 @@ public class CouponDBDAO implements CouponDAO{
 				coupons.add(getCoupon(rs.getLong(1)));
 			}
 		} catch (SQLException e) {
-			
 			e.printStackTrace();
 		}
 		return coupons;

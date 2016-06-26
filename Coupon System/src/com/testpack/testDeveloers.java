@@ -1086,7 +1086,7 @@ public class testDeveloers {
        			CustomerDBDAO db = new CustomerDBDAO();
     			System.out.println("Here is your Companeis List: " + "\n");
        			
-    			System.out.println(db.getAllCustomers().toString());
+    			System.out.println("\n" + db.getAllCustomers().toString());
     			break;
     		} // if
     		else {
@@ -1095,11 +1095,7 @@ public class testDeveloers {
     			printGoingBackToUsage();
     			break;
     			
-    		} // else
-    		
-    		
-    		
-    		
+    		} // else    		
     	} // while loop
     	
     } // getAllCompanies_T - Function
@@ -1149,11 +1145,11 @@ public class testDeveloers {
     		break;
     	}
     	case 4: {
-    		getCouponID_T();
+    		getCoupon_T();
     		break;
     	}
     	case 5: {
-    		
+    		getAllCoupon_T();
     		break;
     	}
     	case 822: { // Developers Option: Reset Table Company
@@ -1204,8 +1200,8 @@ public class testDeveloers {
 		System.out.print("NEW Amount: ");
         int amount = userInputInt();
 		
-//        System.out.print("NEW Category: ");
-//        String category = userInputString();
+        System.out.print("In Category: ");
+        String category = userInputString();
         
         System.out.print("NEW Massage: ");
         String message = userInputString();
@@ -1222,7 +1218,7 @@ public class testDeveloers {
         // TODO: keep it - and be aware to the category.
 		// putting all the variables 
        
-		coup = new Coupon(title, startDate, endDate, amount, CouponType.TRAVEL, message, price, imag);
+		coup = new Coupon(title, startDate, endDate, amount, CouponType.valueOf(category), message, price, imag);
         
 		// check if the user put's somthing empty...
 		
@@ -1336,6 +1332,10 @@ public class testDeveloers {
         	System.out.print("NEW Title: ");
             String title = userInputString();
 	    	
+            System.out.print("In Category: ");
+            String category = userInputString();
+            CouponType type = CouponType.valueOf(category);
+            
 	    	System.out.print("NEW Coupon StartDate.. ");
 			LocalDate startDate = null;
 			System.out.print("Day: ");
@@ -1379,7 +1379,7 @@ public class testDeveloers {
             // TODO: keep it - and be aware to the category.
 			// putting all the variables 
            
-			coup = new Coupon(title, startDate, endDate, amount, CouponType.TRAVEL, massage, price, imag);
+			coup = new Coupon(title, startDate, endDate, amount, type, massage, price, imag);
 			coup.setId(id);
 			dbcou.updateCoupon(coup);
 			System.out.println("\n" + coup.toString() + "\n");
@@ -1389,7 +1389,7 @@ public class testDeveloers {
     	} // while loop
     }
     
-    private static void getCouponID_T() {
+    private static void getCoupon_T() {
     	
     	while(true) {
         	System.out.println("Type The Coupon ID:");
@@ -1423,6 +1423,30 @@ public class testDeveloers {
     	} // while loop
 
     	} // getCouponID_T - Function
+    private static void getAllCoupon_T() {
+
+    	while(true) {
+    		
+    		System.out.println("Please Type Your Admin Password:");
+    		long password = userInputLong();
+    		
+    		if(password == 123456789) {
+       			CouponDBDAO db = new CouponDBDAO();
+    			System.out.println("Here is your Couponos List: " + "\n");
+       			
+    			System.out.println(db.getAllCoupon().toString());
+    			break;
+    		} // if
+    		else {
+ 
+    			System.out.println("Error: worng password!");
+    			printGoingBackToUsage();
+    			break;
+    			
+    		} // else    		
+    	} // while loop
+    	
+    } // getAllCoupon_T - Function
     
     /************************************************
 	 *****      Miscellaneous Section            ****

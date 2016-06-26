@@ -1,6 +1,9 @@
 package com.javabeans;
-import java.sql.*;
 import java.time.LocalDate;
+import java.util.Enumeration;
+
+import com.sun.javafx.css.converters.EnumConverter;
+import com.sun.jmx.snmp.Enumerated;
 
 
 
@@ -132,7 +135,7 @@ public class Coupon {
 	// ToString
 	@Override
 	public String toString() {
-		return "Coupon [id=" + id + ", title=" + title + ", startDate=" + startDate + ", endDate=" + endDate
+		return "\n" + "Coupon [id=" + id + ", title=" + title + ", startDate=" + startDate + ", endDate=" + endDate
 				+ ", Category= " + type + ", amount=" + amount + ", message=" + message + ", price=" + price + ", image=" + image + "]";
 	}
 
