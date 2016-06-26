@@ -72,9 +72,11 @@ public class shortTest {
 //			// TODO: handle exception
 //		}
 		
-		Coupon coup = dbcoup.getCoupon(3);
-		System.out.println(coup.toString());
-		dbcoup.getAllCoupon();
+//		Coupon coup = dbcoup.getCoupon(3);
+//		System.out.println(coup.toString());
+//		dbcoup.getAllCoupon();
+		
+		dbcoup.getCouponByType();
 		
 	}
 

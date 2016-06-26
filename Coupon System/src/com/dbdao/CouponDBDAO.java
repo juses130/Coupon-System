@@ -140,8 +140,7 @@ public class CouponDBDAO implements CouponDAO{
 
 	@Override
 	public Coupon getCoupon(long id) {
-		//System.out.println("Check1");
-		// TODO: why it's returning Null in the tests?
+	
 		Coupon coupon = null;
 		String title, message, image;
 		Date stDate, enDate ;	
@@ -152,7 +151,6 @@ public class CouponDBDAO implements CouponDAO{
 		DBconnector.getCon();
 		
 		try {
-
 			String sqlSEL = "SELECT * FROM Coupon WHERE Coup_ID= ?" ;
 			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlSEL);
 			prep.setLong(1, id);
@@ -175,7 +173,6 @@ public class CouponDBDAO implements CouponDAO{
 
 			// Letting the other Classes (if they asking) that the getID Function was run Succsefully.
 			SharingData.setFlag1(true);
-			
 		}
 		catch (SQLException e) {
 			e.getStackTrace();
@@ -188,11 +185,10 @@ public class CouponDBDAO implements CouponDAO{
 			}
 		} // finally
 		return coupon;
-	}
+	} // getCoupon - Function
 
 	@Override
 	public Collection<Coupon> getAllCoupon() {
-		
 		Set<Coupon> coupons = new HashSet<>(); 
 		
 		DBconnector.getCon();
@@ -208,12 +204,25 @@ public class CouponDBDAO implements CouponDAO{
 			e.printStackTrace();
 		}
 		return coupons;
-	}
+	} // getAllCoupon - function
 
 	@Override
 	public Collection<Coupon> getCouponByType() {
+		// TODO: the last function for the DBDAO Part.
+		Set<Coupon> coupons = new HashSet<>();
 		
-		return null;
+		DBconnector.getCon();
+		try {
+			String sql = "SELECT Category FROM Coupon";
+			Statement stat = DBconnector.getInstatce().createStatement();
+			ResultSet rs = stat.executeQuery(sql);
+			while (rs.next()) {
+				coupons.add(rs.getString("Category").toUpperCase());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return coupons;
 	}
 
 }
