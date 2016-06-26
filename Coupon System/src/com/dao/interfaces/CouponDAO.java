@@ -10,5 +10,5 @@ public interface CouponDAO {
 	public void updateCoupon(Coupon upCoupon);
 	public Coupon getCoupon(long id);
 	public Collection<Coupon> getAllCoupon();
-	public Collection<Coupon> getCouponByType();
+	public Collection<Coupon> getCouponByType(CouponType category);
 }

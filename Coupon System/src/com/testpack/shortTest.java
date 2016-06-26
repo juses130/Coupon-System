@@ -74,10 +74,12 @@ public class shortTest {
 		
 //		Coupon coup = dbcoup.getCoupon(3);
 //		System.out.println(coup.toString());
-//		dbcoup.getAllCoupon();
+//		System.out.println(dbcoup.getAllCoupon().toString());
 		
-		dbcoup.getCouponByType();
 		
+		
+		
+		System.out.println(dbcoup.getCouponByType(CouponType.ELECTRONICS).toString());
 	}
 
 }

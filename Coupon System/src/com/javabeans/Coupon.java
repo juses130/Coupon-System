@@ -18,7 +18,7 @@ public class Coupon {
 	private LocalDate startDate;
 	private LocalDate endDate;
 	private int amount;
-	private CouponType type ;
+	private CouponType category ;
 	private String message;
 	private double price;
 	private String image;
@@ -27,23 +27,23 @@ public class Coupon {
 	// Constructor
 	public Coupon(){}
 	
-	public Coupon(String title, LocalDate startDate, LocalDate endDate, int amount, CouponType type, String message, double price, String image){
+	public Coupon(String title, LocalDate startDate, LocalDate endDate, int amount, CouponType category, String message, double price, String image){
 		this.title = title;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.amount = amount;
-		this.type = type;
+		this.category = category;
 		this.message = message;
 		this.price = price;
 		this.image = image;
 	}
 
-	public Coupon(long id, String title, LocalDate stDate, LocalDate enDate, int amount, CouponType type,  String message, double price, String image) {
+	public Coupon(long id, String title, LocalDate stDate, LocalDate enDate, int amount, CouponType category,  String message, double price, String image) {
 		this.id = id;
 		this.title = title;
 		this.startDate = stDate;
 		this.amount = amount;
-		this.type = type;
+		this.category = category;
 		this.endDate = enDate;
 		this.message = message;
 		this.price = price;
@@ -136,14 +136,14 @@ public class Coupon {
 	@Override
 	public String toString() {
 		return "\n" + "Coupon [id=" + id + ", title=" + title + ", startDate=" + startDate + ", endDate=" + endDate
-				+ ", Category= " + type + ", amount=" + amount + ", message=" + message + ", price=" + price + ", image=" + image + "]";
+				+ ", Category= " + category + ", amount=" + amount + ", message=" + message + ", price=" + price + ", image=" + image + "]";
 	}
 
 	public CouponType getType() {
-		return type;
+		return category;
 	}
 
-	public void setType(CouponType type) {
-		this.type = type;
+	public void setType(CouponType category) {
+		this.category = category;
 	}
 }

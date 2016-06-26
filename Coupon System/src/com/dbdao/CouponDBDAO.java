@@ -207,20 +207,31 @@ public class CouponDBDAO implements CouponDAO{
 	} // getAllCoupon - function
 
 	@Override
-	public Collection<Coupon> getCouponByType() {
+	public Set<Coupon> getCouponByType(CouponType category) {
 		// TODO: the last function for the DBDAO Part.
 		Set<Coupon> coupons = new HashSet<>();
 		
 		DBconnector.getCon();
 		try {
-			String sql = "SELECT Category FROM Coupon";
-			Statement stat = DBconnector.getInstatce().createStatement();
-			ResultSet rs = stat.executeQuery(sql);
+			String sql = "SELECT coup_id FROM Coupon WHERE Category= '" 
+		    + category.toString().toUpperCase() + "'";
+			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sql);
+			//prep.setString(1, category.toString().toUpperCase());
+			ResultSet rs = prep.executeQuery(sql);
+
 			while (rs.next()) {
-				coupons.add(rs.getString("Category").toUpperCase());
+				coupons.add(getCoupon(rs.getLong(1)));
 			}
+			
+			// Sharing the results as String :)
+			String customerInfo = coupons.toString();
+			SharingData.setVarchar2(customerInfo);
+
+			// Letting the other Classes (if they asking) that the getID Function was run Succsefully.
+			SharingData.setFlag1(true);
+			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.getMessage();
 		}
 		return coupons;
 	}
