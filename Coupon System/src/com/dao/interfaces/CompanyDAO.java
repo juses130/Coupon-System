@@ -22,7 +22,7 @@ public interface CompanyDAO {
 	public void updateCompany(Company company) throws SQLException;
 	public Company getCompany(long id);
 	public Collection<Company> getAllCompanies() ;
-	public Collection<Coupon> getCoupons();
+	public Collection<Coupon> getCoupons(long compID);
 	public boolean login(String compName, String password);
 	
 }

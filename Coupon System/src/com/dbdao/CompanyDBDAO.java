@@ -273,12 +273,26 @@ public class CompanyDBDAO implements CompanyDAO {
 	} // getAllCompanies
 
 	@Override
-	public Collection<Coupon> getCoupons() {
-		//TODO: I think that if I use the table "company_coupon" it will be more effectively. 
-		Set<Coupon> coupons = new HashSet<>();
-		//String sql = "SELECT * FROM Coupon WHERE "
+	public Collection<Coupon> getCoupons(long compID) {
+		 
+		// We can test it in some simple tests (like shortTest Class). NOT in the testDevelopers Class.
 		
-		return null;
+		Set<Coupon> coupons = new HashSet<>();
+		CouponDBDAO  couponDB = new CouponDBDAO();
+		
+		try {
+			DBconnector.getCon();
+			String sql = "SELECT Coup_ID FROM Company_Coupon WHERE Comp_ID=?";
+			PreparedStatement stat = DBconnector.getInstatce().prepareStatement (sql);
+			stat.setLong(1, compID);
+			ResultSet rs = stat.executeQuery();
+			while (rs.next()) {
+				coupons.add(couponDB.getCoupon(rs.getLong("Coup_ID")));
+			}	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return coupons;
 	}
 
 	@Override

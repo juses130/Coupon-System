@@ -79,7 +79,12 @@ public class shortTest {
 		
 		
 		
-		System.out.println(dbcoup.getCouponByType(CouponType.ELECTRONICS).toString());
+//		System.out.println(dbcoup.getCouponByType(CouponType.ELECTRONICS).toString());
+	
+		CompanyDBDAO db = new CompanyDBDAO();
+		System.out.println(db.getCoupons(1));
+		
+	
 	}
 
 }
