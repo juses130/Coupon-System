@@ -11,6 +11,13 @@ import com.dao.interfaces.CouponDAO;
 import com.javabeans.Coupon;
 import com.javabeans.CouponType;
 
+/**
+ * This is Coupon Database DAO Class.
+ * Just impelemnts the methods from CouponDAO in 'com.dao.intefaces' package. 
+ * @author Raziel
+ *
+ */
+
 public class CouponDBDAO implements CouponDAO{
 
 	@Override
@@ -208,7 +215,7 @@ public class CouponDBDAO implements CouponDAO{
 
 	@Override
 	public Set<Coupon> getCouponByType(CouponType category) {
-		// TODO: the last function for the DBDAO Part.
+		
 		Set<Coupon> coupons = new HashSet<>();
 		
 		DBconnector.getCon();
