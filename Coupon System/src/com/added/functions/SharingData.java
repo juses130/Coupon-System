@@ -15,9 +15,10 @@ public class SharingData {
 	 * 
 	 * What's in it for us?
 	 * when we are writing a program or just a test, We need to create a lot of premitive types..
-	 * SharingData allows us to share String, int, long and more in the Static way.
-	 * The static way is allows us to share the data in ANYPLACE around the project.
+	 * SharingData allows us to share String, int, long and more in the Static way WITHOUT creating new types..
+	 * The static way is allows us to share this instances-data in ANYPLACE around the project.
 	 * Just by calling the Class.
+	 * 
 	 */
 
 	// Premitives Variables
@@ -37,11 +38,6 @@ public class SharingData {
 	// varchar5 is for the updateFunction who's getting a null in the ID for some reason..
 	private static long longNum3;
 	
-	// Objects
-	
-	private static Company company;
-	
-	private static PreparedStatement prep;
 	
 	// boolean
 	private static boolean flag1 = false;
@@ -117,16 +113,6 @@ public class SharingData {
 	}
 
 
-	public static Company getCompany() {
-		return company;
-	}
-
-
-	public static void setCompany(Company company) {
-		SharingData.company = company;
-	}
-
-
 	public static String getVarchar3() {
 		return varchar3;
 	}
@@ -170,15 +156,6 @@ public class SharingData {
 		SharingData.varchar4 = varchar4;
 	}
 
-
-	public static PreparedStatement getPrep() {
-		return prep;
-	}
-
-
-	public static void setPrep(PreparedStatement prep) {
-		SharingData.prep = prep;
-	}
 
 	public static long getLongNum3() {
 		return longNum3;
