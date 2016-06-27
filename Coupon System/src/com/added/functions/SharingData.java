@@ -1,9 +1,6 @@
 package com.added.functions;
 
-import java.sql.PreparedStatement;
 import java.util.InputMismatchException;
-
-import com.javabeans.*;
 
 public class SharingData {
 
