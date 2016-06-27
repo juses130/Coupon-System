@@ -2,13 +2,20 @@ package com.dbdao;
 
 import java.sql.*;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.*;
 
 import com.added.functions.DBconnector;
 import com.added.functions.IsExistDB;
 import com.added.functions.SharingData;
 import com.dao.interfaces.*;
 import com.javabeans.*;
+
+/**
+ * This is Company Database DAO Class.
+ * Just impelemnts the methods from CompanyDAO in 'com.dao.intefaces' package. 
+ * @author Raziel
+ *
+ */
 
 public class CompanyDBDAO implements CompanyDAO {
 	
@@ -267,8 +274,9 @@ public class CompanyDBDAO implements CompanyDAO {
 
 	@Override
 	public Collection<Coupon> getCoupons() {
-		
-		
+		//TODO: I think that if I use the table "company_coupon" it will be more effectively. 
+		Set<Coupon> coupons = new HashSet<>();
+		//String sql = "SELECT * FROM Coupon WHERE "
 		
 		return null;
 	}

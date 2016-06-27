@@ -13,6 +13,14 @@ import com.dao.interfaces.CustomerDAO;
 import com.javabeans.Company;
 import com.javabeans.Coupon;
 import com.javabeans.Customer;
+import com.sun.xml.internal.ws.resources.ProviderApiMessages;
+
+/**
+ * This is Customer Database DAO Class.
+ * Just impelemnts the methods from CustomerDAO in 'com.dao.intefaces' package. 
+ * @author Raziel
+ *
+ */
 
 public class CustomerDBDAO implements CustomerDAO {
 
@@ -64,6 +72,12 @@ public class CustomerDBDAO implements CustomerDAO {
 	
 
 	public CustomerDBDAO() {}
+
+	@Override
+	public void removeCustomer(Customer remCustomer) {
+		//TODO: create remove by object Customer.
+		
+	}
 	
 	public void removeCustomer(long id) throws SQLException{
 		// test
@@ -228,6 +242,20 @@ public class CustomerDBDAO implements CustomerDAO {
 
 	@Override
 	public Collection<Coupon> getCoupons() {
+		// TODO: working on this function
+		try {
+
+			DBconnector.getCon();
+			Collection<Coupon> coupons = new HashSet<>();
+			
+			String sql = "SELECT coup_id FROM customer_coupon WHERE cust_id=?";
+			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sql);
+			//prep.setLong(1, cust_id);
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 		
 		return null;
 	}
@@ -239,10 +267,6 @@ public class CustomerDBDAO implements CustomerDAO {
 	}
 
 
-	@Override
-	public void removeCustomer(Customer remCustomer) {
-		
-		
-	}
+	
 
 }

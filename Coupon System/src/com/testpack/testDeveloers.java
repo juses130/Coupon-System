@@ -1209,20 +1209,19 @@ public class testDeveloers {
         System.out.print("NEW Price: ");
         Scanner sc = new Scanner(System.in);
         double price = sc.nextDouble();
+        
         //sc.close();
         
         System.out.print("NEW Imag link: ");
         String imag = userInputString();
         
         
-        // TODO: keep it - and be aware to the category.
+        
 		// putting all the variables 
-       
 		coup = new Coupon(title, startDate, endDate, amount, CouponType.valueOf(category), message, price, imag);
         
 		// check if the user put's somthing empty...
-		
-		if(title.isEmpty() || message.isEmpty()) {
+		if(title.isEmpty() || message.isEmpty() || category.isEmpty() || message.isEmpty() || imag.isEmpty() || price == 0) {
 			
 			System.out.println("\n" + "Error - the fields are empty!");
 			printGoingBackToUsage();
