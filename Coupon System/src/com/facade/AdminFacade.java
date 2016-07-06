@@ -3,8 +3,8 @@ package com.facade;
 import java.sql.SQLException;
 import java.util.Collection;
 
-import com.dbdao.CompanyDBDAO;
-import com.dbdao.CustomerDBDAO;
+import com.added.functions.SharingData;
+import com.dbdao.*;
 import com.javabeans.*;
 
 
@@ -36,16 +36,17 @@ public class AdminFacade {
 		
 	} // createCompanyA - function
 	
-	public void removeCompanyA(Company company) {
+	public void removeCompanyA(Company company) throws SQLException{
 		//TODO: I'm here now. I will need to remove all the coupons when we removing company..
 		CompanyDBDAO coDB = new CompanyDBDAO();
-		try {
-			coDB.removeCompany(company);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		coDB.removeCompany(company);
+		CouponDBDAO couDB = new CouponDBDAO();
+		Coupon coupon = new Coupon();
+		coupon.setOwnerID(company.getId());
+		couDB.removeCouponOwnerID(coupon.getOwnerID());
+		couDB.removeCoupon(coupon);
 		
-		
+
 	} // removeCompanyA - function
 	
 	public void updateCompanyA(Company company) {
