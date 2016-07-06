@@ -1,9 +1,6 @@
 package com.javabeans;
 import java.time.LocalDate;
-import java.util.Enumeration;
 
-import com.sun.javafx.css.converters.EnumConverter;
-import com.sun.jmx.snmp.Enumerated;
 
 
 
