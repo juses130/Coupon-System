@@ -25,7 +25,7 @@ import com.sun.xml.internal.ws.resources.ProviderApiMessages;
 public class CustomerDBDAO implements CustomerDAO {
 
 	@Override
-	public void createCustomer(Customer newCustomer) {
+	public void createCustomer(Customer customer) {
 		
 		// creating ResultSet
 				ResultSet rs = null;
@@ -37,8 +37,8 @@ public class CustomerDBDAO implements CustomerDAO {
 					//short cou = 1;
 					
 					// now we will put the in their places.
-					prep.setString(1, newCustomer.getCustName());
-					prep.setString(2, newCustomer.getPassword());
+					prep.setString(1, customer.getCustName());
+					prep.setString(2, customer.getPassword());
 				
 					// after we "loaded" the columns, we will executeUpdate prep.
 					prep.executeUpdate();
@@ -47,11 +47,11 @@ public class CustomerDBDAO implements CustomerDAO {
 					rs = prep.getGeneratedKeys();
 					rs.next();
 					id = rs.getLong(1);
-					newCustomer.setId(id);
+					customer.setId(id);
 					
 					// Letting the others (if the asking) that the Company Added Succsefully.
 					SharingData.setFlag1(true);
-					String tostring = newCustomer.toString();
+					String tostring = customer.toString();
 					SharingData.setVarchar4(tostring);
 
 					
@@ -74,7 +74,7 @@ public class CustomerDBDAO implements CustomerDAO {
 	public CustomerDBDAO() {}
 
 	@Override
-	public void removeCustomer(Customer remCustomer) {
+	public void removeCustomer(Customer customer) {
 		//TODO: create remove by object Customer.
 		
 	}
@@ -124,22 +124,22 @@ public class CustomerDBDAO implements CustomerDAO {
 	} // removeCompany - BY Name - Function
 	
 	@Override
-	public void updateCustomer(Customer updateCustomer) {
+	public void updateCustomer(Customer customer) {
        try {
 			
 			DBconnector.getCon();
 			
 			String sqlCmdStr = "UPDATE customer SET Cust_name=?, password=? WHERE Cust_ID=?";
 			PreparedStatement prep = DBconnector.getInstatce().prepareStatement (sqlCmdStr);
-			prep.setString(1, updateCustomer.getCustName());
-			prep.setString(2, updateCustomer.getPassword());
-			prep.setLong(3, updateCustomer.getId());
+			prep.setString(1, customer.getCustName());
+			prep.setString(2, customer.getPassword());
+			prep.setLong(3, customer.getId());
 			
 			prep.executeUpdate();
 			
 		    // Letting the others (if the asking) that the Company update Succsefully.
 		    SharingData.setFlag1(true);
-		    String tostring = updateCustomer.toString();
+		    String tostring = customer.toString();
 			SharingData.setVarchar4(tostring);
 
 			} catch (SQLException e) {
@@ -261,9 +261,41 @@ public class CustomerDBDAO implements CustomerDAO {
 	}
 
 	@Override
-	public boolean login(Customer custName, Customer password) {
+	public boolean login(String custName, String password) {
 		
-		return false;
+		ResultSet rs1 = null;
+		Statement stat1 = null;
+
+		boolean hasRows = false;
+        try {
+			
+			DBconnector.getCon();
+			String sqlName = "SELECT Cust_name, password FROM customer WHERE "
+					+ "Cust_name= '" + custName + "'" + " AND " + "password= '" 
+					+ password + "'";
+			stat1 = DBconnector.getInstatce().createStatement();
+		    rs1 = stat1.executeQuery(sqlName);
+		    rs1.next();
+
+			if (rs1.getRow() != 0) {
+				hasRows = true;
+				
+				System.out.println(hasRows);
+			}
+
+            } catch (SQLException e) {
+	        e.printStackTrace();
+	        
+            } // catch
+		finally {
+			try {
+				DBconnector.getInstatce().close();
+			} catch (SQLException e) {
+				
+			}
+		}// finally
+
+	return hasRows;
 	}
 
 
