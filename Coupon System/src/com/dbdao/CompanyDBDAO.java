@@ -30,7 +30,7 @@ public class CompanyDBDAO implements CompanyDAO {
 		
 		try {
 			DBconnector.getCon();
-			String sqlQuery = "INSERT INTO coupon.company (COMP_NAME, PASSWORD, EMAIL) VALUES(?,?,?)";
+			String sqlQuery = "INSERT INTO company (COMP_NAME, PASSWORD, EMAIL) VALUES(?,?,?)";
 			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
 			//short cou = 1;
 			
@@ -302,7 +302,7 @@ public class CompanyDBDAO implements CompanyDAO {
 		Statement stat1 = null;
 
 		boolean hasRows = false;
-try {
+        try {
 			
 			DBconnector.getCon();
 			String sqlName = "SELECT Comp_name, password FROM company WHERE "
