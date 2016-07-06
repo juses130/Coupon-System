@@ -60,7 +60,10 @@ public class AdminFacade {
 	public Company getCompanyA(long id) {
 		//TODO:
 		CompanyDBDAO coDB = new CompanyDBDAO();
-		return coDB.getCompany(id);
+		Company c = new Company();
+		c = coDB.getCompany(id);
+		//System.out.println(c.toString());
+		return c;
 		
 		
 	} // getCompanyA - function

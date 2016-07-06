@@ -8,7 +8,15 @@ public class CompanyFacade {
 
 	public CompanyFacade() {}
 	
-	public boolean login(String compName, String password) {
+	
+	public void createCouponF(Coupon coupon) {
+		
+		CouponDBDAO cou = new CouponDBDAO();
+		cou.createCoupon(coupon);
+		
+	} // createCouponF
+	
+   public boolean login(String compName, String password) {
 		
 		CompanyDBDAO db = new CompanyDBDAO();
 		boolean exsistOrNot = db.login(compName, password);
@@ -21,11 +29,5 @@ public class CompanyFacade {
 		} // else
 	} // login - function
 	
-	public void createCouponF(Coupon coupon) {
-		
-		CouponDBDAO cou = new CouponDBDAO();
-		cou.createCoupon(coupon);
-		
-	} // createCouponF
 	
 }

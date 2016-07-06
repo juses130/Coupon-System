@@ -86,7 +86,7 @@ public class CompanyDBDAO implements CompanyDAO {
 			
 			DBconnector.getCon();
 			
-			String sqlCmdStr = "UPDATE coupon.company SET Comp_name=?, password=?, email=? WHERE Comp_ID=?";
+			String sqlCmdStr = "UPDATE company SET Comp_name=?, password=?, email=? WHERE Comp_ID=?";
 			PreparedStatement prep = DBconnector.getInstatce().prepareStatement (sqlCmdStr);
 			prep.setString(1, company.getCompName());
 			prep.setString(2, company.getPassword());
@@ -119,13 +119,13 @@ public class CompanyDBDAO implements CompanyDAO {
 	@Override
 	public Company getCompany(long id) {
 		
-		Company c = null;
+		Company c = new Company();
 		String compName, email, password;
 		
 		try {
 
 			DBconnector.getCon();
-			String sqlSEL = "SELECT * FROM coupon.company WHERE Comp_ID= ?" ;
+			String sqlSEL = "SELECT * FROM company WHERE Comp_ID= ?" ;
 			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlSEL);
 			prep.setLong(1, id);
 			
@@ -137,8 +137,8 @@ public class CompanyDBDAO implements CompanyDAO {
 			
 
 			c = new Company(id, compName, password, email);
-			String companyInfo = c.toString();
-			SharingData.setVarchar2(companyInfo);
+//			String companyInfo = c.toString();
+//			SharingData.setVarchar2(companyInfo);
 
 			// Letting the other Classes (if they asking) that the getID Function was run Succsefully.
 			SharingData.setFlag1(true);

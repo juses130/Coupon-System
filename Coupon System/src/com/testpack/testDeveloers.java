@@ -745,19 +745,21 @@ public class testDeveloers {
     private static void updateCompany_T() {
     	
     	while(true) {
-    		 
+    		Company c = new Company();
+    		
     		System.out.println("Update Company:" + "\n");
     		System.out.println("Please type your current Company ID and Password.");
     		System.out.println("Note: only because it's beta version test - we asking for Company ID.");
     		//System.out.println("\n" + "Type The OLD Company Name:");
      		
     		System.out.print("Company ID: ");
-            SharingData.setLongNum1(userInputLong());
+            c.setId(userInputLong());
             System.out.print("Comapny Password:");
-            SharingData.setVarchar1(userInputString());
+            c.setPassword(userInputString());
             
+
      		// Check if the NAME exist..
-            IsExistDB.idPasswordExist(SharingData.getLongNum1(), SharingData.getVarchar1());
+            IsExistDB.idPasswordExist(c.getId(), c.getPassword());
             if(IsExistDB.getAnswer() == false) {
      				
      		printNoExistOrCurrect();
@@ -765,29 +767,25 @@ public class testDeveloers {
      		break;
      		} // if
      		else { // Move on to this block if we got 'TRUE' in the IF condition:
- 	
-     		printFoundInDB("Company"); 
-     				
-     	    		
-                    System.out.print("NEW Company Name: ");
-                    String name = userInputString();
-     	    		
+ 	    		AdminFacade admF = new AdminFacade();
+ 	    		
+ 	    		Company ca = new Company();
+ 	    		ca = admF.getCompanyA(c.getId());
+     		        printFoundInDB("Company"); 
      	    		System.out.print("NEW Email: ");
-     	    		String email = userInputString();
-     	    		     	    		
-     	    		long id = SharingData.getLongNum1();
-     	            String password = SharingData.getVarchar1();
-     	    		
-     	    		Company c = new Company();
-     	    		CompanyDBDAO coDBdao = new CompanyDBDAO(); 
+     	    		ca.setEmail(userInputString());
+     	            ca.setPassword(c.getPassword());
+     	            
      		     	
-     	    		c.setCompName(name);
-     	    		c.setEmail(email);
-     	    		c.setPassword(password);
-     	    		c.setId(id);
+     	    		System.out.println(c.getCompName());
+     	    		
+     	    		//ca.setCompName(c.getCompName());
+     	    		ca.setEmail(ca.getEmail());
+     	    		ca.setPassword(ca.getPassword());
+     	    		//ca.setId(c.getId());
      	    		//c.setPassword(password);
      	    		
-     	     		coDBdao.updateCompany(c);
+     	     		admF.updateCompanyA(ca);
 
      	     		if(SharingData.isFlag1() == true) {
      	     			System.out.println("\n" + SharingData.getVarchar4());
@@ -1591,10 +1589,10 @@ public class testDeveloers {
     			removeCompany_T();
     			break;
     		}
-//    		case 3: {
-//    		//	CouponFacade();
-//    			break;
-//    		}
+    		case 3: {
+    			updateCompany_T();
+    			break;
+    		}
     		case 4: {
     			//printFacadeMenu();
     			continue;

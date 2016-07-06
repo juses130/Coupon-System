@@ -256,6 +256,7 @@ public class IsExistDB {
 			rs = stat.executeQuery(sqlName);
 			rs.next();
 		   
+			
 			if (rs.getRow() != 0) {
 				answer = true;
 			}
@@ -434,6 +435,8 @@ public class IsExistDB {
 	
 	return answer2;
     }
+
+
 
 	
 }
