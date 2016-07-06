@@ -164,8 +164,7 @@ public class SharingData {
 	public static void setLongNum3(long longNum3) {
 		SharingData.longNum3 = longNum3;
 	}
-
-
+	
 	public static short getShortNum1() {
 		return shortNum1;
 	}
