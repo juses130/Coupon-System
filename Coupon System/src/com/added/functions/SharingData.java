@@ -25,6 +25,8 @@ public class SharingData {
 	private static String varchar3;
 	private static String varchar4;
 	
+	private static short shortNum1;
+	
 	private static int intNum1;
 	private static int intNum2;
 	
@@ -161,6 +163,16 @@ public class SharingData {
 
 	public static void setLongNum3(long longNum3) {
 		SharingData.longNum3 = longNum3;
+	}
+
+
+	public static short getShortNum1() {
+		return shortNum1;
+	}
+
+
+	public static void setShortNum1(short shortNum1) {
+		SharingData.shortNum1 = shortNum1;
 	}
 
 
