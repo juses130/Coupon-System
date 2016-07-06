@@ -11,6 +11,7 @@ import com.added.functions.SharingData;
 import com.dbdao.*;
 import com.facade.*;
 import com.javabeans.*;
+import com.sun.webkit.SharedBuffer;
 import com.*;
 
 import sun.security.jgss.LoginConfigImpl;
@@ -178,6 +179,19 @@ public class testDeveloers {
 		
 	} // printAdminFacadeMenu
 	
+	public static void printCompanyFacadeMenu() {
+		System.out.println( "\n" + 
+				 "***** Company Facade Usage ***** " + "\n");
+		System.out.println("Options:");
+		System.out.println("1. Create Coupon."
+				+ "\n" + "2. Remove Coupon."
+				+ "\n" + "3. Update Coupon"
+				+ "\n" + "4. Get Coupon By ID."
+				+ "\n" + "5. Get All Coupons of The Company."
+				+ "\n" + "6. Get Coupons By Type."
+				+ "\n");
+	} // printCompanyFacadeMenu
+	
 	public static void printMainTestChoice() {
 		
 		System.out.println( "\n" + 
@@ -272,7 +286,7 @@ public class testDeveloers {
 		
 		try {
 			short choice = scanner.nextShort();
-			if (choice < 8 && choice > -1 || choice == 822) {
+			if (choice <= 8 && choice > -1 || choice == 822) {
 				return choice;
 			} // IF - choice
 			else {
@@ -432,12 +446,10 @@ public class testDeveloers {
 	    	
 	   		if(existOrNot == false){
 	        	printNoExistOrCurrect();
-	        	printFacadeMenu();
 	        	return false;
 	        	} // if
 	        	else {
 	        		printFoundInDB("Company");
-	        		printUsageCompany();
 	        		return true;
 	        	} // else
 		} // else if - Company
@@ -459,7 +471,6 @@ public class testDeveloers {
 	        	} // if
 	        	else {
 	        		printFoundInDB("Company");
-	        		printUsageCompany();
 	        		return true;
 	        	} // else
 		} // else if - Customer
@@ -556,6 +567,9 @@ public class testDeveloers {
 	 *
 	 */
 	
+	 // TODO: to change all of this section to Facades access!
+
+    
     public static void printUsageCompany() {
 
 		
@@ -672,163 +686,61 @@ public class testDeveloers {
 		} // while loop
 	} // addCompnay - Function
 	
+    /**
+     * This Function is blong ONLY to AdminFacade Access.
+     * 
+     * @category AdminFacede Section
+     * @author Raziel
+     */
+    
     private static void removeCompany_T() {
-    	
     	
     	while(true) {
     		
-    		CompanyDBDAO coDBdao = new CompanyDBDAO();
-    		
-    		// Options menu:
-    		System.out.println("You can Delete a Company By 2 Option:");
-    		System.out.println("1. By The Company ID."
-    				+ "\n" + "2. By The Company NAME."
-    			    + "\n" + "3. By The Company Object."
-    				+ "\n");
-    		
-    		// User Choice and 'if' checker.
-    		short choice = userInputShort();
-    		if (choice == 1) { // Delete By ID:
+    		Company company = new Company();
+    		AdminFacade adminF = new AdminFacade();
     			
     			System.out.print("Type Your Company ID: ");
     			SharingData.setLongNum1(userInputLong());
     			if (SharingData.getLongNum1() == 0) {
     				
     				printGoingBackToUsage();
-    				printDbDAOMenu();
+    				printAdminFacadeMenu();
     				break;
     			}
     			
-    			System.out.print("Type Your Company Password: ");
-    			SharingData.setVarchar1(userInputString());
-    			
-    			IsExistDB.idPassExistV2Company(SharingData.getLongNum1(), SharingData.getVarchar1());
-    			if(IsExistDB.getAnswer() == false && IsExistDB.getAnswer2() == false) {		
+    			IsExistDB.idExist(SharingData.getLongNum1());
+    			if(IsExistDB.getAnswer2() == false) {		
          		printNoExistOrCurrect();
-         		printDbDAOMenu();
+         		printAdminFacadeMenu();
          		break;
     			}
     			else {	
     			      try {
-				      coDBdao.removeCompany(SharingData.getLongNum1());
-				      //System.out.println(SharingData.getVarchar4());
-					  } catch (SQLException e) {
+    			    	  company.setId(SharingData.getLongNum1());
+    			    	  adminF.removeCompanyA(company);
+    			    	  
+					  } catch (Exception e) {
 						System.out.println("Error:");
 						System.out.println(e.getMessage());
 					  }
         			  
-    			      printCustomerRemoved();
+    			      printCompanyRemoved();
     			} // else
-    		} // if - choice = 1
-    		else if(choice == 2) { // Delete By name:
+    		
+    			System.out.println("Whould you like to Removing more companies? Type '1' for YES or any other Number for NO.");
+    			short choice = userInputShort();
     			
-    			System.out.print("Type Your Customer Name: ");
-    			SharingData.setVarchar1(userInputString());
-    			System.out.print("Type Your Customer Password: ");
-    			SharingData.setVarchar2(userInputString());
-    			
-    			IsExistDB.namePasswordExist(SharingData.getVarchar1(), SharingData.getVarchar2());
-    			if(IsExistDB.getAnswer() == false) {
-         				
-         		printNoExistOrCurrect();
-         		printDbDAOMenu();
-         		break;
-         		} // if
-    		    else {
-    			     try {
-				     coDBdao.removeCompany(SharingData.getVarchar1());
-				     printCustomerRemoved();
-				     } catch (SQLException e) {
-				     System.out.println("Error:");
-			         System.out.println(e.getMessage());
-				     } // catch
-    			
-    			     //System.out.println(c.toString());
-    			     
-    		    } // else
-    		} // else if - choice = 2
-    		/**
-    		 * The next method (choice == 3) is for us, the developers.
-    		 */
-    		else if (choice == 3) { // Delete By Object (Company)
-    			
-    			System.out.println("Developers Only! Deleting By Company Object..");
-    			System.out.print("Type Your Company ID: ");
-    			SharingData.setLongNum1(userInputLong());
-    			if (SharingData.getLongNum1() == 0) {
-    				
-    				printGoingBackToUsage();
+    			if (choice == 1) {
+    				continue;
+    			} // if 
+    			else {
     				printDbDAOMenu();
     				break;
-    			}
-    			
-    			System.out.print("Type Your Company Password: ");
-    			SharingData.setVarchar1(userInputString());
-    			
-    			IsExistDB.idPasswordExist(SharingData.getLongNum1(), SharingData.getVarchar1());
-    			if(IsExistDB.getAnswer() == false) {		
-         		printNoExistOrCurrect();
-         		printDbDAOMenu();
-         		break;
-         		} // if
-    			else {
-    				try {
-						Company c = new Company();
-						c.setId(SharingData.getLongNum1());
-						System.out.println(c.toString());
-						coDBdao.removeCompany(c);
-						printCompanyRemoved();
-					} catch (SQLException e) {
-						
-					} // catch
     			} // else
-    		} // else if - choice 3
-    		else if(choice == 4) { 
-    			CompanyDBDAO db = new CompanyDBDAO();
-    			Company c = new Company();
-    			System.out.println("Developers Only! Deleting By Company Object..");
-    			
-    			System.out.println("Please enter the information below for verification" + "\n");
-    			System.out.print("Type Your Company Name: ");
-    			c.setCompName(userInputString());
-    	    	System.out.print("Type Your Company Password: ");
-    			c.setPassword(userInputString());
-    			   			
-    			boolean lastCheck = db.login(c.getCompName(), c.getPassword());
-    			if(lastCheck == false) {
-    				printIDnotExist("Company");
-    				break;
-    			}
-    			else {
-    				
-    				try {
-    					db.removeCompany(c);
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
-    				
-    				
-    			}
-			}// else if - choice 4
-    		else { 
-    			printGoingBackToUsage();
-    			printDbDAOMenu();
-    			break;
+    		} // while
+    } // removeCompany_T
     		
-    		} // switch
-			System.out.println("Whould you like to Removing more companies? Type '1' for YES or any other Number for NO.");
-			short choice1 = userInputShort();
-			
-			if (choice1 == 1) {
-				continue;
-			} // if 
-			else {
-				printDbDAOMenu();
-				break;
-			} // else
-    		} // while loop
-    		
-    	} // removeCompany - plan
 	
     private static void updateCompany_T() {
     	
@@ -970,6 +882,9 @@ public class testDeveloers {
 	 * from the packages in the Coupon System Project.
 	 *
 	 */
+    
+	 // TODO: to change all of this section to Facades access!
+
     
     public static void printUsageCustomer() {
 
@@ -1305,7 +1220,7 @@ public class testDeveloers {
 	 * Here we create the connection between all the methods of CouponDB and CouponDAO 
 	 * from the packages in the Coupon System Project.
 	 */
-	 
+	 // TODO: to change all of this section to Facades access!
     
     public static void printUsageCoupon() {
 
@@ -1369,7 +1284,7 @@ public class testDeveloers {
 	while (true){
 
 		Coupon coup = new Coupon();
-		CouponDBDAO cdb = new CouponDBDAO();
+		CompanyFacade comF = new CompanyFacade();
 		
 		System.out.print("NEW Title: ");
         String title = userInputString();
@@ -1412,10 +1327,10 @@ public class testDeveloers {
         System.out.print("NEW Imag link: ");
         String imag = userInputString();
         
-        
+        long ownerID = SharingData.getIdsShare();
         
 		// putting all the variables 
-		coup = new Coupon(title, startDate, endDate, amount, CouponType.valueOf(category), message, price, imag);
+		coup = new Coupon(title, startDate, endDate, amount, CouponType.valueOf(category), message, price, imag, ownerID);
         
 		// check if the user put's somthing empty...
 		if(title.isEmpty() || message.isEmpty() || category.isEmpty() || message.isEmpty() || imag.isEmpty() || price == 0) {
@@ -1426,23 +1341,19 @@ public class testDeveloers {
 			break;
 		}
 		
-		
-		cdb.createCoupon(coup);
+		comF.createCouponF(coup);
 		
 		if(SharingData.isFlag1() == true) {
 			System.out.println(coup.toString());
 			System.out.println("------------ Customer Added Successfully ----------" + "\n");
-    		
-			
 		}
 		else {
-			System.out.println(cdb.toString());
+			//System.out.println(coup.toString());
 			System.out.println("\n" + "****************************************************");
 			System.out.println("Error - No Changes Were Made :(");
 			System.out.println("\n" + "****************************************************");
 		} // else
-		
-		
+				
 		System.out.println("Whould you keep adding Coupons? Type '1' for YES or any other Number for NO.");
 		short choice1 = userInputShort();
 		
@@ -1459,7 +1370,7 @@ public class testDeveloers {
     
     private static void removeCoupon_T() {
     	
-    	while(true) { // Delete By Object (Company)
+    	while(true) { 
     		
     		CouponDBDAO db = new CouponDBDAO();
     		
@@ -1473,15 +1384,18 @@ public class testDeveloers {
     			break;
     		}
     		
-//    		System.out.print("Type Your Company Password: ");
-//    		SharingData.setVarchar1(userInputString());
-    		
-    		IsExistDB.idExistV2Coupon(SharingData.getLongNum1());
+    		IsExistDB.idExistV2Coupon(SharingData.getLongNum1(), "coupon");
     		if(IsExistDB.getAnswer2() == false) {		
-    			printNoExistOrCurrect();
-    			printDbDAOMenu();
-    			break;
-    			} // if
+    			IsExistDB.idExistV2Coupon(SharingData.getLongNum1(), "company_coupon");	
+    			} // if - coupon
+    		else if(IsExistDB.getAnswer2() == false) {		
+        		IsExistDB.idExistV2Coupon(SharingData.getLongNum1(), "customer_coupon");
+			} // if - company_coupon
+    		else if(IsExistDB.getAnswer2() == false) {		
+				printNoExistOrCurrect();
+				printDbDAOMenu();
+				break;
+			} // if - customer_coupon
     		else {
     			Coupon c = new Coupon();
 				c.setId(SharingData.getLongNum1());
@@ -1496,17 +1410,12 @@ public class testDeveloers {
     private static void updateCoupon_T() {
     	
     	while(true) {
-    	
-//    	System.out.println("Update Coupon:" + "\n");
-//		System.out.println("Please type your current Coupon ID and Password.");
-		//System.out.println("Note: only because it's beta version test - we asking for Customer ID.");
-		//System.out.println("\n" + "Type The OLD Company Name:");
- 		
+    	// TODO: ATTENTION! I have to put here ownerID from the company ID!
 		System.out.print("Coupon ID: ");
         SharingData.setLongNum1(userInputLong());
     	
         // Check if the NAME exist..
-        IsExistDB.idExistV2Coupon(SharingData.getLongNum1());
+        IsExistDB.idExistV2Coupon(SharingData.getLongNum1(), "coupon");
         if(IsExistDB.getAnswer2() == false) {
  				
  		printNoExistOrCurrect();
@@ -1554,9 +1463,6 @@ public class testDeveloers {
 	    	
 			System.out.print("NEW Amount: ");
             int amount = userInputInt();
-			
-//            System.out.print("NEW Category: ");
-//            String category = userInputString();
             
             System.out.print("NEW Massage: ");
             String massage = userInputString();
@@ -1569,13 +1475,13 @@ public class testDeveloers {
             System.out.print("NEW Imag link: ");
             String imag = userInputString();
             
-            
-            
+            // TODO: change it to CompanyID after I will get here in the CompanyFacade.
+            long ownerID = 0;
             
             // TODO: keep it - and be aware to the category.
 			// putting all the variables 
            
-			coup = new Coupon(title, startDate, endDate, amount, type, massage, price, imag);
+			coup = new Coupon(title, startDate, endDate, amount, type, massage, price, imag, ownerID);
 			coup.setId(id);
 			dbcou.updateCoupon(coup);
 			System.out.println("\n" + coup.toString() + "\n");
@@ -1591,7 +1497,7 @@ public class testDeveloers {
         	System.out.println("Type The Coupon ID:");
         	SharingData.setLongNum1(userInputLong());
         	
-        	IsExistDB.idExistV2Coupon(SharingData.getLongNum1());
+        	IsExistDB.idExistV2Coupon(SharingData.getLongNum1(), "coupon");
         	if(SharingData.getLongNum1() == 0) {
         		System.out.println("Typing 'Zero' is mean = quit..");
         		printGoingBackToUsage();
@@ -1663,12 +1569,14 @@ public class testDeveloers {
     		printIDnotExist("User");
     	}
     	else {
-    	while(true) {
+    		
+    	    boolean on = true;
+    	    while(on == true) {
         	
         	printAdminFacadeMenu();
         	
     		short userChoiceOfSideWork = userInputFadacesShort();
-    		AdminFacade adminF = new AdminFacade();
+    		//AdminFacade adminF = new AdminFacade();
     		
     		
     		//Check the user choice and switch it:
@@ -1680,13 +1588,13 @@ public class testDeveloers {
     			break;
     		} // case 1
     		case 2: {
-    			//CompanyFacade();
+    			removeCompany_T();
     			break;
     		}
-    		case 3: {
-    		//	CouponFacade();
-    			break;
-    		}
+//    		case 3: {
+//    		//	CouponFacade();
+//    			break;
+//    		}
     		case 4: {
     			//printFacadeMenu();
     			continue;
@@ -1711,6 +1619,7 @@ public class testDeveloers {
     		}
     		case 0: {
     			System.out.println("Thank You! Bye Bye :) ");
+    			on = false;
     			break;
     		}
     		} // Switch
@@ -1718,21 +1627,85 @@ public class testDeveloers {
     	} // else
     } // AdminFacade_T
     
-    private static void CompanyFacade_T(String userName, String password) {
+    private static void CompanyFacade_T() throws SQLException {
     	
-     
+        boolean existOrNot = login_T();
+    	
+    	if(existOrNot != true) {
+    		//printIDnotExist("Company");
+    	}
+    	else {
+    		
+    	    boolean on = true;
+    	    while(on == true) {
+        	
+        	printCompanyFacadeMenu();
+        	
+    		short userChoiceOfSideWork = userInputFadacesShort();
+    		//AdminFacade adminF = new AdminFacade();
+    		
+    		
+    		//Check the user choice and switch it:
+    		switch (userChoiceOfSideWork) {
+    		
+    		
+    		case 1: {
+    			addCoupon_T();
+    			break;
+    		} // case 1
+    		case 2: {
+    			removeCoupon_T();
+    			break;
+    		}
+    		case 3: {
+    		System.out.println("Still not ready..");
+    			continue;
+    		}
+    		case 4: {
+        		System.out.println("Still not ready..");
+    			continue;
+    		}
+    		case 5: {
+        		System.out.println("Still not ready..");
+    			continue;
+    		}
+    		case 6: {
+        		System.out.println("Still not ready..");
+    			continue;
+    		}
+    		case 7: {
+        		System.out.println("Still not ready..");
+    			continue;
+
+    		}
+    		case 8: {
+    			printGoingBackToUsage();
+    			printFacadeMenu();
+    			break;
+    		}
+    		case 0: {
+    			System.out.println("Thank You! Bye Bye :) ");
+    			on = false;
+    			break;
+    		}
+    		} // Switch
+        	} // while loop
+    	} // else
     	
     } // CompanyFacade_T
     
-    private static void CustomerFacade_T(String userName, String password) {
-    	
+    private static void CustomerFacade_T() throws SQLException{
+    	System.out.println("still not ready..");
      
     	
     } // CustomerFacade_T
     
     private static void Facade_T() throws SQLException{
     	
-    	while(true) {
+    	// just for the loop.
+    	boolean on = true;
+    	
+    	while(on == true) {
     	
     	printFacadeMenu();
     	
@@ -1747,11 +1720,11 @@ public class testDeveloers {
 			break;
 		} // case 1
 		case 2: {
-			//CompanyFacade();
+			CompanyFacade_T();
 			break;
 		}
 		case 3: {
-		//	CouponFacade();
+			CustomerFacade_T();
 			break;
 		}
 		case 4: {
@@ -1773,13 +1746,16 @@ public class testDeveloers {
 		}
 		case 8: {
 			printGoingBackToUsage();
-			printFacadeMenu();
 			break;
 		}
 		case 0: {
 			System.out.println("Thank You! Bye Bye :) ");
+			on = false;
+			printGoingBackToUsage();
+			printMainTestChoice();
 			break;
 		}
+		
 		} // Switch
     	} // while loop
 

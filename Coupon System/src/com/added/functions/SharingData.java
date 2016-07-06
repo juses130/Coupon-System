@@ -2,21 +2,22 @@ package com.added.functions;
 
 import java.util.InputMismatchException;
 
-public class SharingData {
+/**
+ * 
+ * This is a Helper Class - Sharing data.
+ * The main object of this Class is to share data (Strings, longs, ints, booleans) 
+ * between other classes and methods around the Project.
+ * 
+ * What's in it for us?
+ * when we are writing a program or just a test, We need to create a lot of premitive types..
+ * SharingData allows us to share String, int, long and more in the Static way WITHOUT creating new types..
+ * The static way is allows us to share this instances-data in ANYPLACE around the project.
+ * Just by calling the Class.
+ * 
+ * @author Raziel
+ */
 
-	/**
-	 * @author Raziel
-	 * This is a Helper Class - Sharing data.
-	 * The main object of this Class is to share data (Strings, longs, ints, booleans) 
-	 * between other classes and methods around the Project.
-	 * 
-	 * What's in it for us?
-	 * when we are writing a program or just a test, We need to create a lot of premitive types..
-	 * SharingData allows us to share String, int, long and more in the Static way WITHOUT creating new types..
-	 * The static way is allows us to share this instances-data in ANYPLACE around the project.
-	 * Just by calling the Class.
-	 * 
-	 */
+public abstract class SharingData {
 
 	// Premitives Variables
 	
@@ -34,13 +35,15 @@ public class SharingData {
 
 	private static long longNum1;
 	private static long longNum2;
-	// varchar5 is for the updateFunction who's getting a null in the ID for some reason..
 	private static long longNum3;
+	private static long IdsShare;
 	
 	
 	// boolean
 	private static boolean flag1 = false;
 
+	
+	
 	public static boolean isFlag1() {
 		return flag1;
 	}
@@ -172,6 +175,16 @@ public class SharingData {
 
 	public static void setShortNum1(short shortNum1) {
 		SharingData.shortNum1 = shortNum1;
+	}
+
+
+	public static long getIdsShare() {
+		return IdsShare;
+	}
+
+
+	public static void setIdsShare(long companyIdShare) {
+		SharingData.IdsShare = companyIdShare;
 	}
 
 

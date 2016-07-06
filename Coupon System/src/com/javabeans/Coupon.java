@@ -19,12 +19,13 @@ public class Coupon {
 	private String message;
 	private double price;
 	private String image;
+	private long ownerID;
 	
 	
 	// Constructor
 	public Coupon(){}
 	
-	public Coupon(String title, LocalDate startDate, LocalDate endDate, int amount, CouponType category, String message, double price, String image){
+	public Coupon(String title, LocalDate startDate, LocalDate endDate, int amount, CouponType category, String message, double price, String image, long ownerID){
 		this.title = title;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -33,6 +34,7 @@ public class Coupon {
 		this.message = message;
 		this.price = price;
 		this.image = image;
+		this.ownerID = ownerID;
 	}
 
 	public Coupon(long id, String title, LocalDate stDate, LocalDate enDate, int amount, CouponType category,  String message, double price, String image) {
@@ -142,5 +144,13 @@ public class Coupon {
 
 	public void setType(CouponType category) {
 		this.category = category;
+	}
+
+	public long getOwnerID() {
+		return ownerID;
+	}
+
+	public void setOwnerID(long ownerID) {
+		this.ownerID = ownerID;
 	}
 }

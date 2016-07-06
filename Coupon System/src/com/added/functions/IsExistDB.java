@@ -116,16 +116,16 @@ public class IsExistDB {
 
 }
 
-   public static void idExistV2Coupon(long id) {
+   public static void idExistV2Coupon(long coupID, String table) {
 		
 		try {
 			
 			ResultSet rs = null;
 			
 			DBconnector.getCon();
-			String sqlSEL = "SELECT coup_ID FROM coupon WHERE coup_ID= ?" ;
+			String sqlSEL = "SELECT coup_ID FROM " + table + " WHERE coup_ID= ?" ;
 			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlSEL);
-			prep.setLong(1, id);
+			prep.setLong(1, coupID);
 			rs = prep.executeQuery();
 			
 			boolean hasRows = false;
@@ -137,6 +137,8 @@ public class IsExistDB {
 			if(!hasRows) {
 				answer2 = false;
 			}
+			prep.close();
+			rs.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();

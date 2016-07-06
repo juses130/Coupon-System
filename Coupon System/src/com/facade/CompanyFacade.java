@@ -1,6 +1,8 @@
 package com.facade;
 
 import com.dbdao.CompanyDBDAO;
+import com.dbdao.CouponDBDAO;
+import com.javabeans.*;
 
 public class CompanyFacade {
 
@@ -18,5 +20,12 @@ public class CompanyFacade {
 			return true;
 		} // else
 	} // login - function
+	
+	public void createCouponF(Coupon coupon) {
+		
+		CouponDBDAO cou = new CouponDBDAO();
+		cou.createCoupon(coupon);
+		
+	} // createCouponF
 	
 }

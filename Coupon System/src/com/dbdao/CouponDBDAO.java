@@ -22,17 +22,17 @@ public class CouponDBDAO implements CouponDAO{
 
 	@Override
 	public long createCoupon(Coupon coupon) {
-		
 		long id = -1;
 		
 		// creating ResultSet
 		ResultSet rs = null;
-		
 		try {
+			
+			// 1. Adding the new coupon to the COUPON TABLE. 
 			
 			DBconnector.getCon();
 			String sqlQuery = "INSERT INTO coupon (Title, Start_Date, End_Date, " + 
-			"Amount, Category, Message, Price, Image)" + "VALUES(?,?,?,?,?,?,?,?)";	
+			"Amount, Category, Message, Price, Image, Owner_ID)" + "VALUES(?,?,?,?,?,?,?,?,?)";	
 			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
 			prep.setString(1, coupon.getTitle());
 			prep.setDate(2, Date.valueOf(coupon.getStartDate()));
@@ -42,14 +42,25 @@ public class CouponDBDAO implements CouponDAO{
 			prep.setString(6, coupon.getMessage());
 			prep.setDouble(7, coupon.getPrice());
 			prep.setString(8, coupon.getImage());
+			prep.setLong(9, coupon.getOwnerID());
 			
 			prep.executeUpdate();
 			rs = prep.getGeneratedKeys();
 			rs.next();
 			id = rs.getLong(1);
 			coupon.setId(id);
+			prep.close();
+			rs.close();
 			
-			// Letting the others (if the asking) that the Company Added Succsefully.
+			// 2. Adding the new CouponID to the COMPANY_COUPON TABLE.
+			
+			long compID = coupon.getOwnerID();
+			String sqlQuery1 = "INSERT INTO company_coupon (Comp_ID ,Coup_ID) VALUES ("+ compID +  
+				"," + coupon.getId() + ");";
+			PreparedStatement prep1 = DBconnector.getInstatce().prepareStatement(sqlQuery1);
+			prep1.executeUpdate();
+			
+			// Letting the others (if the asking) that the Coupon Added Succsefully.
 			SharingData.setFlag1(true);
 			String tostring = coupon.toString();
 			SharingData.setVarchar4(tostring);
@@ -72,37 +83,17 @@ public class CouponDBDAO implements CouponDAO{
 	@Override
 	public void removeCoupon(Coupon coupon) {
 		
-		IsExistDB.idExistV2Coupon(coupon.getId());
-		if(IsExistDB.getAnswer2() == true) {
-
-			//ResultSet rs = null;
-			PreparedStatement prep = null;
-			
-			try {
-				
-				DBconnector.getCon();
-				String sqlDELobject = "DELETE FROM coupon WHERE Coup_ID =?";
-				prep = DBconnector.getInstatce().prepareStatement(sqlDELobject);
-				prep.setLong(1, coupon.getId());
-				prep.executeUpdate();
-				
-				
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} // catch
-			
-			finally {
-				try {
-					DBconnector.getInstatce().close();
-				} catch (SQLException e) {
-					
-					e.printStackTrace();
-				}
-			} // finally
-		}
+		//removeMethod(coupon, "coupon");
+		
+		removeMethod(coupon, "company_coupon");
+		removeMethod(coupon, "customer_coupon");
 		
 	}
 
+	public void removeCouponOwnerID(long id) {
+		removeMethodByOwnerID(id);
+	}
+	
 	@Override
 	public void updateCoupon(Coupon coupon) {
 		
@@ -243,4 +234,62 @@ public class CouponDBDAO implements CouponDAO{
 		return coupons;
 	}
 
-}
+	private void removeMethod(Coupon coupon, String table) {
+		
+		IsExistDB.idExistV2Coupon(coupon.getId(), table);
+		if(IsExistDB.getAnswer2() == true) {
+			PreparedStatement prep = null;
+			
+			try {
+				DBconnector.getCon();
+				String sqlDELobject = "DELETE FROM " + table + " WHERE Coup_ID =?";
+				prep = DBconnector.getInstatce().prepareStatement(sqlDELobject);
+				long id = coupon.getId();
+				prep.setLong(1, id);
+				prep.executeUpdate();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} // catch
+			
+			finally {
+				try {
+					DBconnector.getInstatce().close();
+				} catch (SQLException e) {
+					
+					e.printStackTrace();
+				} // catch
+			} // finally
+		} // if
+	} // removeMethod
+	
+	private void removeMethodByOwnerID(long id) {
+		
+		IsExistDB.idExistV2Coupon(id, "coupon");
+		if(IsExistDB.getAnswer2() == true) {
+			PreparedStatement prep = null;
+			
+			try {
+				DBconnector.getCon();
+				String sqlDELobject = "DELETE FROM coupon WHERE Owner_ID =?";
+				prep = DBconnector.getInstatce().prepareStatement(sqlDELobject);
+			
+				prep.setLong(1, id);
+				prep.executeUpdate();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} // catch
+			
+			finally {
+				try {
+					DBconnector.getInstatce().close();
+				} catch (SQLException e) {
+					
+					e.printStackTrace();
+				} // catch
+			} // finally
+		} // if
+	} // removeMethod
+
+} // Class

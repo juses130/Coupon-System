@@ -13,6 +13,7 @@ import com.javabeans.*;
 /**
  * This is Company Database DAO Class.
  * Just impelemnts the methods from CompanyDAO in 'com.dao.intefaces' package. 
+ * 
  * @author Raziel
  *
  */
@@ -67,88 +68,16 @@ public class CompanyDBDAO implements CompanyDAO {
 		} // finally
 		
 	} // createCompany - Function
-
-	// 3 Remove methods! 
 	
-	//1. By Company.
 	@Override
-	public void removeCompany(Company company) throws SQLException {
+	public void removeCompany(Company company) throws SQLException{
 		
-		IsExistDB.idExist(company.getId());
-		if(IsExistDB.getAnswer2() == true) {
-
-			//ResultSet rs = null;
-			PreparedStatement prep = null;
-			
-			try {
-				
-				DBconnector.getCon();
-				String sqlDELobject = "DELETE FROM company WHERE Comp_ID =?";
-				prep = DBconnector.getInstatce().prepareStatement(sqlDELobject);
-				prep.setLong(1, company.getId());
-				prep.executeUpdate();
-				
-				
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} // catch
-			
-			finally {
-				DBconnector.getInstatce().close();
-			} // finally
-		}
-
+		long id = company.getId();
 		
-	}
-	
-	//2. By ID (long)
-	@Override
-	public void removeCompany(long id) throws SQLException{
-		// test
-		
-		try {
-			DBconnector.getCon();
-			//String compName, email, password;
-			
-			String sqlDELid = "DELETE FROM coupon.company WHERE Comp_ID =?" ;
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlDELid);
-			prep.setLong(1, id);
-			prep.executeUpdate();
-			
-		}
-		catch (SQLException e) {
-			e.getMessage();
-		}
-		finally {
-			DBconnector.getInstatce().close();
-		} // finally
+		removeMethod(id, "company");
+		removeMethod(id, "company_coupon");
 		
 	} // removeCompany - By ID - Function
-	
-	//.3 By Name (String)
-	@Override
-	public void removeCompany(String name) throws SQLException {
-		
-		try {
-			DBconnector.getCon();
-			String sqlDELname = "DELETE FROM coupon.company WHERE Comp_name =?" ;
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlDELname);
-			prep.setString(1, name);
-			
-			prep.executeUpdate();
-			
-			// Letting the other Classes (if they asking) that the Company Removed Succsefully.
-			SharingData.setFlag1(true);
-		}
-		catch (SQLException e) {
-			e.getStackTrace();
-		}
-		finally {
-			DBconnector.getInstatce().close();
-		} // finally
-		
-	} // removeCompany - BY Name - Function
-	
 	
 	@Override
 	public void updateCompany(Company company) {
@@ -186,7 +115,6 @@ public class CompanyDBDAO implements CompanyDAO {
 
 		
 	} // updateCompany - Function
-
 	
 	@Override
 	public Company getCompany(long id) {
@@ -299,7 +227,9 @@ public class CompanyDBDAO implements CompanyDAO {
 	public boolean login(String compName, String password) {
 		
 		ResultSet rs1 = null;
+		ResultSet rs2 = null;
 		Statement stat1 = null;
+		Statement stat2 = null;
 
 		boolean hasRows = false;
         try {
@@ -313,9 +243,17 @@ public class CompanyDBDAO implements CompanyDAO {
 		    rs1.next();
 
 			if (rs1.getRow() != 0) {
-				hasRows = true;
 				
-				System.out.println(hasRows);
+				// In case we have the row, we'll return 'true' and set the Company ID to some shared variable.
+				// we need this ID for putting it in other TABLES such as Company_Coupon.
+				hasRows = true;
+				String sqlGetID = "SELECT Comp_id from company WHERE Comp_name='" + compName + "'";
+				//System.out.println(hasRows);
+				stat2 = DBconnector.getInstatce().createStatement();
+				rs2 = stat2.executeQuery(sqlGetID);
+				rs2.next();
+				SharingData.setIdsShare(rs2.getLong(1));
+				
 			}
 
             } catch (SQLException e) {
@@ -333,5 +271,29 @@ public class CompanyDBDAO implements CompanyDAO {
 	return hasRows;
 	}	
 	
+	private void removeMethod(long id, String table) {
+		
+		try {
+			DBconnector.getCon();
+			//String compName, email, password;
+			
+			String sqlDELid = "DELETE FROM " + table + " WHERE Comp_ID =?" ;
+			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlDELid);
+			prep.setLong(1, id);
+			prep.executeUpdate();
+			
+		}
+		catch (SQLException e) {
+			e.getMessage();
+		}
+		finally {
+			try {
+				DBconnector.getInstatce().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} // finally
+		
+	} // removeMethod
 
 }
