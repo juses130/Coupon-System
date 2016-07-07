@@ -86,7 +86,7 @@ public class AdminFacade {
 	}
 	
 	public void updateCustomerA(Customer customer) {
-		// TODO:
+		// TODO
 		CustomerDBDAO cuDB = new CustomerDBDAO();
 		cuDB.updateCustomer(customer);
 	} // createCustomerA - function
