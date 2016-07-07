@@ -137,8 +137,8 @@ public class CompanyDBDAO implements CompanyDAO {
 			
 
 			c = new Company(id, compName, password, email);
-//			String companyInfo = c.toString();
-//			SharingData.setVarchar2(companyInfo);
+			String companyInfo = c.toString();
+			SharingData.setVarchar2(companyInfo);
 
 			// Letting the other Classes (if they asking) that the getID Function was run Succsefully.
 			SharingData.setFlag1(true);
@@ -270,6 +270,17 @@ public class CompanyDBDAO implements CompanyDAO {
 
 	return hasRows;
 	}	
+	
+	/**
+	 * 
+	 * This is a remove method - making the deleting of company more flexible and easy.
+	 * It's my add on.
+	 * 
+	 * @param long id
+	 * @param String table
+	 * 
+	 * @author Raziel
+	 */
 	
 	private void removeMethod(long id, String table) {
 		

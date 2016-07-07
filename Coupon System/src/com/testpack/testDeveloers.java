@@ -631,6 +631,13 @@ public class testDeveloers {
     	
     } // CompanySwitch Function
     
+    /**
+     * This Function is blong ONLY to AdminFacade Access.
+     * 
+     * @category AdminFacede Section
+     * @author Raziel
+     */
+    
     private static void addCompnay_T() throws SQLException {
 		
 		while (true){
@@ -686,13 +693,6 @@ public class testDeveloers {
 		} // while loop
 	} // addCompnay - Function
 	
-    /**
-     * This Function is blong ONLY to AdminFacade Access.
-     * 
-     * @category AdminFacede Section
-     * @author Raziel
-     */
-    
     private static void removeCompany_T() {
     	
     	while(true) {
@@ -741,7 +741,6 @@ public class testDeveloers {
     		} // while
     } // removeCompany_T
     		
-	
     private static void updateCompany_T() {
     	
     	while(true) {
@@ -822,12 +821,12 @@ public class testDeveloers {
         	
         	if (IsExistDB.getAnswer2() == false) { // checks if the ID exist in the DB.
         		printNoExistOrCurrect();
-    			printDbDAOMenu();
+    			printAdminFacadeMenu();
     			break;
         	} // if - isExist
         	else {
-        		CompanyDBDAO co = new CompanyDBDAO();
-        		co.getCompany(SharingData.getLongNum1());
+        		AdminFacade admF = new AdminFacade();
+        		admF.getCompanyA(SharingData.getLongNum1());
         		
         		// Print the Company:
         		System.out.println(SharingData.getVarchar2());
@@ -844,32 +843,113 @@ public class testDeveloers {
     private static void getAllCompanies_T() {
 
     	while(true) {
-    		
-    		System.out.println("Please Type Your Admin Password:");
-    		long password = userInputLong();
-    		
-    		if(password == 123456789) {
-       			CompanyDBDAO db = new CompanyDBDAO();
+       			AdminFacade admF = new AdminFacade();
     			System.out.println("Here is your Companeis List: " + "\n");
        			
-    			System.out.println(db.getAllCompanies().toString());
+    			System.out.println(admF.getAllCompaniesA().toString());
     			break;
-    		} // if
-    		else {
- 
-    			System.out.println("Error: worng password!");
-    			printGoingBackToUsage();
-    			break;
-    			
-    		} // else
-    		
-    		
-    		
-    		
     	} // while loop
     	
     } // getAllCompanies_T - Function
     
+    private static void addCustomer_T() throws SQLException {
+    	
+    	while (true){
+    		
+            System.out.print("NEW Customer Name: ");
+    		String name = (userInputString());
+    		
+            System.out.print("NEW Customer Password: ");
+            String password = (userInputString());
+    		
+    		// check if the user put's somthing empty...
+    		
+    		if(name.isEmpty() || password.isEmpty()) {
+    			System.out.println("\n" + "Error - the fields are empty!");
+    			printGoingBackToUsage();
+    			printAdminFacadeMenu();
+    			break;
+    		}
+    		Customer c = new Customer();
+    		AdminFacade admF = new AdminFacade();
+    		
+    		c.setCustName(name);
+    		c.setPassword(password);
+    		admF.createCustomerA(c);
+    		
+    		if(SharingData.isFlag1() == true) {
+    			System.out.println(c.toString());
+    			System.out.println("------------ Customer Added Successfully ----------" + "\n");
+        		printUsageCustomer();
+    			
+    		}
+    		else {
+    			System.out.println(admF.toString());
+    			System.out.println("\n" + "****************************************************");
+    			System.out.println("Error - No Changes Were Made :(");
+    			System.out.println("\n" + "****************************************************");
+    		} // else
+    		
+    		
+    		System.out.println("Whould you keep adding Customers? Type '1' for YES or any other Number for NO.");
+    		short choice1 = userInputShort();
+    		
+    		if (choice1 == 1) {
+    			continue;
+    		} // if 
+    		else {
+    			printDbDAOMenu();
+    			break;
+    		}
+    	
+    	} // while loop
+    } // addCompnay - Function
+        
+    private static void removeCustomer_T() {
+    	
+    	
+    	while(true) {
+    		
+    		AdminFacade admF = new AdminFacade();
+    		
+    			System.out.print("Type Your Customer ID: ");
+    			SharingData.setLongNum1(userInputLong());
+    			if (SharingData.getLongNum1() == 0) {
+    				
+    				printGoingBackToUsage();
+    				printDbDAOMenu();
+    				break;
+    			}
+    			
+    			IsExistDB.idExistV2Customer(SharingData.getLongNum1());
+    			if(IsExistDB.getAnswer2() == false) {		
+         		printNoExistOrCurrect();
+         		printAdminFacadeMenu();
+         		break;
+    			}
+    			else {	
+    				Customer cus = new Customer();
+    				cus.setId(SharingData.getLongNum1());
+    			      admF.removeCustomerA(cus);
+    			      //System.out.println(SharingData.getVarchar4());
+        			  
+    			      printCustomerRemoved();
+    			} // else
+    		
+    		System.out.println("Whould you like to Removing more Customers? Type '1' for YES or any other Number for NO.");
+    		short choice1 = userInputShort();
+    		
+    		if (choice1 == 1) {
+    			continue;
+    		} // if 
+    		else {
+    			printDbDAOMenu();
+    			break;
+    		} // else
+    		} // while loop
+    		
+    	} // removeCompany - plan
+       
 	
     /*/***********************************************
 	 ********   Section G: Customer Section   *******
@@ -941,153 +1021,6 @@ public class testDeveloers {
     	
     } // CompanyMenu - Function
 
-    private static void addCustomer_T() throws SQLException {
-	
-	while (true){
-		
-        System.out.print("NEW Customer Name: ");
-		String name = (userInputString());
-		
-        System.out.print("NEW Customer Password: ");
-        String password = (userInputString());
-		
-		// check if the user put's somthing empty...
-		
-		if(name.isEmpty() || password.isEmpty()) {
-			System.out.println("\n" + "Error - the fields are empty!");
-			printGoingBackToUsage();
-			printDbDAOMenu();
-			break;
-		}
-		Customer c = new Customer();
-		CustomerDBDAO cdb = new CustomerDBDAO();
-		
-		c.setCustName(name);
-		c.setPassword(password);
-		cdb.createCustomer(c);
-		
-		if(SharingData.isFlag1() == true) {
-			System.out.println(c.toString());
-			System.out.println("------------ Customer Added Successfully ----------" + "\n");
-    		printUsageCustomer();
-			
-		}
-		else {
-			System.out.println(cdb.toString());
-			System.out.println("\n" + "****************************************************");
-			System.out.println("Error - No Changes Were Made :(");
-			System.out.println("\n" + "****************************************************");
-		} // else
-		
-		
-		System.out.println("Whould you keep adding Customers? Type '1' for YES or any other Number for NO.");
-		short choice1 = userInputShort();
-		
-		if (choice1 == 1) {
-			continue;
-		} // if 
-		else {
-			printDbDAOMenu();
-			break;
-		}
-	
-	} // while loop
-} // addCompnay - Function
-    
-    private static void removeCustomer_T() {
-	
-	
-	while(true) {
-		
-		CustomerDBDAO cusDB = new CustomerDBDAO();
-		
-		// Options menu:
-		System.out.println("You can Delete a Customer By 2 Option:");
-		System.out.println("1. By The Customer ID."
-				+ "\n" + "2. By The Customer NAME."
-				+ "\n");
-		
-		// User Choice and 'if' checker.
-		short choice = userInputShort();
-		if (choice == 1) { // Delete By ID:
-			
-			System.out.print("Type Your Customer ID: ");
-			SharingData.setLongNum1(userInputLong());
-			if (SharingData.getLongNum1() == 0) {
-				
-				printGoingBackToUsage();
-				printDbDAOMenu();
-				break;
-			}
-			
-			System.out.print("Type Your Customer Password: ");
-			SharingData.setVarchar1(userInputString());
-			
-			IsExistDB.idPassExistV2Customer(SharingData.getLongNum1(), SharingData.getVarchar1());
-			if(IsExistDB.getAnswer() == false && IsExistDB.getAnswer2() == false) {		
-     		printNoExistOrCurrect();
-     		printDbDAOMenu();
-     		break;
-			}
-			else {	
-			      try {
-			      cusDB.removeCustomer(SharingData.getLongNum1());
-			      //System.out.println(SharingData.getVarchar4());
-				  } catch (SQLException e) {
-					System.out.println("Error:");
-					System.out.println(e.getMessage());
-				  }
-    			  
-			      printCustomerRemoved();
-			} // else
-		} // if - choice = 1
-		else if(choice == 2) { // Delete By name:
-			
-			System.out.print("Type Your Customer Name: ");
-			SharingData.setVarchar1(userInputString());
-			System.out.print("Type Your Customer Password: ");
-			SharingData.setVarchar2(userInputString());
-			
-			IsExistDB.namePassExistV2Customer(SharingData.getVarchar1(), SharingData.getVarchar2());
-			if(IsExistDB.getAnswer() == false) {
-     				
-     		printNoExistOrCurrect();
-     		printDbDAOMenu();
-     		break;
-     		} // if
-		    else {
-			     try {
-			    	 cusDB.removeCustomer(SharingData.getVarchar1());
-			    	 printCustomerRemoved();
-			     } catch (SQLException e) {
-			     System.out.println("Error:");
-		         System.out.println(e.getMessage());
-			     } // catch
-			
-			     //System.out.println(c.toString());
-			     
-		    } // else
-		} // else if - choice = 2
-		else { 
-			printGoingBackToUsage();
-			printDbDAOMenu();
-			break;
-		
-		} // switch
-		System.out.println("Whould you like to Removing more Customers? Type '1' for YES or any other Number for NO.");
-		short choice1 = userInputShort();
-		
-		if (choice1 == 1) {
-			continue;
-		} // if 
-		else {
-			printDbDAOMenu();
-			break;
-		} // else
-		} // while loop
-		
-	} // removeCompany - plan
-   
     private static void updateCustomer_T() {
     	
     	while(true) {
@@ -1594,20 +1527,20 @@ public class testDeveloers {
     			break;
     		}
     		case 4: {
-    			//printFacadeMenu();
-    			continue;
+    			getCompanyID_T();
+    			break;
     		}
     		case 5: {
-    			//printFacadeMenu();
-    			continue;
+    			getAllCompanies_T();
+    			break;
     		}
     		case 6: {
-    			//printFacadeMenu();
-    			continue;
+    			addCustomer_T();
+    			break;
     		}
     		case 7: {
-    			//printFacadeMenu();
-    			continue;
+    			removeCustomer_T();
+    			break;
 
     		}
     		case 8: {

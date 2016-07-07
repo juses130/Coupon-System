@@ -20,63 +20,22 @@ import com.javabeans.CouponType;
 
 public class CouponDBDAO implements CouponDAO{
 
+	private static short creator = 0;
+	
 	@Override
 	public long createCoupon(Coupon coupon) {
-		long id = -1;
-		
-		// creating ResultSet
-		ResultSet rs = null;
-		try {
-			
-			// 1. Adding the new coupon to the COUPON TABLE. 
-			
-			DBconnector.getCon();
-			String sqlQuery = "INSERT INTO coupon (Title, Start_Date, End_Date, " + 
-			"Amount, Category, Message, Price, Image, Owner_ID)" + "VALUES(?,?,?,?,?,?,?,?,?)";	
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
-			prep.setString(1, coupon.getTitle());
-			prep.setDate(2, Date.valueOf(coupon.getStartDate()));
-			prep.setDate(3, Date.valueOf(coupon.getEndDate()));
-			prep.setInt(4, coupon.getAmount());
-			prep.setString(5, coupon.getType().toString());
-			prep.setString(6, coupon.getMessage());
-			prep.setDouble(7, coupon.getPrice());
-			prep.setString(8, coupon.getImage());
-			prep.setLong(9, coupon.getOwnerID());
-			
-			prep.executeUpdate();
-			rs = prep.getGeneratedKeys();
-			rs.next();
-			id = rs.getLong(1);
-			coupon.setId(id);
-			prep.close();
-			rs.close();
-			
-			// 2. Adding the new CouponID to the COMPANY_COUPON TABLE.
-			
-			long compID = coupon.getOwnerID();
-			String sqlQuery1 = "INSERT INTO company_coupon (Comp_ID ,Coup_ID) VALUES ("+ compID +  
-				"," + coupon.getId() + ");";
-			PreparedStatement prep1 = DBconnector.getInstatce().prepareStatement(sqlQuery1);
-			prep1.executeUpdate();
-			
-			// Letting the others (if the asking) that the Coupon Added Succsefully.
-			SharingData.setFlag1(true);
-			String tostring = coupon.toString();
-			SharingData.setVarchar4(tostring);
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
+
+		if(creator == 1) {
+			createCouponByCompany(coupon);
+			return coupon.getId();
 		}
-		finally {
-			try {
-				DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} // catch
-		} // finally
-		
-		return id;
+		else if (creator == 2) {
+			purchaseCouponByCustomer(coupon);
+			return coupon.getId();
+		}
+		else {
+			return 0;
+		}
 
 	} // createCoupon - function
 
@@ -292,4 +251,89 @@ public class CouponDBDAO implements CouponDAO{
 		} // if
 	} // removeMethod
 
+	private long createCouponByCompany(Coupon coupon) {
+		
+		long id = -1;
+		
+		// creating ResultSet
+		ResultSet rs = null;
+		try {
+			
+			// 1. Adding the new coupon to the COUPON TABLE. 
+			
+			DBconnector.getCon();
+			String sqlQuery = "INSERT INTO coupon (Title, Start_Date, End_Date, " + 
+			"Amount, Category, Message, Price, Image, Owner_ID)" + "VALUES(?,?,?,?,?,?,?,?,?)";	
+			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
+			prep.setString(1, coupon.getTitle());
+			prep.setDate(2, Date.valueOf(coupon.getStartDate()));
+			prep.setDate(3, Date.valueOf(coupon.getEndDate()));
+			prep.setInt(4, coupon.getAmount());
+			prep.setString(5, coupon.getType().toString());
+			prep.setString(6, coupon.getMessage());
+			prep.setDouble(7, coupon.getPrice());
+			prep.setString(8, coupon.getImage());
+			prep.setLong(9, coupon.getOwnerID());
+			
+			prep.executeUpdate();
+			rs = prep.getGeneratedKeys();
+			rs.next();
+			id = rs.getLong(1);
+			coupon.setId(id);
+			prep.close();
+			rs.close();
+			
+			// 2. Adding the new CouponID to the COMPANY_COUPON TABLE.
+			
+			long compID = coupon.getOwnerID();
+			String sqlQuery1 = "INSERT INTO company_coupon (Comp_ID ,Coup_ID) VALUES ("+ compID +  
+				"," + coupon.getId() + ");";
+			PreparedStatement prep1 = DBconnector.getInstatce().prepareStatement(sqlQuery1);
+			prep1.executeUpdate();
+			
+			// Letting the others (if the asking) that the Coupon Added Succsefully.
+			SharingData.setFlag1(true);
+			String tostring = coupon.toString();
+			SharingData.setVarchar4(tostring);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				DBconnector.getInstatce().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} // catch
+		} // finally
+		
+		return id;
+		
+	}
+
+	private long purchaseCouponByCustomer(Coupon coupon) {
+		
+		long id = -1;
+		
+//		try{
+//			
+//			DBconnector.getCon();
+//			String sqlQuery = "INSERT INTO customer_coupon (cust_id, coup_id) VALUES (" +  + "," + coupon.getId() + ")";
+//			
+//		}
+//		catch(SQLException e) {
+//			e.printStackTrace();
+//		}
+		
+		return id;
+	} // createCouponByCustomer
+	
+	private short getCreator() {
+		return creator;
+	}
+
+	public void setCreator(short creator) {
+		CouponDBDAO.creator = creator;
+	}
+	
 } // Class

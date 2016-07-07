@@ -11,20 +11,11 @@ import com.javabeans.*;
 
 public class AdminFacade {
 
-	private static final String userName = "Admin";
-	private static final int password = 1234;
+//	private static final String userName = "Admin";
+//	private static final int password = 1234;
 	
 	// constructor
 	public AdminFacade() {}
-	
-	public boolean login(String userName, int password) {
-		if(userName == AdminFacade.userName || password == AdminFacade.password) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
 
 	/*
 	 *  Company Access
@@ -37,11 +28,13 @@ public class AdminFacade {
 	} // createCompanyA - function
 	
 	public void removeCompanyA(Company company) throws SQLException{
-		//TODO: I'm here now. I will need to remove all the coupons when we removing company..
-		CompanyDBDAO coDB = new CompanyDBDAO();
-		coDB.removeCompany(company);
-		CouponDBDAO couDB = new CouponDBDAO();
+		
 		Coupon coupon = new Coupon();
+		CompanyDBDAO coDB = new CompanyDBDAO();
+		CouponDBDAO couDB = new CouponDBDAO();
+		
+		coDB.removeCompany(company);
+		
 		coupon.setOwnerID(company.getId());
 		couDB.removeCouponOwnerID(coupon.getOwnerID());
 		couDB.removeCoupon(coupon);
@@ -50,7 +43,7 @@ public class AdminFacade {
 	} // removeCompanyA - function
 	
 	public void updateCompanyA(Company company) {
-		//TODO:
+		
 		CompanyDBDAO coDB = new CompanyDBDAO();
 		coDB.updateCompany(company);
 		
@@ -58,7 +51,7 @@ public class AdminFacade {
 	} // updateCompanyA - function
 
 	public Company getCompanyA(long id) {
-		//TODO:
+		
 		CompanyDBDAO coDB = new CompanyDBDAO();
 		Company c = new Company();
 		c = coDB.getCompany(id);
@@ -69,7 +62,7 @@ public class AdminFacade {
 	} // getCompanyA - function
 	
 	public Collection<Company> getAllCompaniesA() {
-		//TODO:
+	
 		CompanyDBDAO coDB = new CompanyDBDAO();
 		return coDB.getAllCompanies();
 		
@@ -81,14 +74,29 @@ public class AdminFacade {
 	 */
 	
 	public void createCustomerA(Customer customer) {
-		//TODO:
+		
 		CustomerDBDAO cuDB = new CustomerDBDAO();
 		cuDB.createCustomer(customer);
 	} // createCustomerA - function
 	
-	public void removeCustomer(Customer customer) {
-		//TODO:
+	public void removeCustomerA(Customer customer) {
+		//TODO: it's working BUT we need to delete the customers coupons for the Table customer_coupon.
 		CustomerDBDAO cuDB = new CustomerDBDAO();
 		cuDB.removeCustomer(customer);
+	}
+	
+	public void updateCustomerA(Customer customer) {
+		// TODO:
+		CustomerDBDAO cuDB = new CustomerDBDAO();
+		cuDB.updateCustomer(customer);
+	} // createCustomerA - function
+	
+	public boolean login(String userName, int password) {
+		if(userName == "admin" || password == 1234) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }

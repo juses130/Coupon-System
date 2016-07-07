@@ -12,6 +12,8 @@ public class CompanyFacade {
 	public void createCouponF(Coupon coupon) {
 		
 		CouponDBDAO cou = new CouponDBDAO();
+		short companyCreator = 1;
+		cou.setCreator(companyCreator);
 		cou.createCoupon(coupon);
 		
 	} // createCouponF

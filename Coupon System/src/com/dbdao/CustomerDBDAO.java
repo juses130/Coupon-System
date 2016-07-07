@@ -23,7 +23,9 @@ import com.sun.xml.internal.ws.resources.ProviderApiMessages;
  */
 
 public class CustomerDBDAO implements CustomerDAO {
-
+	
+	public CustomerDBDAO() {}
+	
 	@Override
 	public void createCustomer(Customer customer) {
 		
@@ -69,60 +71,14 @@ public class CustomerDBDAO implements CustomerDAO {
 				} // finally
 				
 			} // createCompany - Function
-	
-
-	public CustomerDBDAO() {}
 
 	@Override
 	public void removeCustomer(Customer customer) {
-		//TODO: create remove by object Customer.
 		
+		removeMethod(customer.getId(), "customer");
+		removeMethod(customer.getId(), "customer_coupon");
 	}
-	
-	public void removeCustomer(long id) throws SQLException{
-		// test
-		
-		try {
-			DBconnector.getCon();
-			//String compName, email, password;
-			
-			String sqlDELid = "DELETE FROM customer WHERE Cust_id =?" ;
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlDELid);
-			prep.setLong(1, id);
-			prep.executeUpdate();
-			
-		}
-		catch (SQLException e) {
-			e.getMessage();
-		}
-		finally {
-			DBconnector.getInstatce().close();
-		} // finally
-		
-	} // removeCompany - By ID - Functi
 
-	public void removeCustomer(String name) throws SQLException {
-		
-		try {
-			DBconnector.getCon();
-			String sqlDELname = "DELETE FROM Customer WHERE cust_name =?" ;
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlDELname);
-			prep.setString(1, name);
-			
-			prep.executeUpdate();
-			
-			// Letting the other Classes (if they asking) that the Company Removed Succsefully.
-			SharingData.setFlag1(true);
-		}
-		catch (SQLException e) {
-			e.getStackTrace();
-		}
-		finally {
-			DBconnector.getInstatce().close();
-		} // finally
-		
-	} // removeCompany - BY Name - Function
-	
 	@Override
 	public void updateCustomer(Customer customer) {
        try {
@@ -299,6 +255,41 @@ public class CustomerDBDAO implements CustomerDAO {
 	}
 
 
+	/**
+	 * 
+	* This is a remove method - making the deleting of company more flexible and easy.
+	 * It's my add on.
+	 * 
+	 * @param long id
+	 * @param String table
+	 * 
+	 * @author Raziel
+	 */
+	
+	private void removeMethod(long id, String table) {
+		
+		try {
+			DBconnector.getCon();
+			//String compName, email, password;
+			
+			String sqlDELid = "DELETE FROM " + table + " WHERE Cust_ID =?" ;
+			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlDELid);
+			prep.setLong(1, id);
+			prep.executeUpdate();
+			
+		}
+		catch (SQLException e) {
+			e.getMessage();
+		}
+		finally {
+			try {
+				DBconnector.getInstatce().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} // finally
+		
+	} // removeMethod
 	
 
 }
