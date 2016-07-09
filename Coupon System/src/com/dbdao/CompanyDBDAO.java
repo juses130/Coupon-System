@@ -210,7 +210,7 @@ public class CompanyDBDAO implements CompanyDAO {
 		
 		try {
 			DBconnector.getCon();
-			String sql = "SELECT Coup_ID FROM Company_Coupon WHERE Comp_ID=?";
+			String sql = "SELECT Coup_ID FROM coupon WHERE Owner_ID=?";
 			PreparedStatement stat = DBconnector.getInstatce().prepareStatement (sql);
 			stat.setLong(1, compID);
 			ResultSet rs = stat.executeQuery();
@@ -224,7 +224,7 @@ public class CompanyDBDAO implements CompanyDAO {
 	}
 
 	@Override
-	public boolean login(String compName, String password) {
+	public boolean login(long compID, String password) {
 		
 		ResultSet rs1 = null;
 		ResultSet rs2 = null;
@@ -236,7 +236,7 @@ public class CompanyDBDAO implements CompanyDAO {
 			
 			DBconnector.getCon();
 			String sqlName = "SELECT Comp_name, password FROM company WHERE "
-					+ "Comp_name= '" + compName + "'" + " AND " + "password= '" 
+					+ "Comp_ID= '" + compID + "'" + " AND " + "password= '" 
 					+ password + "'";
 			stat1 = DBconnector.getInstatce().createStatement();
 		    rs1 = stat1.executeQuery(sqlName);
@@ -247,7 +247,7 @@ public class CompanyDBDAO implements CompanyDAO {
 				// In case we have the row, we'll return 'true' and set the Company ID to some shared variable.
 				// we need this ID for putting it in other TABLES such as Company_Coupon.
 				hasRows = true;
-				String sqlGetID = "SELECT Comp_id from company WHERE Comp_name='" + compName + "'";
+				String sqlGetID = "SELECT Comp_id from company WHERE Comp_id='" + compID + "'";
 				//System.out.println(hasRows);
 				stat2 = DBconnector.getInstatce().createStatement();
 				rs2 = stat2.executeQuery(sqlGetID);

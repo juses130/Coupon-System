@@ -1,5 +1,8 @@
 package com.facade;
 
+
+import java.util.*;
+
 import com.dbdao.CompanyDBDAO;
 import com.dbdao.CouponDBDAO;
 import com.javabeans.*;
@@ -18,10 +21,19 @@ public class CompanyFacade {
 		
 	} // createCouponF
 	
-   public boolean login(String compName, String password) {
+	public Collection<Coupon> getAllCoupons(long compID) {
+		
+		Collection<Coupon> coupons = new HashSet<>();
+		CompanyDBDAO compDB = new CompanyDBDAO();
+		coupons = compDB.getCoupons(compID);
+		
+		return coupons;
+	}
+	
+   public boolean login(long compID, String password) {
 		
 		CompanyDBDAO db = new CompanyDBDAO();
-		boolean exsistOrNot = db.login(compName, password);
+		boolean exsistOrNot = db.login(compID, password);
 		
 		if(exsistOrNot != true) {
 			return false;

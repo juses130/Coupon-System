@@ -10,6 +10,6 @@ public interface CustomerDAO {
 	public Customer getCustomer(long id);
 	public Collection<Customer> getAllCustomers();
 	public Collection<Coupon> getCoupons();
-	public boolean login(String custName, String password);
+	public boolean login(long custName, String password);
 	
 }

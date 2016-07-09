@@ -4,6 +4,8 @@ import java.sql.*;
 import java.sql.Date;
 import java.util.*;
 
+import javax.xml.crypto.KeySelector.Purpose;
+
 import com.added.functions.DBconnector;
 import com.added.functions.IsExistDB;
 import com.added.functions.SharingData;
@@ -20,16 +22,20 @@ import com.javabeans.CouponType;
 
 public class CouponDBDAO implements CouponDAO{
 
-	private static short creator = 0;
+	/* this instance is helping us to move between 2 methods of creating coupon.
+	 * 1. creating by company. (add new coupon)
+	 * 2. creating by customer. (purchase)
+	 */
+	private static short creatorMethod = 0;
 	
 	@Override
 	public long createCoupon(Coupon coupon) {
 
-		if(creator == 1) {
+		if(creatorMethod == 1) { // if the user is a company 
 			createCouponByCompany(coupon);
 			return coupon.getId();
 		}
-		else if (creator == 2) {
+		else if (creatorMethod == 2) { // if the user is a customer
 			purchaseCouponByCustomer(coupon);
 			return coupon.getId();
 		}
@@ -311,29 +317,38 @@ public class CouponDBDAO implements CouponDAO{
 		
 	}
 
-	private long purchaseCouponByCustomer(Coupon coupon) {
+	private Coupon purchaseCouponByCustomer(Coupon coupon) {
+		Coupon purchasedCoupon = null;
 		
-		long id = -1;
+		try{
+			purchasedCoupon = getCoupon(coupon.getId());
+			
+			DBconnector.getCon();
+			String sqlPurchaseCoupomForCustomer = "INSERT INTO customer_coupon (Cust_id, Coup_id) VALUES (" + SharingData.getIdsShare() + "," + coupon.getId() + ")";
+			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlPurchaseCoupomForCustomer);
+			prep.executeUpdate();
+			prep.close();
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {			
+			try {
+				DBconnector.getInstatce().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} // finally
 		
-//		try{
-//			
-//			DBconnector.getCon();
-//			String sqlQuery = "INSERT INTO customer_coupon (cust_id, coup_id) VALUES (" +  + "," + coupon.getId() + ")";
-//			
-//		}
-//		catch(SQLException e) {
-//			e.printStackTrace();
-//		}
-		
-		return id;
+		return purchasedCoupon;
 	} // createCouponByCustomer
 	
 	private short getCreator() {
-		return creator;
+		return creatorMethod;
 	}
 
 	public void setCreator(short creator) {
-		CouponDBDAO.creator = creator;
+		CouponDBDAO.creatorMethod = creator;
 	}
 	
 } // Class

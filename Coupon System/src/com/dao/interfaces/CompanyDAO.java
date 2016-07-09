@@ -14,6 +14,6 @@ public interface CompanyDAO {
 	public Company getCompany(long id);
 	public Collection<Company> getAllCompanies() ;
 	public Collection<Coupon> getCoupons(long compID);
-	public boolean login(String compName, String password);
+	public boolean login(long compID, String password);
 	
 }

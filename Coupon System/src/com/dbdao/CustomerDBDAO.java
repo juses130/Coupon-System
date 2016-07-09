@@ -217,17 +217,18 @@ public class CustomerDBDAO implements CustomerDAO {
 	}
 
 	@Override
-	public boolean login(String custName, String password) {
+	public boolean login(long custID, String password) {
 		
 		ResultSet rs1 = null;
 		Statement stat1 = null;
+
 
 		boolean hasRows = false;
         try {
 			
 			DBconnector.getCon();
-			String sqlName = "SELECT Cust_name, password FROM customer WHERE "
-					+ "Cust_name= '" + custName + "'" + " AND " + "password= '" 
+			String sqlName = "SELECT Cust_ID, password FROM customer WHERE "
+					+ "Cust_ID= '" + custID + "'" + " AND " + "password= '" 
 					+ password + "'";
 			stat1 = DBconnector.getInstatce().createStatement();
 		    rs1 = stat1.executeQuery(sqlName);
@@ -235,8 +236,8 @@ public class CustomerDBDAO implements CustomerDAO {
 
 			if (rs1.getRow() != 0) {
 				hasRows = true;
-				
-				System.out.println(hasRows);
+				// sharing the id between CustomerDbDAO and CouponDbDAO Classes.
+			SharingData.setIdsShare(custID);
 			}
 
             } catch (SQLException e) {
