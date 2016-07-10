@@ -2,8 +2,6 @@ package com.facade;
 
 import java.sql.SQLException;
 import java.util.Collection;
-
-import com.added.functions.SharingData;
 import com.dbdao.*;
 import com.javabeans.*;
 

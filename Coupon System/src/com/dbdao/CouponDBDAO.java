@@ -3,9 +3,6 @@ package com.dbdao;
 import java.sql.*;
 import java.sql.Date;
 import java.util.*;
-
-import javax.xml.crypto.KeySelector.Purpose;
-
 import com.added.functions.DBconnector;
 import com.added.functions.IsExistDB;
 import com.added.functions.SharingData;
@@ -343,9 +340,9 @@ public class CouponDBDAO implements CouponDAO{
 		return purchasedCoupon;
 	} // createCouponByCustomer
 	
-	private short getCreator() {
-		return creatorMethod;
-	}
+//	private short getCreator() {
+//		return creatorMethod;
+//	}
 
 	public void setCreator(short creator) {
 		CouponDBDAO.creatorMethod = creator;

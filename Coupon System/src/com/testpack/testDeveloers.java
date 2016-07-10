@@ -4,18 +4,13 @@ import java.sql.*;
 import java.time.*;
 import java.util.*;
 
-import com.added.*;
 import com.added.functions.DBconnector;
 import com.added.functions.IsExistDB;
 import com.added.functions.SharingData;
 import com.dbdao.*;
 import com.facade.*;
 import com.javabeans.*;
-import com.sun.webkit.SharedBuffer;
-import com.*;
 
-import sun.invoke.empty.Empty;
-import sun.security.jgss.LoginConfigImpl;
 
 /**
  * 
@@ -296,6 +291,7 @@ public class testDeveloers {
 		 */
 		System.out.print("->> ");
 		
+		@SuppressWarnings("resource")
 		Scanner scanner = new Scanner(System.in);
 		
 		try {
@@ -335,6 +331,7 @@ public class testDeveloers {
 		 * We will use this method anytime we want to input(By Scanner) SHORT variable FOR Facades.
 		 */
         System.out.print("->> ");
+		@SuppressWarnings("resource")
 		Scanner scanner = new Scanner(System.in);
 		
 		try {
@@ -369,6 +366,7 @@ public class testDeveloers {
 	private static long userInputLong() {
 		
 		
+			@SuppressWarnings("resource")
 			Scanner scanner = new Scanner(System.in);
 			System.out.print("->> ");
 			
@@ -386,6 +384,7 @@ public class testDeveloers {
 	
 	private static String userInputString(){
 		System.out.print("->> ");
+		@SuppressWarnings("resource")
 		Scanner scanner = new Scanner(System.in);
 		//scanner.close();
 		return scanner.nextLine();
@@ -396,6 +395,7 @@ public class testDeveloers {
 	private static int userInputInt() {
 		
 		
+		@SuppressWarnings("resource")
 		Scanner scanner = new Scanner(System.in);
 		System.out.print("->> ");
 		
@@ -1199,7 +1199,8 @@ public class testDeveloers {
      */
     
     private static void purchaseCoupon_T() {
-    	Scanner sc = new Scanner(System.in);
+    	@SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
 
     	while(true) {
 
@@ -1339,7 +1340,8 @@ public class testDeveloers {
         String message = userInputString();
         
         System.out.print("NEW Price: ");
-        Scanner sc = new Scanner(System.in);
+        @SuppressWarnings("resource")
+		Scanner sc = new Scanner(System.in);
         double price = sc.nextDouble();
         
         //sc.close();
@@ -1488,7 +1490,8 @@ public class testDeveloers {
             String massage = userInputString();
             
             System.out.print("NEW Price: ");
-            Scanner sc = new Scanner(System.in);
+            @SuppressWarnings("resource")
+			Scanner sc = new Scanner(System.in);
             double price = sc.nextDouble();
             //sc.close();
             

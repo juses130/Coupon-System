@@ -10,10 +10,8 @@ import java.util.HashSet;
 import com.added.functions.DBconnector;
 import com.added.functions.SharingData;
 import com.dao.interfaces.CustomerDAO;
-import com.javabeans.Company;
 import com.javabeans.Coupon;
 import com.javabeans.Customer;
-import com.sun.xml.internal.ws.resources.ProviderApiMessages;
 
 /**
  * This is Customer Database DAO Class.
@@ -199,18 +197,18 @@ public class CustomerDBDAO implements CustomerDAO {
 	@Override
 	public Collection<Coupon> getCoupons() {
 		// TODO: working on this function
-		try {
-
-			DBconnector.getCon();
-			Collection<Coupon> coupons = new HashSet<>();
-			
-			String sql = "SELECT coup_id FROM customer_coupon WHERE cust_id=?";
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sql);
-			//prep.setLong(1, cust_id);
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
+//		try {
+//
+//			DBconnector.getCon();
+//			Collection<Coupon> coupons = new HashSet<>();
+//			
+//			String sql = "SELECT coup_id FROM customer_coupon WHERE cust_id=?";
+//			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sql);
+//			//prep.setLong(1, cust_id);
+//		}
+//		catch (SQLException e) {
+//			e.printStackTrace();
+//		}
 		
 		
 		return null;
