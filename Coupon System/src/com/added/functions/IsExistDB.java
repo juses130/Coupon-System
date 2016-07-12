@@ -32,6 +32,8 @@ public class IsExistDB {
 	 * For now, is only for the idExist().
 	 */
 	private static boolean answer2 = false;
+	
+	private static boolean dosentExistInDB = true;
 
 	// private Constructor
 	private IsExistDB() {}
@@ -45,7 +47,7 @@ public class IsExistDB {
 				ResultSet rs = null;
 				
 				DBconnector.getCon();
-				String sqlSEL = "SELECT Comp_ID FROM coupon.company WHERE Comp_ID= ?" ;
+				String sqlSEL = "SELECT Comp_ID FROM company WHERE Comp_ID= ?" ;
 				PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlSEL);
 				prep.setLong(1, id);
 				rs = prep.executeQuery();
@@ -313,6 +315,82 @@ public class IsExistDB {
 	   
    }
    
+   // Name checker for all Tables, and Colums
+   public static boolean stringExistV2(String table, String column, String name) {
+	   Statement stat = null;
+	   ResultSet rs = null;
+	   //boolean hasRows = false;
+	   try {
+		
+		   DBconnector.getCon();
+			String sqlName = "SELECT " + column + " FROM " + table + " WHERE "
+					+ column + "='" + name + "'";
+			stat = DBconnector.getInstatce().createStatement();
+			rs = stat.executeQuery(sqlName);
+			rs.next();
+		   
+			if (rs.getRow() != 0) {
+				answer = true;
+			}
+			else {
+				answer = false;
+			}
+
+            } catch (SQLException e) {
+	        e.printStackTrace();
+	        
+            } // catch
+		finally {
+			try {
+				DBconnector.getInstatce().close();
+			} catch (SQLException e) {
+				
+			}
+		}// finally
+	   if(answer = true) {
+		   dosentExistInDB = false;
+	   }
+   return answer;
+	   
+   }
+   
+   public static void stringExistV3(String table, String column, String name) {
+	   
+	   ResultSet rs = null;
+	   try {
+			
+		   DBconnector.getCon();
+			String sqlAll = "SELECT " + column + " FROM " + table + " WHERE "
+					+ column + "=?";
+			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlAll);
+			prep.setString(1, name);
+			rs = prep.executeQuery();
+			rs.next();
+
+			boolean hasRow = false;
+			
+			while(rs.next()) {
+				hasRow = true;
+				answer = true;
+			}
+			if(!hasRow) {
+				answer = false;
+			}
+
+            } catch (SQLException e) {
+	        e.getMessage();
+	        
+            } // catch
+		finally {
+			try {
+				DBconnector.getInstatce().close();
+			} catch (SQLException e) {
+				
+			}
+		}// finally
+	   
+   }
+   
  //ID AND Password Checker V2
    public static boolean idPassExistV2Customer(long id, String password) {
 	   
@@ -435,6 +513,16 @@ public class IsExistDB {
 	
 	return answer2;
     }
+
+
+   public static boolean isDosentExistInDB() {
+	return dosentExistInDB;
+}
+
+
+   private static void setDosentExistInDB(boolean dosentExistInDB) {
+	IsExistDB.dosentExistInDB = dosentExistInDB;
+}
 
 
 

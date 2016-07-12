@@ -1,13 +1,16 @@
 package com.dbdao;
 
 import java.sql.*;
+import java.time.chrono.IsoChronology;
 import java.util.Collection;
 import java.util.*;
 
 import com.added.functions.DBconnector;
+import com.added.functions.IsExistDB;
 import com.added.functions.SharingData;
 import com.dao.interfaces.*;
 import com.javabeans.*;
+import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 
 /**
  * This is Company Database DAO Class.
@@ -29,10 +32,10 @@ public class CompanyDBDAO implements CompanyDAO {
 		ResultSet rs = null;
 		
 		try {
+			
 			DBconnector.getCon();
 			String sqlQuery = "INSERT INTO company (COMP_NAME, PASSWORD, EMAIL) VALUES(?,?,?)";
 			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
-			//short cou = 1;
 			
 			// now we will put the in their places.
 			prep.setString(1, company.getCompName());
@@ -56,7 +59,10 @@ public class CompanyDBDAO implements CompanyDAO {
 		} // try 
 		catch (SQLException e) {
 			SharingData.setFlag1(false);
-			e.printStackTrace(); // TODO: by the project guide, WE DON'T NEED TO PRINT the StackTrace.
+			//e.printStackTrace(); // TODO: by the project guide, WE DON'T NEED TO PRINT the StackTrace.
+			
+			SharingData.setExeptionMessage(e.getMessage());
+		
 		} // catch
 		finally {
 			try {
@@ -65,7 +71,6 @@ public class CompanyDBDAO implements CompanyDAO {
 				e.printStackTrace();
 			}
 		} // finally
-		
 	} // createCompany - Function
 	
 	@Override
@@ -85,8 +90,8 @@ public class CompanyDBDAO implements CompanyDAO {
 			
 			DBconnector.getCon();
 			
-			String sqlCmdStr = "UPDATE company SET Comp_name=?, password=?, email=? WHERE Comp_ID=?";
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement (sqlCmdStr);
+			String sqlUpdate = "UPDATE company SET Comp_name=?, password=?, email=? WHERE Comp_ID=?";
+			PreparedStatement prep = DBconnector.getInstatce().prepareStatement (sqlUpdate);
 			prep.setString(1, company.getCompName());
 			prep.setString(2, company.getPassword());
 			prep.setString(3, company.getEmail());
@@ -96,18 +101,15 @@ public class CompanyDBDAO implements CompanyDAO {
 			
 		    // Letting the others (if the asking) that the Company update Succsefully.
 		    SharingData.setFlag1(true);
-		    String tostring = company.toString();
-			SharingData.setVarchar4(tostring);
-
+		    
 			} catch (SQLException e) {
-			e.printStackTrace();
+				SharingData.setExeptionMessage(e.getMessage());
 			}
 			finally {
 			try {
-				
 			DBconnector.getInstatce().close();
 			} catch (SQLException e) {
-			e.printStackTrace();
+			e.getMessage();
 					} // catch
 			} // finally
 				
@@ -287,9 +289,8 @@ public class CompanyDBDAO implements CompanyDAO {
 			DBconnector.getCon();
 			//String compName, email, password;
 			
-			String sqlDELid = "DELETE FROM " + table + " WHERE Comp_ID =?" ;
+			String sqlDELid = "DELETE FROM " + table + " WHERE Comp_ID =" + id ;
 			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlDELid);
-			prep.setLong(1, id);
 			prep.executeUpdate();
 			
 		}

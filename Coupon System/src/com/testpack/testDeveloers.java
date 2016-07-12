@@ -11,6 +11,8 @@ import com.dbdao.*;
 import com.facade.*;
 import com.javabeans.*;
 
+import sun.security.provider.SHA;
+
 
 /**
  * 
@@ -168,7 +170,6 @@ public class testDeveloers {
 				+ "\n" + "8. Update Customer"
 				+ "\n" + "9. Get Customer By ID."
 				+ "\n" + "10. Get All Customers."
-				+ "\n" + "11. Go Back The Main Usage Guide."
 				+ "\n" + "0. Quit."
 				+ "\n");
 		
@@ -184,7 +185,8 @@ public class testDeveloers {
 				+ "\n" + "3. Update Coupon"
 				+ "\n" + "4. Get Coupon By ID."
 				+ "\n" + "5. Get All Coupons of The Company."
-				+ "\n" + "6. Get Coupons By Type."
+				+ "\n" + "6. Get Coupons By Price."
+				+ "\n" + "7. Get Coupons By Type."
 				+ "\n");
 	} // printCompanyFacadeMenu
 	
@@ -206,8 +208,8 @@ public class testDeveloers {
 		System.out.println( "\n" + 
 				 "Developers Test Options: " + "\n"
 				 + "You have 2 Options here: " + "\n");
-		System.out.println("1. Facades Way - Only."
-				+ "\n" + "2. DbDAO Way - Only."
+		System.out.println("1. Facades (New) Way - Only."
+				+ "\n" + "2. DbDAO Methods (Old) Way - Only."
 				+ "\n");
 	}
 
@@ -272,7 +274,18 @@ public class testDeveloers {
 
 	}
 	
+	public static void printDuplicatedName(String type) {
+		System.out.println("Duplicate " + type + " name!");
+		System.out.println("Please insert another NAME.");
+	}
 
+	public static void printExeptionAsMessages() {
+		System.out.println("\n" + "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+		System.out.println("Error: " + SharingData.getExeptionMessage());
+		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"+ "\n");
+
+	}
+	
 	/*/***********************************************
 	 ******   Section C: Scanner-INPUT Section  *****
 	 ************************************************
@@ -350,7 +363,7 @@ public class testDeveloers {
 						System.out.println("You have" + " ** " + counterLEFT + " ** " + "More Attempts To Fail.");
 
 						printGoingBackToUsage();
-						printMainTestChoice();
+						//printMainTestChoice();
 						// Counting the worng times of the user inputs:
 						counterWorngTimes++;
 						
@@ -358,7 +371,7 @@ public class testDeveloers {
 							System.out.println("You've reached the 3 attempts You had. Exiting Program..");
 							return 0;
 						} // if - counterWorngTimes 
-						return 8;
+						return 0;
 		}// catch
 		
 	}
@@ -384,7 +397,7 @@ public class testDeveloers {
 	
 	private static String userInputString(){
 		System.out.print("->> ");
-		@SuppressWarnings("resource")
+		//@SuppressWarnings("resource")
 		Scanner scanner = new Scanner(System.in);
 		//scanner.close();
 		return scanner.nextLine();
@@ -431,12 +444,11 @@ public class testDeveloers {
 	    	System.out.print("Type Your Admin User: ");
 	    	String userName = userInputString();
 	    	System.out.print("Type Your Admin Password: ");
-	    	int password = userInputInt();
-	    	
+	    	String password = userInputString();
 	    	// In the admin, we're just need to check pass&user without to go to the DB.
 	    	AdminFacade ad = new AdminFacade();
 	    	boolean existOrNot = ad.login(userName, password);
-	    	
+	    	System.out.println(existOrNot);
 	   		if(existOrNot == false){
 	        	printNoExistOrCurrect();
 	        	printFacadeMenu();
@@ -486,6 +498,7 @@ public class testDeveloers {
 	        	} // if
 	        	else {
 	        		printFoundInDB("Customer User");
+	        		SharingData.setIdsShare(custID);
 	        		return true;
 	        	} // else
 		} // else if - Customer
@@ -683,21 +696,22 @@ public class testDeveloers {
 			if(SharingData.isFlag1() == true) {
 				System.out.println(c.toString());
 				System.out.println("------------ Company Added Successfully ----------" + "\n");
-				
-			}
+			} // if
 			else {
-				System.out.println(c.toString());
+				if(SharingData.getExeptionMessage() != null) {
+					printExeptionAsMessages();
+				}
+				//System.out.println(c.toString());
 				System.out.println("\n" + "****************************************************");
     			System.out.println("Error - No Changes Were Made :(");
 				System.out.println("\n" + "****************************************************");
 			} // else
 			
-			
+
 			System.out.println("Whould you keep adding companies? Type '1' for YES or any other Number for NO.");
 			short choice1 = userInputShort();
 			
 			if (choice1 != 1) {
-				printAdminFacadeMenu();
 				break;
 			} // if 
 			else {
@@ -796,26 +810,27 @@ public class testDeveloers {
      		        printFoundInDB("Company"); 
      	    		System.out.print("NEW Email: ");
      	    		ca.setEmail(userInputString());
-     	            ca.setPassword(c.getPassword());
+     	    		System.out.print("New Password: ");
+     	            ca.setPassword(userInputString());
      	            
-     		     	
-     	    		System.out.println(c.getCompName());
-     	    		
-     	    		//ca.setCompName(c.getCompName());
-     	    		ca.setEmail(ca.getEmail());
-     	    		ca.setPassword(ca.getPassword());
+     	    		//ca.setEmail(ca.getEmail());
+     	    		//ca.setPassword(ca.getPassword());
      	    		//ca.setId(c.getId());
      	    		//c.setPassword(password);
      	    		
      	     		admF.updateCompanyA(ca);
 
      	     		if(SharingData.isFlag1() == true) {
-     	     			System.out.println("\n" + SharingData.getVarchar4());
+     	     			//System.out.println("\n" + SharingData.getVarchar4());
+     	     			System.out.println(ca.toString());
      	     			System.out.println("------------ Company Updated Successfully ----------" + "\n");
      	     			printGoingBackToUsage();
      	     			//printAdminFacadeMenu();
      	    		} // if - is updated
      	    		else {
+     	    			if(SharingData.getExeptionMessage() != null) {
+     	    				System.out.println(SharingData.getExeptionMessage());	
+     	    			} // if
      	    			System.out.println("\n" + "****************************************************");
      	    			System.out.println("Error - No Changes Were Made :(");
      	    			System.out.println("****************************************************" + "\n");
@@ -911,6 +926,13 @@ public class testDeveloers {
     			printAdminFacadeMenu();
     			break;
     		}
+    		
+//    		IsExistDB.stringExistV3("customer", "cust_name", name);
+//    		if(IsExistDB.getAnswer() == true) {
+//    			printDuplicatedName("Customer");
+//    			printGoingBackToUsage();
+//    			break;
+//    		}
     		Customer c = new Customer();
     		AdminFacade admF = new AdminFacade();
     		
@@ -921,11 +943,14 @@ public class testDeveloers {
     		if(SharingData.isFlag1() == true) {
     			System.out.println(c.toString());
     			System.out.println("------------ Customer Added Successfully ----------" + "\n");
-        		printUsageCustomer();
+        		printAdminFacadeMenu();
     			
     		}
     		else {
-    			System.out.println(admF.toString());
+    			if(SharingData.getExeptionMessage() != null) {
+    				printExeptionAsMessages();
+    			} // if
+    			
     			System.out.println("\n" + "****************************************************");
     			System.out.println("Error - No Changes Were Made :(");
     			System.out.println("\n" + "****************************************************");
@@ -939,7 +964,7 @@ public class testDeveloers {
     			continue;
     		} // if 
     		else {
-    			printDbDAOMenu();
+    			//printDbDAOMenu();
     			break;
     		}
     	
@@ -950,8 +975,7 @@ public class testDeveloers {
      * This Function is blong ONLY to AdminFacade Access.
      * @category AdminFacede Section
      * @author Raziel
-     */
-    
+     */   
     private static void removeCustomer_T() {
     	
     	
@@ -962,16 +986,13 @@ public class testDeveloers {
     			System.out.print("Type Your Customer ID: ");
     			SharingData.setLongNum1(userInputLong());
     			if (SharingData.getLongNum1() == 0) {
-    				
     				printGoingBackToUsage();
-    				printDbDAOMenu();
     				break;
     			}
     			
     			IsExistDB.idExistV2Customer(SharingData.getLongNum1());
     			if(IsExistDB.getAnswer2() == false) {		
          		printNoExistOrCurrect();
-         		printAdminFacadeMenu();
          		break;
     			}
     			else {	
@@ -996,8 +1017,115 @@ public class testDeveloers {
     		} // while loop
     		
     	} // removeCompany - plan
-       
-	
+    
+    /**
+     * This Function is blong ONLY to AdminFacade Access.
+     * @category AdminFacede Section
+     * @author Raziel
+     */
+    private static void updateCustomer_T() {
+    	
+    	while(true) {
+    		 
+    		Customer c = new Customer();
+    		
+    		System.out.println("Update Customer:" + "\n");
+    		System.out.println("Please type your current Customer ID.");
+     		
+    		System.out.print("Customer ID: ");
+            c.setId(userInputLong());
+//            System.out.print("Customer Name:");
+//            c.setCustName(userInputString());
+     		
+            IsExistDB.idExistV2Customer(c.getId());
+            if(IsExistDB.getAnswer2() == false) {		
+     		printNoExistOrCurrect();
+     		printGoingBackToUsage();
+     		//printDbDAOMenu();
+     		break;
+     		} // if
+     		else { // Move on to this block if we got 'TRUE' in the IF condition:
+ 	
+     		printFoundInDB("Customer"); 
+            System.out.print("NEW Customer Name: ");
+            String name = userInputString();
+     	    
+     	    System.out.print("NEW Password: ");
+     	    String password = userInputString();
+     	    System.out.print("NEW Email: ");		     	    		
+     	    String email = userInputString();
+     	    		
+     	    if(name.isEmpty() || password.isEmpty() || email.isEmpty()) {
+     	    	System.out.println("\n" + "Error - the fields are empty!");
+    			printGoingBackToUsage();
+    			printAdminFacadeMenu();
+    			break;
+     	    }
+     	    
+     	    
+     	    AdminFacade admF = new AdminFacade();
+     		     	
+     	    c.setCustName(name);
+     	    c.setPassword(password);
+     	    c.setEmail(email);
+     	    		
+     	    admF.updateCustomerA(c);
+
+     	    if(SharingData.isFlag1() == true) {
+     	    System.out.println("\n" + SharingData.getVarchar4());
+     	    System.out.println("------------ Customer Updated Successfully ----------" + "\n");
+     	    printGoingBackToUsage();
+     	    } // if - is updated
+     	    else {
+     	    	if(SharingData.getExeptionMessage() != null) {
+     	    		printExeptionAsMessages();
+     	    	}
+     	    System.out.println("\n" + "****************************************************");
+     	    System.out.println("Error - No Changes Were Made :(");
+     	    System.out.println("****************************************************" + "\n");
+     	    printGoingBackToUsage();
+     	    } // else - flag
+     	} // else
+
+     		break;
+    	} // while loop
+    	
+    } // updateCompany
+    
+    /**
+     * This Function is blong ONLY to CompanyFacade Access.
+     * @category CompanyFacade Section
+     * @author Raziel
+     */
+    
+    private static void getAllCouponOfCompany_T() {
+    	
+    	System.out.println("Here is your Company Coupons List: ");
+    	CompanyFacade compF = new CompanyFacade();
+    	Set<Coupon> coupons = compF.getCouponsOfCompanyF(SharingData.getIdsShare());
+    	
+    	System.out.println(coupons.toString());
+    }
+    
+    private static void getAllCouponsOfCompanyByPrice_T() {
+    	System.out.println("Here is your Company Coupons List: ");
+    	
+    	Scanner sc = new Scanner(System.in);
+    	System.out.println("Search By Price Range :)");
+    	System.out.print("Min Price: ");
+    	double minPrice = sc.nextDouble();
+    	System.out.print("max Price: ");
+    	double maxPrice = sc.nextDouble();
+    	
+    	CompanyFacade compF = new CompanyFacade();
+    	Set<Coupon> coupons = compF.getCouponsOfCompanyByPrice(minPrice, maxPrice);
+    	System.out.println(coupons.toString());
+    	
+    	if(SharingData.getExeptionMessage() != null) {
+        	System.out.println(SharingData.getExeptionMessage());
+        	}
+    }
+    
     /*/***********************************************
 	 ********   Section G: Customer Section   *******
 	 ************************************************
@@ -1069,73 +1197,11 @@ public class testDeveloers {
     	
     } // CompanyMenu - Function
 
-    private static void updateCustomer_T() {
-    	
-    	while(true) {
-    		 
-    		System.out.println("Update Customer:" + "\n");
-    		System.out.println("Please type your current Customer ID and Password.");
-    		System.out.println("Note: only because it's beta version test - we asking for Customer ID.");
-    		//System.out.println("\n" + "Type The OLD Company Name:");
-     		
-    		System.out.print("Customer ID: ");
-            SharingData.setLongNum1(userInputLong());
-            System.out.print("Customer Password:");
-            SharingData.setVarchar1(userInputString());
-            
-     		// Check if the NAME exist..
-            IsExistDB.idPassExistV2Customer(SharingData.getLongNum1(), SharingData.getVarchar1());
-            if(IsExistDB.getAnswer() == false) {
-     				
-     		printNoExistOrCurrect();
-     		printDbDAOMenu();
-     		break;
-     		} // if
-     		else { // Move on to this block if we got 'TRUE' in the IF condition:
- 	
-     		printFoundInDB("Customer"); 
-     				
-     	    		
-                    System.out.print("NEW Customer Name: ");
-                    String name = userInputString();
-     	    		
-     	    		System.out.print("NEW Password: ");
-     	    		String password = userInputString();
-     	    		     	    		
-     	    		long id = SharingData.getLongNum1();
-     	    		
-     	    		Customer c = new Customer();
-     	    		CustomerDBDAO cusDB = new CustomerDBDAO(); 
-     		     	
-     	    		c.setCustName(name);
-     	    		c.setPassword(password);
-     	    		c.setId(id);
-     	    		
-     	    		cusDB.updateCustomer(c);
-
-     	     		if(SharingData.isFlag1() == true) {
-     	     			System.out.println("\n" + SharingData.getVarchar4());
-     	     			System.out.println("------------ Customer Updated Successfully ----------" + "\n");
-     	     			printGoingBackToUsage();
-     	     			printDbDAOMenu();
-     	    		} // if - is updated
-     	    		else {
-     	    			System.out.println("\n" + "****************************************************");
-     	    			System.out.println("Error - No Changes Were Made :(");
-     	    			System.out.println("****************************************************" + "\n");
-     	    			printGoingBackToUsage();
-     	    		} // else - flag
-     			} // else
-
-     		break;
-    	} // while loop
-    	
-    } // updateCompany
     
     private static void getCustomerID_T() {
     	
     	while(true) {
-        	System.out.println("Type The Customer ID:");
+        	System.out.print("Type The Customer ID:");
         	SharingData.setLongNum1(userInputLong());
         	
         	IsExistDB.idExistV2Customer(SharingData.getLongNum1());
@@ -1152,12 +1218,11 @@ public class testDeveloers {
     			break;
         	} // if - isExist
         	else {
-        		CustomerDBDAO cust = new CustomerDBDAO();
-        		cust.getCustomer(SharingData.getLongNum1());
+        		AdminFacade admF = new AdminFacade();
+        		Customer c = admF.getCustomerA(SharingData.getLongNum1());
         		
         		// Print the Customer:
-        		System.out.println(SharingData.getVarchar2());
-        		
+        		System.out.println(c.toString());
         		if(SharingData.isFlag1() == true) {
 	    			System.out.println("\n" + "------------ Customer Function (getID) Was Run Successfully ----------" + "\n");
         	}
@@ -1170,23 +1235,10 @@ public class testDeveloers {
 
     	while(true) {
     		
-    		System.out.println("Please Type Your Admin Password:");
-    		long password = userInputLong();
-    		
-    		if(password == 123456789) {
-       			CustomerDBDAO db = new CustomerDBDAO();
-    			System.out.println("Here is your Companeis List: " + "\n");
-       			
-    			System.out.println("\n" + db.getAllCustomers().toString());
-    			break;
-    		} // if
-    		else {
- 
-    			System.out.println("Error: worng password!");
-    			printGoingBackToUsage();
-    			break;
-    			
-    		} // else    		
+    		AdminFacade admF = new AdminFacade();
+    		System.out.println("Here is your Customers List: " + "\n");
+    		System.out.println("\n" + admF.getAllCustomersA());
+    		break;		
     	} // while loop
     	
     } // getAllCompanies_T - Function
@@ -1197,7 +1249,6 @@ public class testDeveloers {
      * @category CustomerFacade Section
      * @author Raziel
      */
-    
     private static void purchaseCoupon_T() {
     	@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
@@ -1205,10 +1256,10 @@ public class testDeveloers {
     	while(true) {
 
     	System.out.println("\n" + "Now you can purchase a coupon by is ID. " 
-    			+ "\n" + "But if you don'y know the ID or which coupon do your want, "
+    			+ "\n" + "But if you don't know the ID or which coupon do your want, "
     			+ "please type '0' and go back to Customer Side Menu and check with Get's Options." + "\n");
     	
-    	System.out.println("Type the Coupon ID (Or '0' for exit): ");
+    	System.out.print("Type the Coupon ID (Or '0' for exit): ");
     	long id = sc.nextShort();
     	if(id == 0) {
     		printGoingBackToUsage();
@@ -1224,13 +1275,68 @@ public class testDeveloers {
 	    	coupon.setId(id);
 	    	coupon = cusF.purchaseCoupon(coupon);
 	    	
-	    	System.out.println(coupon.toString());
+	    	System.out.println();
 	    	System.out.println("------------ Coupon Added Successfully ----------" + "\n");
 		}
     	
     	} // while loop
     	
     } // purchaseCoupon_T
+
+    /**
+
+
+     * This Function is blong ONLY to CustomerFacade Access.
+     * @category CustomerFacade Section
+     * @author Raziel
+     */
+    private static void getAllPurchasedCoupon_T() {
+    	
+    	CustomerFacade cusF = new CustomerFacade();
+    	
+    	System.out.println(cusF.getAllPurchasedCoupons(SharingData.getIdsShare()));
+    }
+
+    /**
+
+    * This Function is blong ONLY to CustomerFacade Access.
+     * @category CustomerFacade Section
+     * @author Raziel
+     */
+    private static void getAllCouponsByType_T() {
+    	
+    	CustomerFacade cusF = new CustomerFacade();
+    	
+    	System.out.println("Search By Category :)");
+    	System.out.print("Please insert your CATEGORY: ");
+    	
+    	Set<Coupon> couponsByType = cusF.getAllCouponsByType(CouponType.valueOf(userInputString()));
+    	System.out.println(couponsByType.toString());
+    } // getAllCouponsByType_T
+    
+    /**
+    * This Function is blong ONLY to CustomerFacade Access.
+     * @category CustomerFacade Section
+     * @author Raziel
+     */
+    private static void getAllCouponsByPrice_T() {
+    	
+    	CustomerFacade cusF = new CustomerFacade();
+    	Scanner sc = new Scanner(System.in);
+    	System.out.println("Search By Price Range :)");
+    	System.out.print("Min Price: ");
+    	double minPrice = sc.nextDouble();
+    	System.out.print("max Price: ");
+    	double maxPrice = sc.nextDouble();
+    	
+    	Set<Coupon> coupons = cusF.getAllCouponsByPrice(minPrice, maxPrice);
+    	System.out.println(coupons.toString());
+    	
+    	if(SharingData.getExeptionMessage() != null) {
+    	System.out.println(SharingData.getExeptionMessage());
+    	}
+    } // getAllCouponsByType_T
+       
     
     
     /*/***********************************************
@@ -1394,9 +1500,8 @@ public class testDeveloers {
     	
     	while(true) { 
     		
-    		CouponDBDAO db = new CouponDBDAO();
+    		CompanyFacade comF = new CompanyFacade();
     		
-    		System.out.println("Developers Only! Deleting By Coupon Object..");
     		System.out.print("Type Your Coupon ID: ");
     		SharingData.setLongNum1(userInputLong());
     		if (SharingData.getLongNum1() == 0) {
@@ -1422,7 +1527,7 @@ public class testDeveloers {
     			Coupon c = new Coupon();
 				c.setId(SharingData.getLongNum1());
 				System.out.println(c.toString());
-				db.removeCoupon(c);
+				comF.removeCouponA(c);
 				printCouponRemoved();
     		} // else
     	} // while loop
@@ -1451,10 +1556,9 @@ public class testDeveloers {
         	Coupon coup;
         	
         	// DBDAO Coupon
-        	CouponDBDAO dbcou = new CouponDBDAO();
-        	
-        	//System.out.print("Please Provide The ID Coupon: ");
-            long id = SharingData.getLongNum1();
+
+        	CompanyFacade comF = new CompanyFacade();
+        	long id = SharingData.getLongNum1();
         	
         	System.out.print("NEW Title: ");
             String title = userInputString();
@@ -1506,7 +1610,7 @@ public class testDeveloers {
            
 			coup = new Coupon(title, startDate, endDate, amount, type, massage, price, imag, ownerID);
 			coup.setId(id);
-			dbcou.updateCoupon(coup);
+			comF.updateCouponA(coup);
 			System.out.println("\n" + coup.toString() + "\n");
 			break;
         }
@@ -1530,15 +1634,16 @@ public class testDeveloers {
         	
         	if (IsExistDB.getAnswer2() == false) { // checks if the ID exist in the DB.
         		printNoExistOrCurrect();
-    			printDbDAOMenu();
     			break;
         	} // if - isExist
         	else {
-        		CouponDBDAO coup = new CouponDBDAO();
-        		coup.getCoupon(SharingData.getLongNum1());
+        		CompanyFacade comF = new CompanyFacade();
+        		Coupon c = new Coupon();
+        		c.setId(SharingData.getLongNum1());
+        		c = comF.getCouponA(c);
         		
         		// Print the Coupon:
-        		System.out.println(SharingData.getVarchar2());
+        		System.out.println(c.toString());
         		
         		if(SharingData.isFlag1() == true) {
 	    			System.out.println("\n" + "------------ Coupon Function (getID) Was Run Successfully ----------" + "\n");
@@ -1552,10 +1657,11 @@ public class testDeveloers {
 
     	while(true) {
     		
-       			CompanyFacade compF = new CompanyFacade();
-    			System.out.println("Here is your Couponos List: " + "\n");
-       			System.out.println(compF.getAllCoupons(SharingData.getIdsShare()));
-    			break;
+    		CustomerFacade cusF = new CustomerFacade();
+    		
+    		System.out.println("Here is your Couponos List: " + "\n");
+       		//System.out.println(cusF.getAllCoupons());
+    		break;
     			
     	} // while loop
     	
@@ -1624,12 +1730,17 @@ public class testDeveloers {
 
     		}
     		case 8: {
-    			printGoingBackToUsage();
-    			printFacadeMenu();
+    			updateCustomer_T();
+    			break;
+    		}
+    		case 9: {
+    			getCustomerID_T();
+    		}
+    		case 10: {
+    			getAllCustomers_T();
     			break;
     		}
     		case 0: {
-    			System.out.println("Thank You! Bye Bye :) ");
     			on = false;
     			break;
     		}
@@ -1669,25 +1780,23 @@ public class testDeveloers {
     			break;
     		}
     		case 3: {
-    		System.out.println("Still not ready..");
-    			continue;
+    		    updateCoupon_T();
+    			break;
     		}
     		case 4: {
-        		System.out.println("Still not ready..");
-    			continue;
+    			getCoupon_T();
+    			break;
     		}
     		case 5: {
-        		getAllCoupon_T();
+    			getAllCouponOfCompany_T();
     			break;
     		}
     		case 6: {
-        		System.out.println("Still not ready..");
-    			continue;
+    			getAllCouponsOfCompanyByPrice_T();
+    			break;
     		}
     		case 7: {
-        		System.out.println("Still not ready..");
-    			continue;
-
+    			break;
     		}
     		case 8: {
     			printGoingBackToUsage();
@@ -1728,29 +1837,16 @@ public class testDeveloers {
      			break;
      		} // case 1
      		case 2: {
-     			removeCoupon_T();
+     			getAllPurchasedCoupon_T();
      			break;
      		}
      		case 3: {
-     		System.out.println("Still not ready..");
-     			continue;
+     			getAllCouponsByType_T();
+     			break;
      		}
      		case 4: {
-         		System.out.println("Still not ready..");
-     			continue;
-     		}
-     		case 5: {
-         		System.out.println("Still not ready..");
-     			continue;
-     		}
-     		case 6: {
-         		System.out.println("Still not ready..");
-     			continue;
-     		}
-     		case 7: {
-         		System.out.println("Still not ready..");
-     			continue;
-
+     			getAllCouponsByPrice_T();
+     			break;
      		}
      		case 8: {
      			printGoingBackToUsage();
@@ -1795,23 +1891,6 @@ public class testDeveloers {
 		case 3: {
 			CustomerFacade_T();
 			break;
-		}
-		case 4: {
-			//printFacadeMenu();
-			continue;
-		}
-		case 5: {
-			//printFacadeMenu();
-			continue;
-		}
-		case 6: {
-			//printFacadeMenu();
-			continue;
-		}
-		case 7: {
-			//printFacadeMenu();
-			continue;
-
 		}
 		case 8: {
 			printGoingBackToUsage();

@@ -84,7 +84,11 @@ public class shortTest {
 		CompanyDBDAO db = new CompanyDBDAO();
 		System.out.println(db.getCoupons(1));
 		
+		System.out.println("Test getByPriceV2");
+		CouponDBDAO coupDB = new CouponDBDAO();
+		//coupDB.getCouponByPriceV3("owner_id", 3, 1, 70);
 	
+		//System.out.println(coupDB.getCouponByPriceV2("owner_id", 3, 1, 1000));
 	}
 
 }

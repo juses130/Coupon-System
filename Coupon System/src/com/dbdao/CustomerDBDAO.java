@@ -6,12 +6,18 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 import com.added.functions.DBconnector;
+import com.added.functions.IsExistDB;
 import com.added.functions.SharingData;
 import com.dao.interfaces.CustomerDAO;
 import com.javabeans.Coupon;
 import com.javabeans.Customer;
+import com.sun.jndi.cosnaming.ExceptionMapper;
+
+import ExeptionErrors.ExeptionMessages;
+import ExeptionErrors.NotFoundInDB;
 
 /**
  * This is Customer Database DAO Class.
@@ -29,7 +35,7 @@ public class CustomerDBDAO implements CustomerDAO {
 		
 		// creating ResultSet
 				ResultSet rs = null;
-				long id = 1;
+				//long id = -1;
 				try {
 					DBconnector.getCon();
 					String sqlQuery = "INSERT INTO customer (CUST_NAME, PASSWORD) VALUES(?,?)";
@@ -46,8 +52,8 @@ public class CustomerDBDAO implements CustomerDAO {
 					// This 2 lines will make it run to the next null row. and line 3 will set the ID (next new row).
 					rs = prep.getGeneratedKeys();
 					rs.next();
-					id = rs.getLong(1);
-					customer.setId(id);
+					customer.setId(rs.getLong(1));
+					
 					
 					// Letting the others (if the asking) that the Company Added Succsefully.
 					SharingData.setFlag1(true);
@@ -58,13 +64,14 @@ public class CustomerDBDAO implements CustomerDAO {
 				} // try 
 				catch (SQLException e) {
 					SharingData.setFlag1(false);
-					e.printStackTrace(); // TODO: by the project guide, WE DON'T NEED TO PRINT the StackTrace.
+					//e.printStackTrace(); // TODO: by the project guide, WE DON'T NEED TO PRINT the StackTrace.
+					SharingData.setExeptionMessage(e.getMessage());
 				} // catch
 				finally {
 					try {
 						DBconnector.getInstatce().close();
 					} catch (SQLException e) {
-						e.printStackTrace();
+						SharingData.setExeptionMessage(e.getMessage());;
 					}
 				} // finally
 				
@@ -79,36 +86,7 @@ public class CustomerDBDAO implements CustomerDAO {
 
 	@Override
 	public void updateCustomer(Customer customer) {
-       try {
-			
-			DBconnector.getCon();
-			
-			String sqlCmdStr = "UPDATE customer SET Cust_name=?, password=? WHERE Cust_ID=?";
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement (sqlCmdStr);
-			prep.setString(1, customer.getCustName());
-			prep.setString(2, customer.getPassword());
-			prep.setLong(3, customer.getId());
-			
-			prep.executeUpdate();
-			
-		    // Letting the others (if the asking) that the Company update Succsefully.
-		    SharingData.setFlag1(true);
-		    String tostring = customer.toString();
-			SharingData.setVarchar4(tostring);
-
-			} catch (SQLException e) {
-			e.printStackTrace();
-			}
-			finally {
-			try {
-				
-			DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-			e.printStackTrace();
-					} // catch
-			} // finally
-		
-		
+			updateMethod(customer);
 	}
 
 	@Override
@@ -195,25 +173,34 @@ public class CustomerDBDAO implements CustomerDAO {
 	} // getAllCompanies
 
 	@Override
-	public Collection<Coupon> getCoupons() {
-		// TODO: working on this function
-//		try {
-//
-//			DBconnector.getCon();
-//			Collection<Coupon> coupons = new HashSet<>();
-//			
-//			String sql = "SELECT coup_id FROM customer_coupon WHERE cust_id=?";
-//			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sql);
-//			//prep.setLong(1, cust_id);
-//		}
-//		catch (SQLException e) {
-//			e.printStackTrace();
-//		}
+	public Set<Coupon> getCoupons(long custId) {
+
+		Set<Coupon> coupons = new HashSet<>();
+		CouponDBDAO coupDB = new CouponDBDAO();
 		
-		
-		return null;
+		try {
+			DBconnector.getCon();
+			String sql = "SELECT COUP_ID FROM Customer_Coupon WHERE CUST_ID=?";
+			PreparedStatement stat = DBconnector.getInstatce().prepareStatement(sql);
+			stat.setLong(1, custId);
+			ResultSet rs = stat.executeQuery();
+
+			while (rs.next()) {
+				coupons.add(coupDB.getCoupon(rs.getLong("COUP_ID")));
+			}
+		} catch (SQLException e) {
+			SharingData.setExeptionMessage(e.getMessage());
+		}
+		 return coupons;
 	}
 
+	public Set<Coupon> getAllCouponsByPrice(double minPrice, double maxPrice) {
+		CouponDBDAO coupDB = new CouponDBDAO();
+		Set<Coupon> coupons = coupDB.getCouponByPriceV3("customer_coupon" ,minPrice, maxPrice);
+		
+		return coupons;
+	}
+	
 	@Override
 	public boolean login(long custID, String password) {
 		
@@ -271,9 +258,8 @@ public class CustomerDBDAO implements CustomerDAO {
 			DBconnector.getCon();
 			//String compName, email, password;
 			
-			String sqlDELid = "DELETE FROM " + table + " WHERE Cust_ID =?" ;
+			String sqlDELid = "DELETE FROM " + table + " WHERE Cust_ID =" + id;
 			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlDELid);
-			prep.setLong(1, id);
 			prep.executeUpdate();
 			
 		}
@@ -289,6 +275,47 @@ public class CustomerDBDAO implements CustomerDAO {
 		} // finally
 		
 	} // removeMethod
+	
+	private void updateMethod(Customer customer) {
+		
+       try {
+			
+			DBconnector.getCon();
+			
+			String sqlUpdateCustomerTable = "UPDATE customer SET Cust_name=?, password=? WHERE Cust_ID=?";
+			PreparedStatement prep = DBconnector.getInstatce().prepareStatement (sqlUpdateCustomerTable);
+			prep.setString(1, customer.getCustName());
+			prep.setString(2, customer.getPassword());
+			prep.setLong(3, customer.getId());
+			
+			prep.executeUpdate();
+			//prep.close();
+			
+			String sqlUpdateCustomer_CouponTable = "UPDATE customer_coupon SET Cust_ID=? WHERE Cust_ID=?";
+			PreparedStatement prep1 = DBconnector.getInstatce().prepareStatement(sqlUpdateCustomer_CouponTable);
+			prep1.setLong(1, customer.getId());
+			prep1.setLong(2, customer.getId());
+			prep1.executeUpdate();
+			//prep1.close();
+			
+		    // Letting the others (if the asking) that the Company update Succsefully.
+		    SharingData.setFlag1(true);
+		    String tostring = customer.toString();
+			SharingData.setVarchar4(tostring);
+
+			} catch (SQLException e) {
+				SharingData.setExeptionMessage(e.getMessage());
+			}
+			finally {
+			try {
+				
+			DBconnector.getInstatce().close();
+			} catch (SQLException e) {
+			e.printStackTrace();
+					} // catch
+			} // finally
+		
+	}
 	
 
 }

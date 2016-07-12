@@ -3,6 +3,8 @@ package com.testpack;
 import java.sql.SQLException;
 
 import com.added.functions.*;
+import com.dbdao.CustomerDBDAO;
+import com.facade.AdminFacade;
 import com.javabeans.*;
 import com.mysql.fabric.xmlrpc.base.Data;
 import com.testpack.testDeveloers;
@@ -50,6 +52,17 @@ public class testCo {
 		System.out.println("IsExist: " + IsExistDB.getAnswer());
 		System.out.println("DataRowGetter: " + DataRowGetter.isVerificationExistInDataB());
 		System.out.println("Verify Nubmer: " + DataRowGetter.getVerifyByNumber());
+		
+		System.out.println("Checking AdminFacede Login");
+		AdminFacade ad = new AdminFacade();
+		boolean trueOrNot = ad.login("admin", "1234");
+		System.out.println(trueOrNot);
+		
+		System.out.println("Check CustomerGetAll" + "\n");
+		CustomerDBDAO cusDB = new CustomerDBDAO();
+		System.out.println(cusDB.getAllCustomers());
+		
+		
 		
 //		System.out.println("Good morning :)");
 //		

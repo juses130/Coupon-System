@@ -2,6 +2,8 @@ package com.facade;
 
 import java.sql.SQLException;
 import java.util.Collection;
+
+import com.added.functions.IsExistDB;
 import com.dbdao.*;
 import com.javabeans.*;
 
@@ -9,8 +11,8 @@ import com.javabeans.*;
 
 public class AdminFacade {
 
-//	private static final String userName = "Admin";
-//	private static final int password = 1234;
+	private static final String adminUser = "admin";
+	private static final String password = "1234";
 	
 	// constructor
 	public AdminFacade() {}
@@ -21,7 +23,10 @@ public class AdminFacade {
 	
 	public void createCompanyA(Company company) {
 		CompanyDBDAO coDB = new CompanyDBDAO();
-		coDB.createCompany(company);
+//		IsExistDB.stringExistV3("company", "comp_name", company.getCompName());
+//		if(IsExistDB.isDosentExistInDB() == false) {
+			coDB.createCompany(company);
+//		}
 		
 	} // createCompanyA - function
 	
@@ -73,12 +78,14 @@ public class AdminFacade {
 	
 	public void createCustomerA(Customer customer) {
 		
-		CustomerDBDAO cuDB = new CustomerDBDAO();
-		cuDB.createCustomer(customer);
+		IsExistDB.stringExistV3("customer", "cust_name", customer.getCustName());
+		if(IsExistDB.getAnswer() == false) {
+			CustomerDBDAO cuDB = new CustomerDBDAO();
+			cuDB.createCustomer(customer);
+		}
 	} // createCustomerA - function
 	
 	public void removeCustomerA(Customer customer) {
-		//TODO: it's working BUT we need to delete the customers coupons for the Table customer_coupon.
 		CustomerDBDAO cuDB = new CustomerDBDAO();
 		cuDB.removeCustomer(customer);
 	}
@@ -89,11 +96,34 @@ public class AdminFacade {
 		cuDB.updateCustomer(customer);
 	} // createCustomerA - function
 	
-	public boolean login(String userName, int password) {
-		if(userName == "admin" || password == 1234) {
+	public Customer getCustomerA(long id) {
+		
+		CustomerDBDAO cusDB = new CustomerDBDAO();
+		Customer c = new Customer();
+		c.setId(id);
+		c = cusDB.getCustomer(id);
+		
+		// set the Collection of the Coupons.
+		c.setCoupons(cusDB.getCoupons(id));
+		
+		return c;
+	}
+	
+	public Collection<Customer> getAllCustomersA() {
+		
+		CustomerDBDAO coDB = new CustomerDBDAO();
+		return coDB.getAllCustomers();
+		
+		
+	} // getAllCompaniesA - function
+	
+	public boolean login(String userName, String password) {
+		
+		if(userName.toLowerCase().equals(adminUser) && String.valueOf(password).equals(AdminFacade.password)) {
 			return true;
 		}
 		else {
+			System.out.println(userName + password);
 			return false;
 		}
 	}

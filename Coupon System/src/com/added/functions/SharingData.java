@@ -25,6 +25,7 @@ public abstract class SharingData {
 	private static String varchar2;
 	private static String varchar3;
 	private static String varchar4;
+	private static String exeptionMessage = null;
 	
 	private static short shortNum1;
 	
@@ -183,8 +184,18 @@ public abstract class SharingData {
 	}
 
 
-	public static void setIdsShare(long companyIdShare) {
-		SharingData.IdsShare = companyIdShare;
+	public static void setIdsShare(long IdShare) {
+		SharingData.IdsShare = IdShare;
+	}
+
+
+	public static String getExeptionMessage() {
+		return exeptionMessage;
+	}
+
+
+	public static void setExeptionMessage(String exeptionMessage) {
+		SharingData.exeptionMessage = "\n" + exeptionMessage;
 	}
 
 

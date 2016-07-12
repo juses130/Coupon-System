@@ -1,5 +1,9 @@
 package com.facade;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.dbdao.CouponDBDAO;
 import com.dbdao.CustomerDBDAO;
 import com.javabeans.*;
@@ -15,10 +19,34 @@ public class CustomerFacade {
 		couDB.setCreator(CustomerCreator);
 		long id = couDB.createCoupon(coupon);
 		coupon = couDB.getCoupon(id);
-		System.out.println(coupon.toString());
+		
 		return coupon;
 		
 	} // purchaseCoupon
+	
+	public Set<Coupon> getAllPurchasedCoupons(long custID) {
+		
+		CustomerDBDAO cusDB = new CustomerDBDAO();
+		Set<Coupon> coupons = cusDB.getCoupons(custID);
+		return coupons;
+		
+	} // getAllCoupons
+	
+	public Set<Coupon> getAllCouponsByType(CouponType category) {
+		
+		CouponDBDAO coupDB = new CouponDBDAO();
+		
+		Set<Coupon> coupons = coupDB.getCouponByType(category);
+		return coupons;
+	}
+	
+	public Set<Coupon> getAllCouponsByPrice(double minPrice, double maxPrice) {
+		
+		CouponDBDAO coupDB = new CouponDBDAO();
+		
+		Set<Coupon> coupons = coupDB.getCouponByPriceV3("customer_coupon", minPrice, maxPrice);
+		return coupons;
+	}
 	
     public boolean login(long custID, String password) {
 		

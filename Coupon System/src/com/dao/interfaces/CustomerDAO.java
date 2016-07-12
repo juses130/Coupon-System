@@ -1,6 +1,8 @@
 package com.dao.interfaces;
 
 import java.util.Collection;
+import java.util.Set;
+
 import com.javabeans.*;
 
 public interface CustomerDAO {
@@ -9,7 +11,7 @@ public interface CustomerDAO {
 	public void updateCustomer(Customer updateCustomer);
 	public Customer getCustomer(long id);
 	public Collection<Customer> getAllCustomers();
-	public Collection<Coupon> getCoupons();
+	public Set<Coupon> getCoupons(long custId);
 	public boolean login(long custName, String password);
 	
 }
