@@ -240,6 +240,43 @@ public class CouponDBDAO implements CouponDAO{
 		return coupons;
 	}
 	
+	/**
+	 * 
+	 * This function Version 2 of getCouponByPrice.
+	 * it's saving code writing and we can use this function 
+	 * for Customer needs and Company needs.
+	 * 
+	 * @param column = Cust_ID (for customer) OR Owner_ID (for company) 
+	 * @param id = CompanyID or CustomerID
+	 * @param minPrice (long)
+	 * @param maxPrice (long)
+	 * @return - Set<Coupon>
+	 * 
+	 * @author Raziel
+	 */
+	
+    public Set<Coupon> getCouponByPriceV2(String column, long id, double minPrice, double maxPrice) {
+		
+		Set<Coupon> coupons = new HashSet<>();
+		DBconnector.getCon();
+		try {
+			String sql = "SELECT * FROM coupon WHERE Price > " + minPrice + " AND Price < " + maxPrice +
+					" AND " + column + "=" + id;
+			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sql);
+			
+			ResultSet rs = prep.executeQuery(sql);
+
+			// putting them in the Set<Coupon>
+			while (rs.next()) {
+				coupons.add(getCoupon(rs.getLong(1)));
+			}
+			
+		} catch (SQLException e) {
+			SharingData.setExeptionMessage(e.getMessage());
+		}
+		return coupons;
+	}
+	
 	private void removeMethod(Coupon coupon, String table) {
 		
 		IsExistDB.idExistV2Coupon(coupon.getId(), table);
