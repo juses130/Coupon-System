@@ -151,6 +151,25 @@ public class CouponDBDAO implements CouponDAO{
 		return coupon;
 	} // getCoupon - Function
 
+	public Set<Coupon> getCouponsOfCompany(long compID) {
+		
+        Set<Coupon> coupons = new HashSet<>(); 
+		
+		DBconnector.getCon();
+		
+		try {
+			String sql = "SELECT * FROM Coupon WHERE owner_ID=" + compID;
+			Statement stat = DBconnector.getInstatce().createStatement();
+			ResultSet rs = stat.executeQuery(sql);
+			while (rs.next()) {
+				coupons.add(getCoupon(rs.getLong(1)));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return coupons;
+	} // getCoupon - Function
+	
 	@Override
 	public Collection<Coupon> getAllCoupon() {
 		Set<Coupon> coupons = new HashSet<>(); 
