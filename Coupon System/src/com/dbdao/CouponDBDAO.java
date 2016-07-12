@@ -47,11 +47,19 @@ public class CouponDBDAO implements CouponDAO{
 		
 		//removeMethod(coupon, "coupon");
 		
+		//removeMethod(coupon, "coupon");
 		removeMethod(coupon, "company_coupon");
 		removeMethod(coupon, "customer_coupon");
-		
+		removeMethodByCouponID(coupon.getId());
 	}
 
+	/**
+	 * This fucntion is only for deleting by AdminFacede.
+	 * when we delele a Company, and then we can delete the rest of the coupons she have.
+	 * 
+	 * @param long compID
+	 * @author Raziel
+	 */
 	public void removeCouponOwnerID(long id) {
 		removeMethodByOwnerID(id);
 	}
@@ -128,11 +136,7 @@ public class CouponDBDAO implements CouponDAO{
 			image = rs.getString("image");
 
 			coupon = new Coupon(id, title, stDate.toLocalDate(), enDate.toLocalDate(), amount, type,  message, price, image);
-			String customerInfo = coupon.toString();
-			SharingData.setVarchar2(customerInfo);
 
-			// Letting the other Classes (if they asking) that the getID Function was run Succsefully.
-			SharingData.setFlag1(true);
 		}
 		catch (SQLException e) {
 			e.getStackTrace();
@@ -176,7 +180,7 @@ public class CouponDBDAO implements CouponDAO{
 			String sql = "SELECT coup_id FROM Coupon WHERE Category= '" 
 		    + category.toString().toUpperCase() + "'";
 			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sql);
-			//prep.setString(1, category.toString().toUpperCase());
+			 
 			ResultSet rs = prep.executeQuery(sql);
 
 			while (rs.next()) {
@@ -196,6 +200,27 @@ public class CouponDBDAO implements CouponDAO{
 		return coupons;
 	}
 
+	public Set<Coupon> getCouponByPrice(double minPrice, double maxPrice) {
+		
+		Set<Coupon> coupons = new HashSet<>();
+		DBconnector.getCon();
+		try {
+			String sql = "SELECT * FROM Coupon WHERE Price > " + minPrice + " AND Price < " + maxPrice;
+			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sql);
+			
+			ResultSet rs = prep.executeQuery(sql);
+
+			// putting them in the Set<Coupon>
+			while (rs.next()) {
+				coupons.add(getCoupon(rs.getLong(1)));
+			}
+			
+		} catch (SQLException e) {
+			SharingData.setExeptionMessage(e.getMessage());
+		}
+		return coupons;
+	}
+	
 	private void removeMethod(Coupon coupon, String table) {
 		
 		IsExistDB.idExistV2Coupon(coupon.getId(), table);
@@ -225,10 +250,15 @@ public class CouponDBDAO implements CouponDAO{
 		} // if
 	} // removeMethod
 	
-	private void removeMethodByOwnerID(long id) {
-		
-		IsExistDB.idExistV2Coupon(id, "coupon");
-		if(IsExistDB.getAnswer2() == true) {
+	/**
+	 * This fucntion is only for deleting by AdminFacede.
+	 * when we delele a Company, and then we can delete the rest of the coupons she have.
+	 * 
+	 * @param long compID
+	 * @author Raziel
+	 */
+	private void removeMethodByOwnerID(long compID) {
+
 			PreparedStatement prep = null;
 			
 			try {
@@ -236,7 +266,7 @@ public class CouponDBDAO implements CouponDAO{
 				String sqlDELobject = "DELETE FROM coupon WHERE Owner_ID =?";
 				prep = DBconnector.getInstatce().prepareStatement(sqlDELobject);
 			
-				prep.setLong(1, id);
+				prep.setLong(1, compID);
 				prep.executeUpdate();
 				
 			} catch (SQLException e) {
@@ -251,8 +281,32 @@ public class CouponDBDAO implements CouponDAO{
 					e.printStackTrace();
 				} // catch
 			} // finally
-		} // if
 	} // removeMethod
+
+	private void removeMethodByCouponID(long coupID) {
+		PreparedStatement prep = null;
+		
+		try {
+			DBconnector.getCon();
+			String sqlDELobject = "DELETE FROM coupon WHERE coup_ID =?";
+			prep = DBconnector.getInstatce().prepareStatement(sqlDELobject);
+		
+			prep.setLong(1, coupID);
+			prep.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} // catch
+		
+		finally {
+			try {
+				DBconnector.getInstatce().close();
+			} catch (SQLException e) {
+				
+				e.printStackTrace();
+			} // catch
+		} // finally
+	} // removeMethodByCouponID
 
 	private long createCouponByCompany(Coupon coupon) {
 		
