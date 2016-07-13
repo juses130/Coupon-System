@@ -3,6 +3,8 @@ package com.facade;
 import java.sql.SQLException;
 import java.util.Collection;
 
+import javax.security.auth.login.LoginException;
+
 import com.added.functions.IsExistDB;
 import com.dbdao.*;
 import com.javabeans.*;
@@ -123,7 +125,6 @@ public class AdminFacade {
 			return true;
 		}
 		else {
-			System.out.println(userName + password);
 			return false;
 		}
 	}

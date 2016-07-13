@@ -52,6 +52,14 @@ public class Coupon {
 	
 	//Getters && Setters
 
+	public Coupon(LocalDate endDate, int amount, String message, double price) {
+		this.endDate = endDate;
+		this.amount = amount;
+		this.message = message;
+		this.price = price;
+
+	}
+
 	public long getId() {
 		return id;
 	}

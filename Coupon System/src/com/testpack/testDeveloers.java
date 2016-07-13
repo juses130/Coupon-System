@@ -7,11 +7,8 @@ import java.util.*;
 import com.added.functions.DBconnector;
 import com.added.functions.IsExistDB;
 import com.added.functions.SharingData;
-import com.dbdao.*;
 import com.facade.*;
 import com.javabeans.*;
-
-import sun.security.provider.SHA;
 
 
 /**
@@ -39,74 +36,24 @@ public class testDeveloers {
 	// This static short is helping to the function userInput
 	private static short counterWorngTimes = 0;
     
-	/************************************************
+	/**
 	 ********     Section A: Main Class     *********
-	 ************************************************
+	 *
+	 * This is the main class of the program.
+	 * we have here only 'switch' who calling to all options and function.
+	 *
+	 *@author Raziel
 	 */
 	
 	public static void main(String[] args) throws SQLException {
 		
 		
-		// Printing wellcom, loading JDBC Driver, Printing Main Usage.
+		// Printing wellcom, loading JDBC Driver.
 		printWellcom();
 		loadDriver();
-		printMainTestChoice();
+					
+		Facade_T();
 		
-		
-
-		// boolean just for the MAIN while loop for keeping it running.
-		boolean on = true;
-		
-		while (on) {
-			
-			//printDbDAOMenu();
-			short userChoiceOfSideWork = userInputShort();
-			
-			//Check the user choice and switch it:
-			switch (userChoiceOfSideWork) {
-			
-			
-			case 1: {
-				Facade_T();
-				break;
-			} // case 1
-			case 2: {
-				DbDAO_T();
-				break;
-			}
-			case 3: {
-				printMainTestChoice();
-				continue;
-			}
-			case 4: {
-				printMainTestChoice();
-				continue;
-			}
-			case 5: {
-				printMainTestChoice();
-				continue;
-			}
-			case 6: {
-				printMainTestChoice();
-				continue;
-			}
-			case 7: {
-				printMainTestChoice();
-				continue;
-
-			}
-			case 8: {
-				printMainTestChoice();
-				continue;
-			}
-			case 0: {
-				System.out.println("Thank You! Bye Bye :) ");
-				on = false;
-				break;
-			}
-			} // Switch
-			
-		} // While Loop - Switch
 		
 	} // main
 
@@ -127,7 +74,14 @@ public class testDeveloers {
 		System.out.println("******************");
 
 	}
-
+    /**
+     * Unused Function.
+     * It was used for the first developer's version. 
+     * Now We can test it By the Facade Section.
+     * 
+     * @author Raziel
+     */
+    @Deprecated
 	public static void printDbDAOMenu(){ 
 		
 		System.out.println( "\n" + 
@@ -145,11 +99,10 @@ public class testDeveloers {
 	public static void printFacadeMenu() {
     	System.out.println( "\n" + 
 				 "Facade Usage: " + "\n"
-				 + "You have 3 Option: " + "\n");
+				 + "You have 2 Option: " + "\n");
 		System.out.println("1. Admin Access."
 				+ "\n" + "2. Company Access."
 				+ "\n" + "3. Customer Access."
-				+ "\n" + "8. Go Back The Main Usage Guide."
 				+ "\n" + "0. To Quit" 
 				+ "\n");
     } // printFacadeMenu - Function
@@ -183,10 +136,12 @@ public class testDeveloers {
 		System.out.println("1. Create Coupon."
 				+ "\n" + "2. Remove Coupon."
 				+ "\n" + "3. Update Coupon"
-				+ "\n" + "4. Get Coupon By ID."
-				+ "\n" + "5. Get All Coupons of The Company."
-				+ "\n" + "6. Get Coupons By Price."
+				+ "\n" + "4. Get Company Details."
+				+ "\n" + "5. Get Coupon By ID."
+				+ "\n" + "6. Get All Coupons of The Company."
 				+ "\n" + "7. Get Coupons By Type."
+				+ "\n" + "8. Get Coupons By Price."
+				+ "\n" + "0. Quit."
 				+ "\n");
 	} // printCompanyFacadeMenu
 	
@@ -201,16 +156,6 @@ public class testDeveloers {
 				+ "\n" + "0. To Quit" 
 				+ "\n");
 		
-	}
-	
-	public static void printMainTestChoice() {
-		
-		System.out.println( "\n" + 
-				 "Developers Test Options: " + "\n"
-				 + "You have 2 Options here: " + "\n");
-		System.out.println("1. Facades (New) Way - Only."
-				+ "\n" + "2. DbDAO Methods (Old) Way - Only."
-				+ "\n");
 	}
 
 	public static void printIDnotExist(String userType) {
@@ -228,7 +173,14 @@ public class testDeveloers {
 		System.out.println("****************************************************" + "\n");
 		//printGoingBackToUsage();
 	}
-	
+    /**
+     * Unused Function.
+     * It was used for the first developer's version. 
+     * Now We can test it By the Facade Section.
+     * 
+     * @author Raziel
+     */
+    @Deprecated
 	public static void printEMAILnotExist() {
 		System.out.println("\n" + "****************************************************");
 		System.out.println("Error - The Email dosen't exist in the DataBase :(");
@@ -294,7 +246,7 @@ public class testDeveloers {
 	 * in any place on the test.`
 	 *
 	 */
-	
+
 
 	private static short userInputShort() {
 
@@ -324,7 +276,6 @@ public class testDeveloers {
 			System.out.println("You have" + " ** " + counterLEFT + " ** " + "More Attempts To Fail.");
 
 			printGoingBackToUsage();
-			printMainTestChoice();
 			// Counting the worng times of the user inputs:
 			counterWorngTimes++;
 			
@@ -445,13 +396,12 @@ public class testDeveloers {
 	    	String userName = userInputString();
 	    	System.out.print("Type Your Admin Password: ");
 	    	String password = userInputString();
+	    	
 	    	// In the admin, we're just need to check pass&user without to go to the DB.
 	    	AdminFacade ad = new AdminFacade();
+	    	
 	    	boolean existOrNot = ad.login(userName, password);
-	    	System.out.println(existOrNot);
 	   		if(existOrNot == false){
-	        	printNoExistOrCurrect();
-	        	printFacadeMenu();
 	        	return false;
 	        	} // if
 	        	else {
@@ -519,16 +469,20 @@ public class testDeveloers {
 				}
 	}
 	
-	/*/***********************************************
-	 ********   Section E: DbDAO Switch Part   *******
-	 *************************************************
+	/**
+	 ********   Section E: DbDAO Switch Part   ******
 	 *
 	 * This the section of all the DbDAO functions and methods.
 	 * Here we create the connection between all the methods of DAO and DB.
 	 *
+	 * THIS PART WAS ONLY FOR DEVELOPERS VERSION. IS UNUSED NOW.
+	 *
+	 *@author Raziel
+	 *
 	 */
-    
-    private static void DbDAO_T() throws SQLException{
+    @Deprecated
+    @SuppressWarnings("unused")
+	private static void DbDAO_T() throws SQLException{
     	
     	printDbDAOMenu();
     	//printDbDAOMenu();
@@ -595,12 +549,16 @@ public class testDeveloers {
 	 *
 	 */
 	
-	 // TODO: to change all of this section to Facades access!
+    /**
+     * Unused Function.
+     * It was used for the first developer's version. 
+     * Now We can test it By the Facade Section.
+     * 
+     * @author Raziel
+     */
+    @Deprecated
+    public static void printUsageCompany()  {
 
-    
-    public static void printUsageCompany() {
-
-		
 		System.out.println( "\n" + 
 				 "Company Side: " + "\n"
 				 + "You Have Couple of Options Here (DB is DataBase): " + "\n");
@@ -897,6 +855,8 @@ public class testDeveloers {
     			System.out.println("Here is your Companeis List: " + "\n");
        			
     			System.out.println(admF.getAllCompaniesA().toString());
+        		printAdminFacadeMenu();
+
     			break;
     	} // while loop
     	
@@ -943,8 +903,7 @@ public class testDeveloers {
     		if(SharingData.isFlag1() == true) {
     			System.out.println(c.toString());
     			System.out.println("------------ Customer Added Successfully ----------" + "\n");
-        		printAdminFacadeMenu();
-    			
+        		//printAdminFacadeMenu();
     		}
     		else {
     			if(SharingData.getExeptionMessage() != null) {
@@ -957,7 +916,7 @@ public class testDeveloers {
     		} // else
     		
     		
-    		System.out.println("Whould you keep adding Customers? Type '1' for YES or any other Number for NO.");
+			System.out.println("Whould you keep adding Customers? Type '1' for YES or any other Number for NO.");
     		short choice1 = userInputShort();
     		
     		if (choice1 == 1) {
@@ -1052,10 +1011,8 @@ public class testDeveloers {
      	    
      	    System.out.print("NEW Password: ");
      	    String password = userInputString();
-     	    System.out.print("NEW Email: ");		     	    		
-     	    String email = userInputString();
      	    		
-     	    if(name.isEmpty() || password.isEmpty() || email.isEmpty()) {
+     	    if(name.isEmpty() || password.isEmpty()) {
      	    	System.out.println("\n" + "Error - the fields are empty!");
     			printGoingBackToUsage();
     			printAdminFacadeMenu();
@@ -1067,7 +1024,6 @@ public class testDeveloers {
      		     	
      	    c.setCustName(name);
      	    c.setPassword(password);
-     	    c.setEmail(email);
      	    		
      	    admF.updateCustomerA(c);
 
@@ -1107,18 +1063,31 @@ public class testDeveloers {
     	System.out.println(coupons.toString());
     }
     
+    /** This Function is blong ONLY to CompanyFacade Access.
+    * @category CompanyFacade Section
+    * @author Raziel
+    */
+    private static void getAllCompanyCouponsByType_T() {
+   	
+   	CompanyFacade compF = new CompanyFacade();
+   	
+   	System.out.println("Search By Category :)");
+   	System.out.print("Please insert your CATEGORY: ");
+   	
+   	Set<Coupon> couponsByType = compF.getCouponsByType(SharingData.getIdsShare() , CouponType.valueOf(userInputString().toUpperCase()));
+   	System.out.println(couponsByType.toString());
+   } // getAllCouponsByType_T
+    
     private static void getAllCouponsOfCompanyByPrice_T() {
     	System.out.println("Here is your Company Coupons List: ");
     	
     	Scanner sc = new Scanner(System.in);
-    	System.out.println("Search By Price Range :)");
-    	System.out.print("Min Price: ");
-    	double minPrice = sc.nextDouble();
-    	System.out.print("max Price: ");
+    	System.out.print("Type your Maximum Price: ");
     	double maxPrice = sc.nextDouble();
+
     	
     	CompanyFacade compF = new CompanyFacade();
-    	Set<Coupon> coupons = compF.getCouponsOfCompanyByPrice(minPrice, maxPrice);
+    	Set<Coupon> coupons = compF.getCouponsOfCompanyByPrice(maxPrice);
     	System.out.println(coupons.toString());
     	
     	if(SharingData.getExeptionMessage() != null) {
@@ -1138,6 +1107,14 @@ public class testDeveloers {
     
 	 // TODO: to change all of this section to Facades access!
 
+    /**
+     * Unused Function.
+     * It was used for the first developer's version. 
+     * Now We can test it By the Facade Section.
+     * 
+     * @author Raziel
+     */
+    @Deprecated
     public static void printUsageCustomer() {
 
     	// this function is unused in Facade section!
@@ -1155,7 +1132,14 @@ public class testDeveloers {
 				+ "\n");
 		
 	}
-    
+    /**
+     * Unused Function.
+     * It was used for the first developer's version. 
+     * Now We can test it By the Facade Section.
+     * 
+     * @author Raziel
+     */
+    @Deprecated
     private static void CustomerMenu() throws SQLException {
     
     		printUsageCustomer();
@@ -1238,6 +1222,8 @@ public class testDeveloers {
     		AdminFacade admF = new AdminFacade();
     		System.out.println("Here is your Customers List: " + "\n");
     		System.out.println("\n" + admF.getAllCustomersA());
+    		
+    		printAdminFacadeMenu();
     		break;		
     	} // while loop
     	
@@ -1303,15 +1289,21 @@ public class testDeveloers {
      * @category CustomerFacade Section
      * @author Raziel
      */
-    private static void getAllCouponsByType_T() {
+    private static void getAllCustomerCouponsByType_T() {
     	
     	CustomerFacade cusF = new CustomerFacade();
     	
     	System.out.println("Search By Category :)");
     	System.out.print("Please insert your CATEGORY: ");
-    	
-    	Set<Coupon> couponsByType = cusF.getAllCouponsByType(CouponType.valueOf(userInputString()));
-    	System.out.println(couponsByType.toString());
+    	String type = userInputString();
+    	Set<Coupon> couponsByType = null;
+    	try {
+    		couponsByType = cusF.getAllCouponsByType(SharingData.getIdsShare() , CouponType.valueOf(type.toUpperCase()));
+        	System.out.println(couponsByType.toString());
+    	}
+    	catch (IllegalArgumentException | NullPointerException e) {
+    		System.out.println("\n" + "Error! make sure you're putting right the Category");
+    	}
     } // getAllCouponsByType_T
     
     /**
@@ -1320,16 +1312,14 @@ public class testDeveloers {
      * @author Raziel
      */
     private static void getAllCouponsByPrice_T() {
-    	
-    	CustomerFacade cusF = new CustomerFacade();
+    	System.out.println("Here is your Customer Coupons List: ");
     	Scanner sc = new Scanner(System.in);
-    	System.out.println("Search By Price Range :)");
-    	System.out.print("Min Price: ");
-    	double minPrice = sc.nextDouble();
-    	System.out.print("max Price: ");
+    	System.out.print("Type your Maximum Price: ");
     	double maxPrice = sc.nextDouble();
     	
-    	Set<Coupon> coupons = cusF.getAllCouponsByPrice(minPrice, maxPrice);
+    	CustomerFacade cusF = new CustomerFacade();
+    	
+    	Set<Coupon> coupons = cusF.getAllCouponsByPrice(SharingData.getIdsShare(), maxPrice);
     	System.out.println(coupons.toString());
     	
     	if(SharingData.getExeptionMessage() != null) {
@@ -1348,7 +1338,14 @@ public class testDeveloers {
 	 * from the packages in the Coupon System Project.
 	 */
 	 // TODO: to change all of this section to Facades access!
-    
+    /**
+     * Unused Function.
+     * It was used for the first developer's version. 
+     * Now We can test it By the Facade Section.
+     * 
+     * @author Raziel
+     */
+    @Deprecated
     public static void printUsageCoupon() {
 
 		
@@ -1364,7 +1361,14 @@ public class testDeveloers {
 				+ "\n");
 		
 	}
-    
+    /**
+     * Unused Function.
+     * It was used for the first developer's version. 
+     * Now We can test it By the Facade Section.
+     * 
+     * @author Raziel
+     */
+    @Deprecated
     private static void CouponMenu() throws SQLException {
         
     	printUsageCoupon();
@@ -1539,14 +1543,13 @@ public class testDeveloers {
     	while(true) {
     	// TODO: ATTENTION! I have to put here ownerID from the company ID!
 		System.out.print("Coupon ID: ");
-        SharingData.setLongNum1(userInputLong());
+        SharingData.setIdsShare(userInputLong());
     	
         // Check if the NAME exist..
-        IsExistDB.idExistV2Coupon(SharingData.getLongNum1(), "coupon");
+        IsExistDB.idExistV2Coupon(SharingData.getIdsShare(), "coupon");
         if(IsExistDB.getAnswer2() == false) {
  				
  		printNoExistOrCurrect();
- 		printDbDAOMenu();
  		break;
  		} // if
         else {
@@ -1558,25 +1561,8 @@ public class testDeveloers {
         	// DBDAO Coupon
 
         	CompanyFacade comF = new CompanyFacade();
-        	long id = SharingData.getLongNum1();
+        	long id = SharingData.getIdsShare();
         	
-        	System.out.print("NEW Title: ");
-            String title = userInputString();
-	    	
-            System.out.print("In Category: ");
-            String category = userInputString();
-            CouponType type = CouponType.valueOf(category);
-            
-	    	System.out.print("NEW Coupon StartDate.. ");
-			LocalDate startDate = null;
-			System.out.print("Day: ");
-			int startDay = userInputInt();
-			System.out.print("Month: ");
-			int startMonth = userInputInt();
-			System.out.print("Year: ");
-			int startYear = userInputInt();
-			startDate = LocalDate.of(startYear, startMonth, startDay);
-			
 			System.out.print("NEW Coupon EndDate.. ");
 			LocalDate endDate = null;
 			System.out.print("Day: ");
@@ -1590,28 +1576,24 @@ public class testDeveloers {
 			System.out.print("NEW Amount: ");
             int amount = userInputInt();
             
-            System.out.print("NEW Massage: ");
-            String massage = userInputString();
+            System.out.print("NEW Message: ");
+            String message = userInputString();
             
             System.out.print("NEW Price: ");
-            @SuppressWarnings("resource")
 			Scanner sc = new Scanner(System.in);
             double price = sc.nextDouble();
-            //sc.close();
-            
-            System.out.print("NEW Imag link: ");
-            String imag = userInputString();
-            
-            // TODO: change it to CompanyID after I will get here in the CompanyFacade.
-            long ownerID = 0;
-            
-            // TODO: keep it - and be aware to the category.
+                        
 			// putting all the variables 
            
-			coup = new Coupon(title, startDate, endDate, amount, type, massage, price, imag, ownerID);
+			coup = new Coupon(endDate, amount, message, price);
 			coup.setId(id);
 			comF.updateCouponA(coup);
-			System.out.println("\n" + coup.toString() + "\n");
+			
+			if(SharingData.getExeptionMessage() != null) {
+				System.out.println(SharingData.getExeptionMessage());
+			}
+			
+//			System.out.println("Updated Coupon:" + "\n" +  coup.toString() + "\n");
 			break;
         }
         
@@ -1675,22 +1657,22 @@ public class testDeveloers {
 	 * Here you can test it by the 3 UserType below (in the 'prinFacadeMenu()').
 	 *
 	 */
-    
-    
 
     private static void AdminFacade_T() throws SQLException {
     	
+    	// Note: AdminFacade Usage Print is in the login Option.
     	boolean existOrNot = login_T();
     	
     	if(existOrNot != true) {
-    		printIDnotExist("User");
+    		printNoExistOrCurrect();
+    		printGoingBackToUsage();
     	}
     	else {
     		
     	    boolean on = true;
     	    while(on == true) {
         	
-        	printAdminFacadeMenu();
+        	
         	
     		short userChoiceOfSideWork = userInputFadacesShort();
     		//AdminFacade adminF = new AdminFacade();
@@ -1760,7 +1742,6 @@ public class testDeveloers {
     		
     	    boolean on = true;
     	    while(on == true) {
-        	
         	printCompanyFacadeMenu();
         	
     		short userChoiceOfSideWork = userInputFadacesShort();
@@ -1784,24 +1765,25 @@ public class testDeveloers {
     			break;
     		}
     		case 4: {
-    			getCoupon_T();
+    			CompanyFacade comF = new CompanyFacade();
+    			System.out.println(comF.viewCompay(SharingData.getIdsShare()));
     			break;
     		}
     		case 5: {
-    			getAllCouponOfCompany_T();
+    			getCoupon_T();
     			break;
     		}
     		case 6: {
-    			getAllCouponsOfCompanyByPrice_T();
+    			getAllCouponOfCompany_T();
     			break;
     		}
     		case 7: {
+    			getAllCompanyCouponsByType_T();
     			break;
     		}
     		case 8: {
-    			printGoingBackToUsage();
-    			printFacadeMenu();
-    			break;
+    			getAllCouponsOfCompanyByPrice_T();
+    			break;	
     		}
     		case 0: {
     			System.out.println("Thank You! Bye Bye :) ");
@@ -1841,7 +1823,7 @@ public class testDeveloers {
      			break;
      		}
      		case 3: {
-     			getAllCouponsByType_T();
+     			getAllCustomerCouponsByType_T();
      			break;
      		}
      		case 4: {
@@ -1892,15 +1874,9 @@ public class testDeveloers {
 			CustomerFacade_T();
 			break;
 		}
-		case 8: {
-			printGoingBackToUsage();
-			break;
-		}
 		case 0: {
 			System.out.println("Thank You! Bye Bye :) ");
 			on = false;
-			printGoingBackToUsage();
-			printMainTestChoice();
 			break;
 		}
 		
@@ -1921,6 +1897,14 @@ public class testDeveloers {
 	 *
 	 */
     
+    /**
+     * Unused Function.
+     * It was used for the first developer's version. 
+     * Now We can test it By the Facade Section.
+     * 
+     * @author Raziel
+     */
+    @Deprecated
     private static void resetTable_T() throws SQLException {
     	
     	System.out.println("\n" + "This is a Developer method - Truncate Tabels (reset)");

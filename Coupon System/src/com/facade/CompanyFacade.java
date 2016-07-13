@@ -3,10 +3,12 @@ package com.facade;
 
 import java.util.*;
 
+import com.added.functions.SharingData;
 import com.dbdao.CompanyDBDAO;
 import com.dbdao.CouponDBDAO;
 import com.dbdao.CustomerDBDAO;
 import com.javabeans.*;
+import com.sun.jndi.url.corbaname.corbanameURLContextFactory;
 
 public class CompanyFacade {
 
@@ -37,9 +39,20 @@ public class CompanyFacade {
 		couDB.removeCoupon(coupon);
 	}
 	
-	public void updateCouponA(Coupon coupon) {
+	public Coupon updateCouponA(Coupon coupon) {
 		CouponDBDAO cupDB = new CouponDBDAO();
-		cupDB.updateCoupon(coupon);
+		cupDB.updateCouponV2(coupon);
+		
+		return coupon;
+	}
+	
+	public Company viewCompay(long id) {
+		
+		Company c = new Company();
+		CompanyDBDAO comDB = new CompanyDBDAO();
+		c = comDB.getCompany(id);
+		
+		return c;
 	}
 	
 	public Coupon getCouponA(Coupon coupon) {
@@ -50,10 +63,12 @@ public class CompanyFacade {
 		return coupon;
 	}
 	
-	public Collection<Coupon> getCouponsByType(CouponType couponCategory) {
+	public Set<Coupon> getCouponsByType(long custID, CouponType category) {
 		
-		CouponDBDAO couDB = new CouponDBDAO();
-		return couDB.getCouponByType(couponCategory);
+		CouponDBDAO coupDB = new CouponDBDAO();
+		Set<Coupon> coupons = coupDB.getCouponByTypeV2("company_coupon", "comp_id" ,custID, category);
+
+		return coupons;
 
 	}
 	
@@ -65,9 +80,9 @@ public class CompanyFacade {
 
 	}
 	
-	public Set<Coupon> getCouponsOfCompanyByPrice(double minPrice, double maxPrice) {
+	public Set<Coupon> getCouponsOfCompanyByPrice(double maxPrice) {
 		CouponDBDAO coupDB = new CouponDBDAO();
-		Set<Coupon> coupons = coupDB.getCouponByPriceV3("company_coupon" ,minPrice, maxPrice);
+		Set<Coupon> coupons = coupDB.getCouponByPriceV2("company_coupon" ,"comp_id", SharingData.getIdsShare() ,maxPrice);
 		
 		return coupons;	
 	}

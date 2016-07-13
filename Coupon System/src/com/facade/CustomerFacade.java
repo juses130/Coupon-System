@@ -1,9 +1,8 @@
 package com.facade;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 
+import com.added.functions.SharingData;
 import com.dbdao.CouponDBDAO;
 import com.dbdao.CustomerDBDAO;
 import com.javabeans.*;
@@ -32,19 +31,18 @@ public class CustomerFacade {
 		
 	} // getAllCoupons
 	
-	public Set<Coupon> getAllCouponsByType(CouponType category) {
-		
+	public Set<Coupon> getAllCouponsByPrice(long custID ,double maxPrice) {
 		CouponDBDAO coupDB = new CouponDBDAO();
+		Set<Coupon> coupons = coupDB.getCouponByPriceV2("customer_coupon", "Cust_id", custID, maxPrice);
 		
-		Set<Coupon> coupons = coupDB.getCouponByType(category);
-		return coupons;
+		return coupons;	
 	}
 	
-	public Set<Coupon> getAllCouponsByPrice(double minPrice, double maxPrice) {
+	public Set<Coupon> getAllCouponsByType(long custID, CouponType category) {
 		
 		CouponDBDAO coupDB = new CouponDBDAO();
 		
-		Set<Coupon> coupons = coupDB.getCouponByPriceV3("customer_coupon", minPrice, maxPrice);
+		Set<Coupon> coupons = coupDB.getCouponByTypeV2("customer_coupon", "cust_id" ,custID, category);
 		return coupons;
 	}
 	

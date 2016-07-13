@@ -63,7 +63,17 @@ public class CouponDBDAO implements CouponDAO{
 	public void removeCouponOwnerID(long id) {
 		removeMethodByOwnerID(id);
 	}
-	
+	/**
+     * Unused Function.
+     * We have updateCouponV2 Now.
+     * 
+     * You can update with this function the all Coupon.
+     * and in updateCouponV2 you can update only PRICE and END_DATE.
+     * as requsted in the Guide book.
+     * 
+     * @author Raziel
+     */
+	@Deprecated
 	@Override
 	public void updateCoupon(Coupon coupon) {
 		
@@ -106,6 +116,47 @@ public class CouponDBDAO implements CouponDAO{
        
 	}
 
+	public Coupon updateCouponV2(Coupon coupon) {
+		
+		// copy all the coupon to new Coupon Object.
+		Coupon couponUP = null;
+
+	       try {
+	    	   couponUP = getCoupon(coupon.getId());
+	    	   DBconnector.getCon();
+				
+				String sql = "UPDATE Coupon SET End_Date=?, Amount=?, Message=?, Price=? WHERE Coup_ID=?";
+				PreparedStatement prep = DBconnector.getInstatce().prepareStatement (sql);
+				
+				// set all the Coupon to the new one.
+				couponUP.setEndDate(coupon.getEndDate());
+				couponUP.setAmount(coupon.getAmount());
+				couponUP.setMessage(coupon.getMessage());
+				couponUP.setPrice(coupon.getPrice());
+				
+				prep.setDate(1, Date.valueOf(couponUP.getEndDate()));
+				prep.setLong(2, couponUP.getAmount());
+				prep.setString(3, couponUP.getMessage());
+				prep.setDouble(4, couponUP.getPrice());
+				prep.setLong(5, couponUP.getId());
+				
+				prep.executeUpdate();
+				
+				} catch (SQLException e) {
+					SharingData.setExeptionMessage(e.getMessage());
+				}
+				finally {
+				try {
+					
+				DBconnector.getInstatce().close();
+				} catch (SQLException e) {
+				    SharingData.setExeptionMessage(e.getMessage());
+						} // catch
+				} // finally
+
+	       return couponUP;
+		}
+	
 	@Override
 	public Coupon getCoupon(long id) {
 	
@@ -190,6 +241,7 @@ public class CouponDBDAO implements CouponDAO{
 	} // getAllCoupon - function
 
 	@Override
+	@Deprecated
 	public Set<Coupon> getCouponByType(CouponType category) {
 		
 		Set<Coupon> coupons = new HashSet<>();
@@ -206,10 +258,6 @@ public class CouponDBDAO implements CouponDAO{
 				coupons.add(getCoupon(rs.getLong(1)));
 			}
 			
-			// Sharing the results as String :)
-			String customerInfo = coupons.toString();
-			SharingData.setVarchar2(customerInfo);
-
 			// Letting the other Classes (if they asking) that the getID Function was run Succsefully.
 			SharingData.setFlag1(true);
 			
@@ -219,6 +267,34 @@ public class CouponDBDAO implements CouponDAO{
 		return coupons;
 	}
 
+	public Set<Coupon> getCouponByTypeV2(String table, String colmun, long id, CouponType category) {
+		
+		Set<Coupon> coupons = new HashSet<>();
+		
+		DBconnector.getCon();
+		try {
+			String sql = "SELECT coupon.Coup_id FROM coupon JOIN " + table + " ON " + table + ".Coup_ID = coupon.Coup_id WHERE " + table + "." + colmun + "= " + id + " AND "
+					+ "coupon.Category='" + category.toString().toUpperCase() + "'"; 
+			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sql);
+			 
+			ResultSet rs = prep.executeQuery(sql);
+			
+			while (rs.next()) {
+				coupons.add(getCoupon(rs.getLong(1)));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return coupons;
+	}
+    
+	/**
+     * Unused Function.
+     * We have getCouponByPriceV2 Now.
+     * 
+     * @author Raziel
+     */
+    @Deprecated
 	public Set<Coupon> getCouponByPrice(double minPrice, double maxPrice) {
 		
 		Set<Coupon> coupons = new HashSet<>();
@@ -242,38 +318,45 @@ public class CouponDBDAO implements CouponDAO{
 
 	/**
 	 * 
-	 * Function Version 3 of getCouponByPrice.
+	 * Function Version 2 of getCouponByPrice.
 	 * it's saving code writing and we can use this function 
 	 * for Customer needs and Company needs.
 	 * 
 	 * I'ts checking the prices before putting it in the SET<>
 	 * 
 	 * @param table (Customer_Coupom OR Company_Coupon)
-	 * @param minPrice 
-	 * @param maxPrice
-	 * @return - Set<Coupon>
+	 * @param column (Comp_ID OR Cust_ID)
+	 * @param long (compID)
+	 * @param maxPrice (double)
+	 * @return - Set<Coupon> 
 	 */
-	
-    public Set<Coupon> getCouponByPriceV3(String table, double minPrice, double maxPrice) {
+
+    public Set<Coupon> getCouponByPriceV2(String table, String colmun, long compID, double maxPrice) {
     	Set<Coupon> coupons = new HashSet<>();
 		DBconnector.getCon();
 		try {
-			String sql = "SELECT * FROM " + table ;
+			String sql = "SELECT coupon.Coup_id from coupon JOIN " + table + " ON " + table + ".Coup_ID= coupon.Coup_id WHERE " + table + "." + colmun + "=" + compID + " AND coupon.Price <= " + maxPrice;
 			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sql);
-			
 			ResultSet rs = prep.executeQuery(sql);
 
-			//TODO: Why it's nullPointerExeption?
 			// putting them in the Set<Coupon>
 			while (rs.next()) {
-				if(getCoupon(rs.getInt(2)).getPrice() < minPrice) {
-					coupons.add(getCoupon(rs.getLong(2)));
+				
+				if(getCoupon(rs.getLong(1)).getPrice() <= maxPrice) {
+					coupons.add(getCoupon(rs.getLong(1)));
 				}
 				
 			} // while loop
 			
 		} catch (SQLException e) {
 			SharingData.setExeptionMessage(e.getMessage());
+		}
+		finally {
+			try {
+				DBconnector.getInstatce().close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		return coupons;

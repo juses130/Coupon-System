@@ -10,7 +10,6 @@ public class Customer {
 	private String custName;
 	private String password;
 	private Collection<Coupon> coupons;
-	private String email = null;
 	
 	// Constructor
 	public Customer(long id, String custName, String password) {
@@ -60,15 +59,7 @@ public class Customer {
 	public String getPassword() {
 		return password;
 	}
-	
-	public String getEmail() {
-		return email;
-	}
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	
 	
 	
 }

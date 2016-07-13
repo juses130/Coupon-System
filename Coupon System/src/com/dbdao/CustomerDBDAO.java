@@ -194,9 +194,9 @@ public class CustomerDBDAO implements CustomerDAO {
 		 return coupons;
 	}
 
-	public Set<Coupon> getAllCouponsByPrice(double minPrice, double maxPrice) {
+	public Set<Coupon> getAllCouponsByPrice(long custID ,double maxPrice) {
 		CouponDBDAO coupDB = new CouponDBDAO();
-		Set<Coupon> coupons = coupDB.getCouponByPriceV3("customer_coupon" ,minPrice, maxPrice);
+		Set<Coupon> coupons = coupDB.getCouponByPriceV2("customer_coupon" , "cust_id", custID, maxPrice);
 		
 		return coupons;
 	}
