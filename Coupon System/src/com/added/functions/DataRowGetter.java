@@ -76,7 +76,7 @@ public class DataRowGetter {
 					if(IsExistDB.getAnswer() == true) {
 						DBconnector.getCon();
 						
-						/***********************************************************
+						/*/**********************************************************
 						 * IMPORTANT NOTE: the description below is relevant ONLY **
 						 * if the User typed the UserName and Password Currectly. **
 						 ***********************************************************
@@ -115,7 +115,7 @@ public class DataRowGetter {
 				// if we have 3 parameters: User && Password && Email
 				if (countANDcalculate == 111) {
 					
-					/************************************************************************
+					/*/***********************************************************************
 					 * If the Result is: '111' it's tell us that the USER typed:   **********
 					 * UserName, Password, Email.                                  **********
 					 * So now we need to confirm it.                               **********

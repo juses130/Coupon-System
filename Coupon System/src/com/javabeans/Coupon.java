@@ -1,6 +1,8 @@
 package com.javabeans;
 import java.time.LocalDate;
 
+import com.added.functions.IsExistDB;
+
 
 
 
@@ -143,7 +145,7 @@ public class Coupon {
 	@Override
 	public String toString() {
 		return "\n" + "Coupon [id=" + id + ", title=" + title + ", startDate=" + startDate + ", endDate=" + endDate
-				+ ", Category= " + category + ", amount=" + amount + ", message=" + message + ", price=" + price + ", image=" + image + "]";
+				+ ", Category= " + category + ", amount=" + amount + ", message=" + message + ", price=" + price + "$ " + ", image=" + image + "]";
 	}
 
 	public CouponType getType() {
@@ -160,5 +162,6 @@ public class Coupon {
 
 	public void setOwnerID(long ownerID) {
 		this.ownerID = ownerID;
+
 	}
 }

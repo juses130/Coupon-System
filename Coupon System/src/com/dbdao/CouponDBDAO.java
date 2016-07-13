@@ -167,9 +167,8 @@ public class CouponDBDAO implements CouponDAO{
 		CouponType type = null;
 		double price;
 		
-		DBconnector.getCon();
-		
 		try {
+			
 			String sqlSEL = "SELECT * FROM Coupon WHERE Coup_ID= ?" ;
 			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlSEL);
 			prep.setLong(1, id);
@@ -192,13 +191,6 @@ public class CouponDBDAO implements CouponDAO{
 		catch (SQLException e) {
 			e.getStackTrace();
 		}
-		finally {
-			try {
-				DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		} // finally
 		return coupon;
 	} // getCoupon - Function
 
@@ -457,6 +449,9 @@ public class CouponDBDAO implements CouponDAO{
 		ResultSet rs = null;
 		try {
 			
+			IsExistDB.idExist(coupon.getOwnerID());
+			if(IsExistDB.getAnswer2() == true) {
+			
 			// 1. Adding the new coupon to the COUPON TABLE. 
 			
 			DBconnector.getCon();
@@ -481,6 +476,8 @@ public class CouponDBDAO implements CouponDAO{
 			prep.close();
 			rs.close();
 			
+			
+			
 			// 2. Adding the new CouponID to the COMPANY_COUPON TABLE.
 			
 			long compID = coupon.getOwnerID();
@@ -493,10 +490,11 @@ public class CouponDBDAO implements CouponDAO{
 			SharingData.setFlag1(true);
 			String tostring = coupon.toString();
 			SharingData.setVarchar4(tostring);
-			
+		} // if
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
 		finally {
 			try {
 				DBconnector.getInstatce().close();
@@ -534,10 +532,6 @@ public class CouponDBDAO implements CouponDAO{
 		
 		return purchasedCoupon;
 	} // createCouponByCustomer
-	
-//	private short getCreator() {
-//		return creatorMethod;
-//	}
 
 	public void setCreator(short creator) {
 		CouponDBDAO.creatorMethod = creator;
