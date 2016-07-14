@@ -3,12 +3,18 @@ package com.testpack;
 import java.sql.*;
 import java.time.*;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+import javax.swing.JButton;
 
 import com.added.functions.DBconnector;
 import com.added.functions.IsExistDB;
 import com.added.functions.SharingData;
 import com.facade.*;
 import com.javabeans.*;
+import com.sun.jndi.url.dns.dnsURLContext;
+import com.task.and.singleton.CouponSystem;
+import com.task.and.singleton.DailyCouponExpirationTask;
 
 
 /**
@@ -467,6 +473,8 @@ public class testDeveloers {
 				} catch (ClassNotFoundException e) {
 					System.out.println("----------- ERROR: Driver Didn't Loaded -----------------");
 				}
+				// The first connection of the program.
+//				DBconnector.getCon();
 	}
 	
 	/**
@@ -1849,13 +1857,21 @@ public class testDeveloers {
     
     private static void Facade_T() throws SQLException{
     	
+    	// Getting in throw the CouponSystem.
+    	
+    	CouponSystem.getInstance();
+    	try {
+			TimeUnit.SECONDS.sleep(5);
+		} catch (InterruptedException e) {
+			System.out.println(e.getMessage());
+		} // catch
+    	
     	// just for the loop.
     	boolean on = true;
     	
     	while(on == true) {
     	
     	printFacadeMenu();
-    	
 		SharingData.setShortNum1(userInputShort());
 		
 		//Check the user choice and switch it:

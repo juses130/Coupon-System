@@ -6,8 +6,12 @@ import java.util.Collection;
 import javax.security.auth.login.LoginException;
 
 import com.added.functions.IsExistDB;
+import com.dao.interfaces.CompanyDAO;
+import com.dao.interfaces.CouponDAO;
+import com.dao.interfaces.CustomerDAO;
 import com.dbdao.*;
 import com.javabeans.*;
+import com.task.and.singleton.CouponSystem;
 
 
 
@@ -16,8 +20,17 @@ public class AdminFacade {
 	private static final String adminUser = "admin";
 	private static final String password = "1234";
 	
+	private CompanyDAO compDao = null;
+	private CustomerDAO custDao = null;
+	private CouponDAO coupDao = null;
+	
 	// constructor
-	public AdminFacade() {}
+	public AdminFacade() {
+		
+		compDao = CouponSystem.getInstance().getCompDao();
+		custDao = CouponSystem.getInstance().getCustDao();
+		coupDao = CouponSystem.getInstance().getCouponDao();
+	}
 
 	/*
 	 *  Company Access

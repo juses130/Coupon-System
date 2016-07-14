@@ -11,17 +11,12 @@ public class DBconnector {
 	 * or getting the current of the connection (it will be 'getInsance()' ).
 	 */
 	
-	private static Connection con;
+	private static Connection con = null;
 	private static final String url = "jdbc:mysql://localhost:3306/coupon";
 	private static final String userDBname = "root";
 	private static final String passowrdDB = "12345";
 
 	private DBconnector () {}
-	
-	public static Connection getInstatce()
-	{
-		return con;
-	}
 	
 	public static Connection getCon() {
 		
@@ -31,6 +26,11 @@ public class DBconnector {
 			e.printStackTrace();
 		}
 		 return con;
+	}
+	
+	public static Connection getInstatce()
+	{
+		return con;
 	}
 	
 }

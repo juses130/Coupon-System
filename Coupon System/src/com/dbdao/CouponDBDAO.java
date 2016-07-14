@@ -45,9 +45,6 @@ public class CouponDBDAO implements CouponDAO{
 	@Override
 	public void removeCoupon(Coupon coupon) {
 		
-		//removeMethod(coupon, "coupon");
-		
-		//removeMethod(coupon, "coupon");
 		removeMethod(coupon, "company_coupon");
 		removeMethod(coupon, "customer_coupon");
 		removeMethodByCouponID(coupon.getId());
@@ -367,19 +364,11 @@ public class CouponDBDAO implements CouponDAO{
 				long id = coupon.getId();
 				prep.setLong(1, id);
 				prep.executeUpdate();
+				prep.clearBatch();
 				
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} // catch
-			
-			finally {
-				try {
-					DBconnector.getInstatce().close();
-				} catch (SQLException e) {
-					
-					e.printStackTrace();
-				} // catch
-			} // finally
 		} // if
 	} // removeMethod
 	
@@ -395,25 +384,17 @@ public class CouponDBDAO implements CouponDAO{
 			PreparedStatement prep = null;
 			
 			try {
-				DBconnector.getCon();
+//				DBconnector.getCon();
 				String sqlDELobject = "DELETE FROM coupon WHERE Owner_ID =?";
 				prep = DBconnector.getInstatce().prepareStatement(sqlDELobject);
 			
 				prep.setLong(1, compID);
 				prep.executeUpdate();
+				prep.clearBatch();
 				
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} // catch
-			
-			finally {
-				try {
-					DBconnector.getInstatce().close();
-				} catch (SQLException e) {
-					
-					e.printStackTrace();
-				} // catch
-			} // finally
 	} // removeMethod
 
 	private void removeMethodByCouponID(long coupID) {
@@ -426,19 +407,12 @@ public class CouponDBDAO implements CouponDAO{
 		
 			prep.setLong(1, coupID);
 			prep.executeUpdate();
+			prep.clearBatch();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} // catch
-		
-		finally {
-			try {
-				DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-				
-				e.printStackTrace();
-			} // catch
-		} // finally
+
 	} // removeMethodByCouponID
 
 	private long createCouponByCompany(Coupon coupon) {
@@ -473,8 +447,9 @@ public class CouponDBDAO implements CouponDAO{
 			rs.next();
 			id = rs.getLong(1);
 			coupon.setId(id);
-			prep.close();
-			rs.close();
+//			prep.close();
+			prep.clearBatch();
+//			rs.close();
 			
 			
 			
@@ -485,6 +460,7 @@ public class CouponDBDAO implements CouponDAO{
 				"," + coupon.getId() + ");";
 			PreparedStatement prep1 = DBconnector.getInstatce().prepareStatement(sqlQuery1);
 			prep1.executeUpdate();
+			prep1.clearBatch();
 			
 			// Letting the others (if the asking) that the Coupon Added Succsefully.
 			SharingData.setFlag1(true);
@@ -494,14 +470,7 @@ public class CouponDBDAO implements CouponDAO{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		finally {
-			try {
-				DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} // catch
-		} // finally
+
 		
 		return id;
 		
@@ -522,13 +491,7 @@ public class CouponDBDAO implements CouponDAO{
 		catch (SQLException e) {
 			e.printStackTrace();
 		}
-		finally {			
-			try {
-				DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		} // finally
+
 		
 		return purchasedCoupon;
 	} // createCouponByCustomer
