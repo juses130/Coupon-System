@@ -46,9 +46,9 @@ public class IsExistDB {
 				
 				ResultSet rs = null;
 				
-				DBconnector.getCon();
+	
 				String sqlSEL = "SELECT Comp_ID FROM company WHERE Comp_ID= ?" ;
-				PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlSEL);
+				PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlSEL);
 				prep.setLong(1, id);
 				rs = prep.executeQuery();
 				
@@ -66,17 +66,8 @@ public class IsExistDB {
 				}
 				
 			} catch (SQLException e) {
-				e.printStackTrace();
-			} // catch
-			
-			finally {
-				try {
-					DBconnector.getInstatce().close();
-				} catch (SQLException e) {
-					
-				}
-			} // finally
-
+				SharingData.setExeptionMessage(e.getMessage());			
+				} // catch
 	}
 
    public static void idExistV2Customer(long id) {
@@ -85,9 +76,9 @@ public class IsExistDB {
 			
 			ResultSet rs = null;
 			
-			DBconnector.getCon();
+
 			String sqlSEL = "SELECT cust_ID FROM customer WHERE cust_ID= ?" ;
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlSEL);
+			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlSEL);
 			prep.setLong(1, id);
 			rs = prep.executeQuery();
 			
@@ -105,16 +96,8 @@ public class IsExistDB {
 			}
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			SharingData.setExeptionMessage(e.getMessage());
 		} // catch
-		
-		finally {
-			try {
-				DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-				
-			}
-		} // finally
 
 }
 
@@ -124,9 +107,9 @@ public class IsExistDB {
 			
 			ResultSet rs = null;
 			
-			DBconnector.getCon();
+
 			String sqlSEL = "SELECT coup_ID FROM " + table + " WHERE coup_ID= ?" ;
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlSEL);
+			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlSEL);
 			prep.setLong(1, coupID);
 			rs = prep.executeQuery();
 			
@@ -143,16 +126,8 @@ public class IsExistDB {
 			rs.close();
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			SharingData.setExeptionMessage(e.getMessage());
 		} // catch
-		
-		finally {
-			try {
-				DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-				
-			}
-		} // finally
 
 } // idExistV2Coupon
 
@@ -164,14 +139,14 @@ public class IsExistDB {
 			
 			ResultSet rs = null;
 			
-			DBconnector.getCon();
+
 			String sqlkNAME = "SELECT Comp_name FROM coupon.company WHERE Comp_name= ?" ;
-			PreparedStatement prep1 = DBconnector.getInstatce().prepareStatement(sqlkNAME);
+			PreparedStatement prep1 = DBconnectorV2.getConnection().prepareStatement(sqlkNAME);
 			prep1.setString(1, name);
 			rs = prep1.executeQuery();
 		
 			String sqlPassword = "SELECT password FROM coupon.company WHERE `password`= ?" ;
-			PreparedStatement prep2 = DBconnector.getInstatce().prepareStatement(sqlPassword);
+			PreparedStatement prep2 = DBconnectorV2.getConnection().prepareStatement(sqlPassword);
 			prep2.setString(1, password);
 			rs = prep2.executeQuery();
 			
@@ -189,16 +164,9 @@ public class IsExistDB {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			SharingData.setExeptionMessage(e.getMessage());
 		} // catch
-		
-		finally {
-			try {
-				DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-				
-			}
-		} // finally
+
     	
 	} // nameExist - Function
    
@@ -208,10 +176,10 @@ public class IsExistDB {
    		    idExist(id);
 			ResultSet rs = null;
 			
-			DBconnector.getCon();
+
 			
 			String sqlPassword = "SELECT password FROM coupon.company WHERE `password`= ?" ;
-			PreparedStatement prep2 = DBconnector.getInstatce().prepareStatement(sqlPassword);
+			PreparedStatement prep2 = DBconnectorV2.getConnection().prepareStatement(sqlPassword);
 			prep2.setString(1, password);
 			rs = prep2.executeQuery();
 			
@@ -229,16 +197,8 @@ public class IsExistDB {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			SharingData.setExeptionMessage(e.getMessage());
 		} // catch
-		
-		finally {
-			try {
-				DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-				
-			}
-		} // finally
    	
    }
    
@@ -254,7 +214,7 @@ public class IsExistDB {
 			String sqlName = "SELECT Comp_ID, password FROM company WHERE "
 					+ "Comp_ID= " + id + " AND " + "password= '" 
 					+ password + "'";
-			stat = DBconnector.getInstatce().createStatement();
+			stat = DBconnectorV2.getConnection().createStatement();
 			rs = stat.executeQuery(sqlName);
 			rs.next();
 		   
@@ -267,16 +227,8 @@ public class IsExistDB {
 			}
 
             } catch (SQLException e) {
-	        e.printStackTrace();
-	        
+            	SharingData.setExeptionMessage(e.getMessage());	        
             } // catch
-		finally {
-			try {
-				DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-				
-			}
-		}// finally
 	   
 	   return answer;
    
@@ -292,7 +244,7 @@ public class IsExistDB {
 			String sqlName = "SELECT Comp_name, password FROM company WHERE "
 					+ "Comp_name= '" + name + "' AND " + "password= '" 
 					+ password + "'";
-			stat = DBconnector.getInstatce().createStatement();
+			stat = DBconnectorV2.getConnection().createStatement();
 			rs = stat.executeQuery(sqlName);
 			rs.next();
 		   
@@ -301,16 +253,9 @@ public class IsExistDB {
 			}
 
             } catch (SQLException e) {
-	        e.printStackTrace();
+            	SharingData.setExeptionMessage(e.getMessage());
 	        
             } // catch
-		finally {
-			try {
-				DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-				
-			}
-		}// finally
    return answer;
 	   
    }
@@ -325,7 +270,7 @@ public class IsExistDB {
 		   DBconnector.getCon();
 			String sqlName = "SELECT " + column + " FROM " + table + " WHERE "
 					+ column + "='" + name + "'";
-			stat = DBconnector.getInstatce().createStatement();
+			stat = DBconnectorV2.getConnection().createStatement();
 			rs = stat.executeQuery(sqlName);
 			rs.next();
 		   
@@ -337,16 +282,10 @@ public class IsExistDB {
 			}
 
             } catch (SQLException e) {
-	        e.printStackTrace();
+            	SharingData.setExeptionMessage(e.getMessage());
 	        
             } // catch
-		finally {
-			try {
-				DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-				
-			}
-		}// finally
+		
 	   if(answer = true) {
 		   dosentExistInDB = false;
 	   }
@@ -362,7 +301,7 @@ public class IsExistDB {
 		   DBconnector.getCon();
 			String sqlAll = "SELECT " + column + " FROM " + table + " WHERE "
 					+ column + "=?";
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlAll);
+			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlAll);
 			prep.setString(1, name);
 			rs = prep.executeQuery();
 			rs.next();
@@ -381,13 +320,6 @@ public class IsExistDB {
 	        e.getMessage();
 	        
             } // catch
-		finally {
-			try {
-				DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-				
-			}
-		}// finally
 	   
    }
    
@@ -403,7 +335,7 @@ public class IsExistDB {
 			String sqlName = "SELECT Cust_ID, password FROM customer WHERE "
 					+ "Cust_ID= " + id + " AND " + "password= '" 
 					+ password + "'";
-			stat = DBconnector.getInstatce().createStatement();
+			stat = DBconnectorV2.getConnection().createStatement();
 			rs = stat.executeQuery(sqlName);
 			rs.next();
 		   
@@ -415,16 +347,9 @@ public class IsExistDB {
 			}
 
             } catch (SQLException e) {
-	        e.printStackTrace();
+            	SharingData.setExeptionMessage(e.getMessage());
 	        
             } // catch
-		finally {
-			try {
-				DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-				
-			}
-		}// finally
 	   
 	   return answer;
    
@@ -440,7 +365,7 @@ public class IsExistDB {
 			String sqlName = "SELECT Cust_name, password FROM customer WHERE "
 					+ "Cust_name= '" + name + "' AND " + "password= '" 
 					+ password + "'";
-			stat = DBconnector.getInstatce().createStatement();
+			stat = DBconnectorV2.getConnection().createStatement();
 			rs = stat.executeQuery(sqlName);
 			rs.next();
 		   
@@ -449,16 +374,9 @@ public class IsExistDB {
 			}
 
             } catch (SQLException e) {
-	        e.printStackTrace();
+	        SharingData.setExeptionMessage(e.getMessage());
 	        
             } // catch
-		finally {
-			try {
-				DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-				
-			}
-		}// finally
    return answer;
 	   
    }
@@ -472,9 +390,9 @@ public class IsExistDB {
 			
 			ResultSet rs = null;
 			
-			DBconnector.getCon();
+
 			String sqlSEL = "SELECT Comp_name FROM coupon.company WHERE Email= ?" ;
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlSEL);
+			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlSEL);
 			prep.setString(1, email);
 			rs = prep.executeQuery();
 			
@@ -490,16 +408,9 @@ public class IsExistDB {
 			}
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			SharingData.setExeptionMessage(e.getMessage());
 		} // catch
 		
-		finally {
-			try {
-				DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-				
-			}
-		} // finally
    	
 	} // nameExist - Function
 

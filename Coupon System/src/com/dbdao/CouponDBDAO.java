@@ -4,6 +4,7 @@ import java.sql.*;
 import java.sql.Date;
 import java.util.*;
 import com.added.functions.DBconnector;
+import com.added.functions.DBconnectorV2;
 import com.added.functions.IsExistDB;
 import com.added.functions.SharingData;
 import com.dao.interfaces.CouponDAO;
@@ -74,14 +75,11 @@ public class CouponDBDAO implements CouponDAO{
 	@Override
 	public void updateCoupon(Coupon coupon) {
 		
-       try {
-
-    	   DBconnector.getCon();
-			
+       try {			
 			
 			String sql = "UPDATE Coupon SET Title=?, Start_Date=?, End_Date=?, Amount=?, "
 					+ "Category=?, Message=?, Price=?, Image=? WHERE Coup_ID=?";
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement (sql);
+			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement (sql);
 			prep.setString(1, coupon.getTitle());
 			prep.setDate(2, Date.valueOf(coupon.getStartDate()));
 			prep.setDate(3, Date.valueOf(coupon.getEndDate()));
@@ -102,14 +100,7 @@ public class CouponDBDAO implements CouponDAO{
 			} catch (SQLException e) {
 			e.printStackTrace();
 			}
-			finally {
-			try {
-				
-			DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-			e.printStackTrace();
-					} // catch
-			} // finally
+			
        
 	}
 
@@ -120,10 +111,9 @@ public class CouponDBDAO implements CouponDAO{
 
 	       try {
 	    	   couponUP = getCoupon(coupon.getId());
-	    	   DBconnector.getCon();
 				
 				String sql = "UPDATE Coupon SET End_Date=?, Amount=?, Message=?, Price=? WHERE Coup_ID=?";
-				PreparedStatement prep = DBconnector.getInstatce().prepareStatement (sql);
+				PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement (sql);
 				
 				// set all the Coupon to the new one.
 				couponUP.setEndDate(coupon.getEndDate());
@@ -142,14 +132,7 @@ public class CouponDBDAO implements CouponDAO{
 				} catch (SQLException e) {
 					SharingData.setExeptionMessage(e.getMessage());
 				}
-				finally {
-				try {
-					
-				DBconnector.getInstatce().close();
-				} catch (SQLException e) {
-				    SharingData.setExeptionMessage(e.getMessage());
-						} // catch
-				} // finally
+				
 
 	       return couponUP;
 		}
@@ -167,7 +150,7 @@ public class CouponDBDAO implements CouponDAO{
 		try {
 			
 			String sqlSEL = "SELECT * FROM Coupon WHERE Coup_ID= ?" ;
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlSEL);
+			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlSEL);
 			prep.setLong(1, id);
 			
 			ResultSet rs = prep.executeQuery();
@@ -186,7 +169,7 @@ public class CouponDBDAO implements CouponDAO{
 
 		}
 		catch (SQLException e) {
-			e.getStackTrace();
+			SharingData.setExeptionMessage(e.getMessage());
 		}
 		return coupon;
 	} // getCoupon - Function
@@ -194,18 +177,16 @@ public class CouponDBDAO implements CouponDAO{
 	public Set<Coupon> getCouponsOfCompany(long compID) {
 		
         Set<Coupon> coupons = new HashSet<>(); 
-		
-		DBconnector.getCon();
-		
+				
 		try {
 			String sql = "SELECT * FROM Coupon WHERE owner_ID=" + compID;
-			Statement stat = DBconnector.getInstatce().createStatement();
+			Statement stat = DBconnectorV2.getConnection().createStatement();
 			ResultSet rs = stat.executeQuery(sql);
 			while (rs.next()) {
 				coupons.add(getCoupon(rs.getLong(1)));
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			SharingData.setExeptionMessage(e.getMessage());
 		}
 		return coupons;
 	} // getCoupon - Function
@@ -214,17 +195,16 @@ public class CouponDBDAO implements CouponDAO{
 	public Collection<Coupon> getAllCoupon() {
 		Set<Coupon> coupons = new HashSet<>(); 
 		
-		DBconnector.getCon();
 		
 		try {
 			String sql = "SELECT coup_id FROM Coupon";
-			Statement stat = DBconnector.getInstatce().createStatement();
+			Statement stat = DBconnectorV2.getConnection().createStatement();
 			ResultSet rs = stat.executeQuery(sql);
 			while (rs.next()) {
 				coupons.add(getCoupon(rs.getLong(1)));
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			SharingData.setExeptionMessage(e.getMessage());
 		}
 		return coupons;
 	} // getAllCoupon - function
@@ -235,11 +215,10 @@ public class CouponDBDAO implements CouponDAO{
 		
 		Set<Coupon> coupons = new HashSet<>();
 		
-		DBconnector.getCon();
 		try {
 			String sql = "SELECT coup_id FROM Coupon WHERE Category= '" 
 		    + category.toString().toUpperCase() + "'";
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sql);
+			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sql);
 			 
 			ResultSet rs = prep.executeQuery(sql);
 
@@ -260,11 +239,10 @@ public class CouponDBDAO implements CouponDAO{
 		
 		Set<Coupon> coupons = new HashSet<>();
 		
-		DBconnector.getCon();
 		try {
 			String sql = "SELECT coupon.Coup_id FROM coupon JOIN " + table + " ON " + table + ".Coup_ID = coupon.Coup_id WHERE " + table + "." + colmun + "= " + id + " AND "
 					+ "coupon.Category='" + category.toString().toUpperCase() + "'"; 
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sql);
+			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sql);
 			 
 			ResultSet rs = prep.executeQuery(sql);
 			
@@ -272,7 +250,7 @@ public class CouponDBDAO implements CouponDAO{
 				coupons.add(getCoupon(rs.getLong(1)));
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			SharingData.setExeptionMessage(e.getMessage());
 		}
 		return coupons;
 	}
@@ -287,10 +265,9 @@ public class CouponDBDAO implements CouponDAO{
 	public Set<Coupon> getCouponByPrice(double minPrice, double maxPrice) {
 		
 		Set<Coupon> coupons = new HashSet<>();
-		DBconnector.getCon();
 		try {
 			String sql = "SELECT * FROM Coupon WHERE Price > " + minPrice + " AND Price < " + maxPrice;
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sql);
+			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sql);
 			
 			ResultSet rs = prep.executeQuery(sql);
 
@@ -322,10 +299,9 @@ public class CouponDBDAO implements CouponDAO{
 
     public Set<Coupon> getCouponByPriceV2(String table, String colmun, long compID, double maxPrice) {
     	Set<Coupon> coupons = new HashSet<>();
-		DBconnector.getCon();
 		try {
 			String sql = "SELECT coupon.Coup_id from coupon JOIN " + table + " ON " + table + ".Coup_ID= coupon.Coup_id WHERE " + table + "." + colmun + "=" + compID + " AND coupon.Price <= " + maxPrice;
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sql);
+			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sql);
 			ResultSet rs = prep.executeQuery(sql);
 
 			// putting them in the Set<Coupon>
@@ -340,13 +316,6 @@ public class CouponDBDAO implements CouponDAO{
 		} catch (SQLException e) {
 			SharingData.setExeptionMessage(e.getMessage());
 		}
-		finally {
-			try {
-				DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
 		
 		return coupons;
     }
@@ -358,16 +327,15 @@ public class CouponDBDAO implements CouponDAO{
 			PreparedStatement prep = null;
 			
 			try {
-				DBconnector.getCon();
 				String sqlDELobject = "DELETE FROM " + table + " WHERE Coup_ID =?";
-				prep = DBconnector.getInstatce().prepareStatement(sqlDELobject);
+				prep = DBconnectorV2.getConnection().prepareStatement(sqlDELobject);
 				long id = coupon.getId();
 				prep.setLong(1, id);
 				prep.executeUpdate();
 				prep.clearBatch();
 				
 			} catch (SQLException e) {
-				e.printStackTrace();
+				SharingData.setExeptionMessage(e.getMessage());
 			} // catch
 		} // if
 	} // removeMethod
@@ -384,16 +352,15 @@ public class CouponDBDAO implements CouponDAO{
 			PreparedStatement prep = null;
 			
 			try {
-//				DBconnector.getCon();
 				String sqlDELobject = "DELETE FROM coupon WHERE Owner_ID =?";
-				prep = DBconnector.getInstatce().prepareStatement(sqlDELobject);
+				prep = DBconnectorV2.getConnection().prepareStatement(sqlDELobject);
 			
 				prep.setLong(1, compID);
 				prep.executeUpdate();
 				prep.clearBatch();
 				
 			} catch (SQLException e) {
-				e.printStackTrace();
+				SharingData.setExeptionMessage(e.getMessage());
 			} // catch
 	} // removeMethod
 
@@ -401,16 +368,15 @@ public class CouponDBDAO implements CouponDAO{
 		PreparedStatement prep = null;
 		
 		try {
-			DBconnector.getCon();
 			String sqlDELobject = "DELETE FROM coupon WHERE coup_ID =?";
-			prep = DBconnector.getInstatce().prepareStatement(sqlDELobject);
+			prep = DBconnectorV2.getConnection().prepareStatement(sqlDELobject);
 		
 			prep.setLong(1, coupID);
 			prep.executeUpdate();
 			prep.clearBatch();
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			SharingData.setExeptionMessage(e.getMessage());
 		} // catch
 
 	} // removeMethodByCouponID
@@ -428,10 +394,9 @@ public class CouponDBDAO implements CouponDAO{
 			
 			// 1. Adding the new coupon to the COUPON TABLE. 
 			
-			DBconnector.getCon();
 			String sqlQuery = "INSERT INTO coupon (Title, Start_Date, End_Date, " + 
 			"Amount, Category, Message, Price, Image, Owner_ID)" + "VALUES(?,?,?,?,?,?,?,?,?)";	
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
 			prep.setString(1, coupon.getTitle());
 			prep.setDate(2, Date.valueOf(coupon.getStartDate()));
 			prep.setDate(3, Date.valueOf(coupon.getEndDate()));
@@ -458,17 +423,13 @@ public class CouponDBDAO implements CouponDAO{
 			long compID = coupon.getOwnerID();
 			String sqlQuery1 = "INSERT INTO company_coupon (Comp_ID ,Coup_ID) VALUES ("+ compID +  
 				"," + coupon.getId() + ");";
-			PreparedStatement prep1 = DBconnector.getInstatce().prepareStatement(sqlQuery1);
+			PreparedStatement prep1 = DBconnectorV2.getConnection().prepareStatement(sqlQuery1);
 			prep1.executeUpdate();
 			prep1.clearBatch();
 			
-			// Letting the others (if the asking) that the Coupon Added Succsefully.
-			SharingData.setFlag1(true);
-			String tostring = coupon.toString();
-			SharingData.setVarchar4(tostring);
 		} // if
 		} catch (SQLException e) {
-			e.printStackTrace();
+			SharingData.setExeptionMessage(e.getMessage());
 		}
 
 		
@@ -482,14 +443,14 @@ public class CouponDBDAO implements CouponDAO{
 		try{
 			purchasedCoupon = getCoupon(coupon.getId());
 			
-			DBconnector.getCon();
 			String sqlPurchaseCoupomForCustomer = "INSERT INTO customer_coupon (Cust_id, Coup_id) VALUES (" + SharingData.getIdsShare() + "," + coupon.getId() + ")";
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlPurchaseCoupomForCustomer);
+			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlPurchaseCoupomForCustomer);
 			prep.executeUpdate();
-			prep.close();
+//			prep.close();
+			prep.clearBatch();
 		}
 		catch (SQLException e) {
-			e.printStackTrace();
+			SharingData.setExeptionMessage(e.getMessage());
 		}
 
 		

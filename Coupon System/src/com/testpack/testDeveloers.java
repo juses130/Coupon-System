@@ -5,16 +5,13 @@ import java.time.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.JButton;
-
 import com.added.functions.DBconnector;
+import com.added.functions.DBconnectorV2;
 import com.added.functions.IsExistDB;
 import com.added.functions.SharingData;
 import com.facade.*;
 import com.javabeans.*;
-import com.sun.jndi.url.dns.dnsURLContext;
 import com.task.and.singleton.CouponSystem;
-import com.task.and.singleton.DailyCouponExpirationTask;
 
 
 /**
@@ -467,17 +464,10 @@ public class testDeveloers {
     		}
 	
 	private static void loadDriver() {
-		// Loading JDBC Driver - Function.
-				try {
-					//String driverName = loadFromFIle();
-					Class.forName("com.mysql.jdbc.Driver");
-					System.out.println("----------- DRIVER LOADED -----------------" + "\n");
-
-				} catch (ClassNotFoundException e) {
-					System.out.println("----------- ERROR: Driver Didn't Loaded -----------------");
-				}
-				// The first connection of the program.
-//				DBconnector.getCon();
+		//String driverName = loadFromFIle();
+//					Class.forName("com.mysql.jdbc.Driver");
+				DBconnectorV2.startPool();
+				System.out.println("----------- DRIVER LOADED -----------------" + "\n");
 	}
 	
 	/**
@@ -1480,7 +1470,6 @@ public class testDeveloers {
 			
 			System.out.println("\n" + "Error - the fields are empty!");
 			printGoingBackToUsage();
-			printDbDAOMenu();
 			break;
 		}
 		
@@ -1865,10 +1854,13 @@ public class testDeveloers {
     	CouponSystem.getInstance();
     	try {
 			TimeUnit.SECONDS.sleep(5);
+			System.out.println("[Expired Coupos Deleted!]");
 		} catch (InterruptedException e) {
 			System.out.println(e.getMessage());
 		} // catch
-		System.out.println("[System Loaded]");
+    	System.out.println("*************************");
+    	System.out.println("[System Loaded]");
+    	System.out.println("*************************");
 
     	// just for the loop.
     	boolean on = true;

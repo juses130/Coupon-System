@@ -16,6 +16,8 @@ public class DBconnector {
 	private static final String userDBname = "root";
 	private static final String passowrdDB = "12345";
 
+	
+	
 	private DBconnector () {}
 	
 	public static Connection getCon() {
@@ -23,7 +25,7 @@ public class DBconnector {
 		 try {
 			con = DriverManager.getConnection(url, userDBname, passowrdDB);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			SharingData.setExeptionMessage(e.getMessage());
 		}
 		 return con;
 	}

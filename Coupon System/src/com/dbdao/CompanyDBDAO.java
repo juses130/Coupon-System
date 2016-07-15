@@ -1,20 +1,17 @@
 package com.dbdao;
 
 import java.sql.*;
-import java.time.chrono.IsoChronology;
 import java.util.Collection;
 import java.util.*;
 
-import com.added.functions.DBconnector;
-import com.added.functions.IsExistDB;
+import com.added.functions.DBconnectorV2;
 import com.added.functions.SharingData;
 import com.dao.interfaces.*;
 import com.javabeans.*;
-import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 
 /**
  * This is Company Database DAO Class.
- * Just impelemnts the methods from CompanyDAO in 'com.dao.intefaces' package. 
+ * Just impelemnts the methods from CompanyDAO in 'com.dao.interfaces' package. 
  * 
  * @author Raziel
  *
@@ -33,9 +30,9 @@ public class CompanyDBDAO implements CompanyDAO {
 		
 		try {
 			
-			DBconnector.getCon();
+			
 			String sqlQuery = "INSERT INTO company (COMP_NAME, PASSWORD, EMAIL) VALUES(?,?,?)";
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
 			
 			// now we will put the in their places.
 			prep.setString(1, company.getCompName());
@@ -59,18 +56,9 @@ public class CompanyDBDAO implements CompanyDAO {
 		} // try 
 		catch (SQLException e) {
 			SharingData.setFlag1(false);
-			//e.printStackTrace(); // TODO: by the project guide, WE DON'T NEED TO PRINT the StackTrace.
-			
 			SharingData.setExeptionMessage(e.getMessage());
 		
 		} // catch
-		finally {
-			try {
-				DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		} // finally
 	} // createCompany - Function
 	
 	@Override
@@ -88,10 +76,10 @@ public class CompanyDBDAO implements CompanyDAO {
 
 		try {
 			
-			DBconnector.getCon();
+			
 			
 			String sqlUpdate = "UPDATE company SET Comp_name=?, password=?, email=? WHERE Comp_ID=?";
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement (sqlUpdate);
+			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement (sqlUpdate);
 			prep.setString(1, company.getCompName());
 			prep.setString(2, company.getPassword());
 			prep.setString(3, company.getEmail());
@@ -105,13 +93,6 @@ public class CompanyDBDAO implements CompanyDAO {
 			} catch (SQLException e) {
 				SharingData.setExeptionMessage(e.getMessage());
 			}
-			finally {
-			try {
-			DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-			e.getMessage();
-					} // catch
-			} // finally
 				
 
 		
@@ -125,9 +106,9 @@ public class CompanyDBDAO implements CompanyDAO {
 		
 		try {
 
-			DBconnector.getCon();
+			
 			String sqlSEL = "SELECT * FROM company WHERE Comp_ID= ?" ;
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlSEL);
+			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlSEL);
 			prep.setLong(1, id);
 			
 			ResultSet rs = prep.executeQuery();
@@ -146,16 +127,8 @@ public class CompanyDBDAO implements CompanyDAO {
 			
 		}
 		catch (SQLException e) {
-			e.getStackTrace();
+			SharingData.setExeptionMessage(e.getMessage());
 		}
-		
-		finally {
-			try {
-				DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		} // finally
 		return c;
 		
 		
@@ -170,8 +143,8 @@ public class CompanyDBDAO implements CompanyDAO {
 		ResultSet rs = null;
 		
 		try {
-			DBconnector.getCon();
-			Statement stat = DBconnector.getInstatce().createStatement();
+			
+			Statement stat = DBconnectorV2.getConnection().createStatement();
 			rs = stat.executeQuery(sql);
 			
 			while(rs.next()) {
@@ -185,17 +158,8 @@ public class CompanyDBDAO implements CompanyDAO {
 			} // while loop
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			SharingData.setExeptionMessage(e.getMessage());
 		} // catch
-		
-		finally {
-			try {
-				rs.close();
-				DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} // catch
-		} // finally
 		
 		
 		return companies;
@@ -210,9 +174,9 @@ public class CompanyDBDAO implements CompanyDAO {
 		CouponDBDAO  couponDB = new CouponDBDAO();
 		
 		try {
-			DBconnector.getCon();
+			
 			String sql = "SELECT Coup_ID FROM coupon WHERE Owner_ID=?";
-			PreparedStatement stat = DBconnector.getInstatce().prepareStatement (sql);
+			PreparedStatement stat = DBconnectorV2.getConnection().prepareStatement (sql);
 			stat.setLong(1, compID);
 			ResultSet rs = stat.executeQuery();
 			while (rs.next()) {
@@ -235,13 +199,14 @@ public class CompanyDBDAO implements CompanyDAO {
 		boolean hasRows = false;
         try {
 			
-			DBconnector.getCon();
+			
 			String sqlName = "SELECT Comp_name, password FROM company WHERE "
 					+ "Comp_ID= '" + compID + "'" + " AND " + "password= '" 
 					+ password + "'";
-			stat1 = DBconnector.getInstatce().createStatement();
+			stat1 = DBconnectorV2.getConnection().createStatement();
 		    rs1 = stat1.executeQuery(sqlName);
 		    rs1.next();
+		    stat1.clearBatch();
 
 			if (rs1.getRow() != 0) {
 				
@@ -250,24 +215,18 @@ public class CompanyDBDAO implements CompanyDAO {
 				hasRows = true;
 				String sqlGetID = "SELECT Comp_id from company WHERE Comp_id='" + compID + "'";
 				//System.out.println(hasRows);
-				stat2 = DBconnector.getInstatce().createStatement();
+				stat2 = DBconnectorV2.getConnection().createStatement();
 				rs2 = stat2.executeQuery(sqlGetID);
 				rs2.next();
 				SharingData.setIdsShare(rs2.getLong(1));
+//				stat2.clearBatch();
 				
 			}
 
             } catch (SQLException e) {
-	        e.printStackTrace();
+            	SharingData.setExeptionMessage(e.getMessage());
 	        
             } // catch
-		finally {
-			try {
-				DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-				
-			}
-		}// finally
 
 	return hasRows;
 	}	
@@ -286,24 +245,17 @@ public class CompanyDBDAO implements CompanyDAO {
 	private void removeMethod(long id, String table) {
 		
 		try {
-			DBconnector.getCon();
+			
 			//String compName, email, password;
 			
 			String sqlDELid = "DELETE FROM " + table + " WHERE Comp_ID =" + id ;
-			PreparedStatement prep = DBconnector.getInstatce().prepareStatement(sqlDELid);
+			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlDELid);
 			prep.executeUpdate();
 			
 		}
 		catch (SQLException e) {
-			e.getMessage();
-		}
-		finally {
-			try {
-				DBconnector.getInstatce().close();
-			} catch (SQLException e) {
-				e.printStackTrace();
+			SharingData.setExeptionMessage(e.getMessage());
 			}
-		} // finally
 		
 	} // removeMethod
 

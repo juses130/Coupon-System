@@ -1,19 +1,15 @@
 package com.facade;
 
 
-import java.sql.SQLException;
 import java.util.*;
 
-import com.added.functions.DBconnector;
 import com.added.functions.SharingData;
 import com.dao.interfaces.CompanyDAO;
 import com.dao.interfaces.CouponDAO;
 import com.dao.interfaces.CustomerDAO;
 import com.dbdao.CompanyDBDAO;
 import com.dbdao.CouponDBDAO;
-import com.dbdao.CustomerDBDAO;
 import com.javabeans.*;
-import com.sun.jndi.url.corbaname.corbanameURLContextFactory;
 import com.task.and.singleton.CouponSystem;
 
 public class CompanyFacade {
