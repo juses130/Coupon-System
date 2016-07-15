@@ -63,7 +63,7 @@ public class DailyCouponExpirationTask implements Runnable {
 		Company company = new Company();
 		company.setCoupons(coupons);
 					while (running) {
-						System.out.println("\n" + "Updating DataBase..." + "\n");
+						System.out.println("\n" + "Wait! - " +"[Deleting Expired Coupons]" + "\n");
 							for (Coupon coupon : company.getCoupons()) {
 								if (coupon.getEndDate().isBefore(LocalDate.now())) {
 									deleteCoupon(coupon);

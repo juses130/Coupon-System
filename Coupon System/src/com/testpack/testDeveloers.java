@@ -25,6 +25,9 @@ import com.task.and.singleton.DailyCouponExpirationTask;
  * This is a Test Class for our Project. 
  * Attention! -> THIS IS NOT THE REQUESTED TEST IN THE PROJECT GUIDE INSTRUCTIONS - it's only for us, the Developers.
  *
+ * This test was built during the construction methods and other 
+ * requirements for the first phase of the project.
+ *
  * This Test-Class is divided to Sections.
  * Every section has couple of methods and functions.
  * Every section has a job here.
@@ -57,7 +60,7 @@ public class testDeveloers {
 		// Printing wellcom, loading JDBC Driver.
 		printWellcom();
 		loadDriver();
-					
+		
 		Facade_T();
 		
 		
@@ -1865,7 +1868,8 @@ public class testDeveloers {
 		} catch (InterruptedException e) {
 			System.out.println(e.getMessage());
 		} // catch
-    	
+		System.out.println("[System Loaded]");
+
     	// just for the loop.
     	boolean on = true;
     	
