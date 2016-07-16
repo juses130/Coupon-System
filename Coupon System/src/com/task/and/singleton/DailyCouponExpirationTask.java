@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import com.added.functions.DBconnectorV2;
+import com.added.functions.DBconnectorV3;
 import com.added.functions.SharingData;
 import com.dao.interfaces.*;
 import com.dbdao.CouponDBDAO;
@@ -39,7 +40,7 @@ public class DailyCouponExpirationTask implements Runnable {
 		
 		try {
 		String sqlSelectByEndDate = "SELECT * FROM coupon WHERE End_Date < CURDATE()";
-		PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlSelectByEndDate, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+		PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlSelectByEndDate, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
 		rs = prep.executeQuery(sqlSelectByEndDate);
 		CouponDBDAO coupDB = new CouponDBDAO();
 		

@@ -4,7 +4,7 @@ import java.sql.*;
 import java.sql.Date;
 import java.util.*;
 import com.added.functions.DBconnector;
-import com.added.functions.DBconnectorV2;
+import com.added.functions.DBconnectorV3;
 import com.added.functions.IsExistDB;
 import com.added.functions.SharingData;
 import com.dao.interfaces.CouponDAO;
@@ -79,7 +79,7 @@ public class CouponDBDAO implements CouponDAO{
 			
 			String sql = "UPDATE Coupon SET Title=?, Start_Date=?, End_Date=?, Amount=?, "
 					+ "Category=?, Message=?, Price=?, Image=? WHERE Coup_ID=?";
-			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement (sql);
+			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement (sql);
 			prep.setString(1, coupon.getTitle());
 			prep.setDate(2, Date.valueOf(coupon.getStartDate()));
 			prep.setDate(3, Date.valueOf(coupon.getEndDate()));
@@ -113,7 +113,7 @@ public class CouponDBDAO implements CouponDAO{
 	    	   couponUP = getCoupon(coupon.getId());
 				
 				String sql = "UPDATE Coupon SET End_Date=?, Amount=?, Message=?, Price=? WHERE Coup_ID=?";
-				PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement (sql);
+				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement (sql);
 				
 				// set all the Coupon to the new one.
 				couponUP.setEndDate(coupon.getEndDate());
@@ -150,7 +150,7 @@ public class CouponDBDAO implements CouponDAO{
 		try {
 			
 			String sqlSEL = "SELECT * FROM Coupon WHERE Coup_ID= ?" ;
-			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlSEL);
+			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlSEL);
 			prep.setLong(1, id);
 			
 			ResultSet rs = prep.executeQuery();
@@ -166,6 +166,7 @@ public class CouponDBDAO implements CouponDAO{
 			image = rs.getString("image");
 
 			coupon = new Coupon(id, title, stDate.toLocalDate(), enDate.toLocalDate(), amount, type,  message, price, image);
+			
 
 		}
 		catch (SQLException e) {
@@ -180,7 +181,7 @@ public class CouponDBDAO implements CouponDAO{
 				
 		try {
 			String sql = "SELECT * FROM Coupon WHERE owner_ID=" + compID;
-			Statement stat = DBconnectorV2.getConnection().createStatement();
+			Statement stat = DBconnectorV3.getConnection().createStatement();
 			ResultSet rs = stat.executeQuery(sql);
 			while (rs.next()) {
 				coupons.add(getCoupon(rs.getLong(1)));
@@ -198,7 +199,7 @@ public class CouponDBDAO implements CouponDAO{
 		
 		try {
 			String sql = "SELECT coup_id FROM Coupon";
-			Statement stat = DBconnectorV2.getConnection().createStatement();
+			Statement stat = DBconnectorV3.getConnection().createStatement();
 			ResultSet rs = stat.executeQuery(sql);
 			while (rs.next()) {
 				coupons.add(getCoupon(rs.getLong(1)));
@@ -218,7 +219,7 @@ public class CouponDBDAO implements CouponDAO{
 		try {
 			String sql = "SELECT coup_id FROM Coupon WHERE Category= '" 
 		    + category.toString().toUpperCase() + "'";
-			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sql);
+			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sql);
 			 
 			ResultSet rs = prep.executeQuery(sql);
 
@@ -242,7 +243,7 @@ public class CouponDBDAO implements CouponDAO{
 		try {
 			String sql = "SELECT coupon.Coup_id FROM coupon JOIN " + table + " ON " + table + ".Coup_ID = coupon.Coup_id WHERE " + table + "." + colmun + "= " + id + " AND "
 					+ "coupon.Category='" + category.toString().toUpperCase() + "'"; 
-			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sql);
+			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sql);
 			 
 			ResultSet rs = prep.executeQuery(sql);
 			
@@ -267,7 +268,7 @@ public class CouponDBDAO implements CouponDAO{
 		Set<Coupon> coupons = new HashSet<>();
 		try {
 			String sql = "SELECT * FROM Coupon WHERE Price > " + minPrice + " AND Price < " + maxPrice;
-			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sql);
+			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sql);
 			
 			ResultSet rs = prep.executeQuery(sql);
 
@@ -301,7 +302,7 @@ public class CouponDBDAO implements CouponDAO{
     	Set<Coupon> coupons = new HashSet<>();
 		try {
 			String sql = "SELECT coupon.Coup_id from coupon JOIN " + table + " ON " + table + ".Coup_ID= coupon.Coup_id WHERE " + table + "." + colmun + "=" + compID + " AND coupon.Price <= " + maxPrice;
-			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sql);
+			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sql);
 			ResultSet rs = prep.executeQuery(sql);
 
 			// putting them in the Set<Coupon>
@@ -328,7 +329,7 @@ public class CouponDBDAO implements CouponDAO{
 			
 			try {
 				String sqlDELobject = "DELETE FROM " + table + " WHERE Coup_ID =?";
-				prep = DBconnectorV2.getConnection().prepareStatement(sqlDELobject);
+				prep = DBconnectorV3.getConnection().prepareStatement(sqlDELobject);
 				long id = coupon.getId();
 				prep.setLong(1, id);
 				prep.executeUpdate();
@@ -353,7 +354,7 @@ public class CouponDBDAO implements CouponDAO{
 			
 			try {
 				String sqlDELobject = "DELETE FROM coupon WHERE Owner_ID =?";
-				prep = DBconnectorV2.getConnection().prepareStatement(sqlDELobject);
+				prep = DBconnectorV3.getConnection().prepareStatement(sqlDELobject);
 			
 				prep.setLong(1, compID);
 				prep.executeUpdate();
@@ -369,7 +370,7 @@ public class CouponDBDAO implements CouponDAO{
 		
 		try {
 			String sqlDELobject = "DELETE FROM coupon WHERE coup_ID =?";
-			prep = DBconnectorV2.getConnection().prepareStatement(sqlDELobject);
+			prep = DBconnectorV3.getConnection().prepareStatement(sqlDELobject);
 		
 			prep.setLong(1, coupID);
 			prep.executeUpdate();
@@ -396,7 +397,7 @@ public class CouponDBDAO implements CouponDAO{
 			
 			String sqlQuery = "INSERT INTO coupon (Title, Start_Date, End_Date, " + 
 			"Amount, Category, Message, Price, Image, Owner_ID)" + "VALUES(?,?,?,?,?,?,?,?,?)";	
-			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
 			prep.setString(1, coupon.getTitle());
 			prep.setDate(2, Date.valueOf(coupon.getStartDate()));
 			prep.setDate(3, Date.valueOf(coupon.getEndDate()));
@@ -423,7 +424,7 @@ public class CouponDBDAO implements CouponDAO{
 			long compID = coupon.getOwnerID();
 			String sqlQuery1 = "INSERT INTO company_coupon (Comp_ID ,Coup_ID) VALUES ("+ compID +  
 				"," + coupon.getId() + ");";
-			PreparedStatement prep1 = DBconnectorV2.getConnection().prepareStatement(sqlQuery1);
+			PreparedStatement prep1 = DBconnectorV3.getConnection().prepareStatement(sqlQuery1);
 			prep1.executeUpdate();
 			prep1.clearBatch();
 			
@@ -444,10 +445,10 @@ public class CouponDBDAO implements CouponDAO{
 			purchasedCoupon = getCoupon(coupon.getId());
 			
 			String sqlPurchaseCoupomForCustomer = "INSERT INTO customer_coupon (Cust_id, Coup_id) VALUES (" + SharingData.getIdsShare() + "," + coupon.getId() + ")";
-			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlPurchaseCoupomForCustomer);
+			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlPurchaseCoupomForCustomer);
 			prep.executeUpdate();
 //			prep.close();
-			prep.clearBatch();
+//			prep.clearBatch();
 		}
 		catch (SQLException e) {
 			SharingData.setExeptionMessage(e.getMessage());

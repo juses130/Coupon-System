@@ -7,10 +7,12 @@ import java.util.concurrent.TimeUnit;
 
 import com.added.functions.DBconnector;
 import com.added.functions.DBconnectorV2;
+import com.added.functions.DBconnectorV3;
 import com.added.functions.IsExistDB;
 import com.added.functions.SharingData;
 import com.facade.*;
 import com.javabeans.*;
+import com.sun.xml.internal.bind.v2.runtime.output.StAXExStreamWriterOutput;
 import com.task.and.singleton.CouponSystem;
 
 
@@ -36,8 +38,6 @@ import com.task.and.singleton.CouponSystem;
  */
 
 public class testDeveloers {
-
-	
 	
 	// This static short is helping to the function userInput
 	private static short counterWorngTimes = 0;
@@ -61,6 +61,9 @@ public class testDeveloers {
 		Facade_T();
 		
 		
+		// When we finished - close the connection + Daily Task Thread.
+		DBconnectorV3.getConnection().close();
+		CouponSystem.getInstance().stop();
 	} // main
 
 	
@@ -465,8 +468,11 @@ public class testDeveloers {
 	
 	private static void loadDriver() {
 		//String driverName = loadFromFIle();
-//					Class.forName("com.mysql.jdbc.Driver");
-				DBconnectorV2.startPool();
+//		Class.forName("com.mysql.jdbc.Driver");
+//		DBconnectorV2.startPool();
+//		DBconnector.getCon();
+		DBconnectorV3.startPool();
+		
 				System.out.println("----------- DRIVER LOADED -----------------" + "\n");
 	}
 	
@@ -829,14 +835,16 @@ public class testDeveloers {
         	} // if - isExist
         	else {
         		AdminFacade admF = new AdminFacade();
-        		admF.getCompanyA(SharingData.getLongNum1());
-        		
-        		// Print the Company:
-        		System.out.println(SharingData.getVarchar2());
-        		
+        		Company c = admF.getCompanyA(SharingData.getLongNum1());
+        		        		
         		if(SharingData.isFlag1() == true) {
+        			// Print the Company:
+            		System.out.println(c.toString());
 	    			System.out.println("\n" + "------------ Company Function (getID) Was Run Successfully ----------" + "\n");
         	}
+        		else {
+            		System.out.println(SharingData.getExeptionMessage());
+        		}
         	} // else
         	
     	} // while loop
@@ -1280,8 +1288,13 @@ public class testDeveloers {
     private static void getAllPurchasedCoupon_T() {
     	
     	CustomerFacade cusF = new CustomerFacade();
-    	
-    	System.out.println(cusF.getAllPurchasedCoupons(SharingData.getIdsShare()));
+    	Set<Coupon> c  = cusF.getAllPurchasedCoupons(SharingData.getIdsShare());
+    	if (c != null) {
+    		System.out.println(c.toString());
+    	}
+    	else {
+    		System.out.println("No coupons prchased");
+    	}
     }
 
     /**
@@ -1610,7 +1623,6 @@ public class testDeveloers {
         	if(SharingData.getLongNum1() == 0) {
         		System.out.println("Typing 'Zero' is mean = quit..");
         		printGoingBackToUsage();
-        		printDbDAOMenu();
         		break;
         	} // if - it 0 the program will break from this function.
         	
@@ -1747,7 +1759,6 @@ public class testDeveloers {
     		short userChoiceOfSideWork = userInputFadacesShort();
     		//AdminFacade adminF = new AdminFacade();
     		
-    		
     		//Check the user choice and switch it:
     		switch (userChoiceOfSideWork) {
     		
@@ -1851,7 +1862,9 @@ public class testDeveloers {
     	
     	// Getting in throw the CouponSystem.
     	
+//    	DBconnectorV2.startPool();
     	CouponSystem.getInstance();
+    	SharingData.getExeptionMessage();
     	try {
 			TimeUnit.SECONDS.sleep(5);
 			System.out.println("[Expired Coupos Deleted!]");

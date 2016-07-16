@@ -20,16 +20,16 @@ public class AdminFacade {
 	private static final String adminUser = "admin";
 	private static final String password = "1234";
 	
-	private CompanyDAO compDao = null;
-	private CustomerDAO custDao = null;
-	private CouponDAO coupDao = null;
+//	private CompanyDAO compDao = null;
+//	private CustomerDAO custDao = null;
+//	private CouponDAO coupDao = null;
 	
 	// constructor
 	public AdminFacade() {
 		
-		compDao = CouponSystem.getInstance().getCompDao();
-		custDao = CouponSystem.getInstance().getCustDao();
-		coupDao = CouponSystem.getInstance().getCouponDao();
+//		compDao = CouponSystem.getInstance().getCompDao();
+//		custDao = CouponSystem.getInstance().getCustDao();
+//		coupDao = CouponSystem.getInstance().getCouponDao();
 	}
 
 	/*

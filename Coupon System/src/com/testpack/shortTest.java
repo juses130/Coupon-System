@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import com.added.functions.DBconnector;
+import com.added.functions.DBconnectorV2;
 import com.added.functions.IsExistDB;
 import com.added.functions.SharingData;
 import com.dbdao.CompanyDBDAO;
@@ -109,7 +110,8 @@ public class shortTest {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-
+		
+		DBconnectorV2.startPool();
 		
 		addCouponsFor(8);
 		if(SharingData.getExeptionMessage() != null) {
@@ -142,11 +144,9 @@ public class shortTest {
 		Set<Long> ids = new HashSet<>();
 				
 		try {
-		//create connection
-		DBconnector.getCon();
 		
 		String sqlSelectByEndDate = "SELECT * FROM coupon WHERE End_Date < CURDATE()";
-		PreparedStatement prep1 = DBconnector.getInstatce().prepareStatement(sqlSelectByEndDate, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+		PreparedStatement prep1 = DBconnectorV2.getConnection().prepareStatement(sqlSelectByEndDate, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
 		rs1 = prep1.executeQuery(sqlSelectByEndDate);
 		
 		while(rs1.next()) { 
@@ -158,7 +158,7 @@ public class shortTest {
 		rs1.close();
 		
 		String sqlDeleteByID1 = "DELETE FROM company_coupon WHERE coup_id=?";
-		PreparedStatement prep2 = DBconnector.getInstatce().prepareStatement(sqlDeleteByID1);
+		PreparedStatement prep2 = DBconnectorV2.getConnection().prepareStatement(sqlDeleteByID1);
 		
 		for(Long i : ids) {
 			prep2.setLong(1 ,i.longValue());
@@ -167,7 +167,7 @@ public class shortTest {
 		prep2.close();
 		
 		String sqlDeleteByID2 = "DELETE FROM customer_coupon WHERE coup_id=?";
-		PreparedStatement prep3 = DBconnector.getInstatce().prepareStatement(sqlDeleteByID2);
+		PreparedStatement prep3 = DBconnectorV2.getConnection().prepareStatement(sqlDeleteByID2);
 		for(Long i : ids) {
 			prep3.setLong(1, i.longValue());
 			prep3.executeUpdate();

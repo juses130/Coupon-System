@@ -14,15 +14,15 @@ import com.task.and.singleton.CouponSystem;
 
 public class CompanyFacade {
 
-	private CompanyDAO compDao = null;
-	private CustomerDAO custDao = null;
-	private CouponDAO coupDao = null;
-	
+//	private CompanyDAO compDao = null;
+//	private CustomerDAO custDao = null;
+//	private CouponDAO coupDao = null;
+//	
 	public CompanyFacade() {
 		
-		compDao = CouponSystem.getInstance().getCompDao();
-		custDao = CouponSystem.getInstance().getCustDao();
-		coupDao = CouponSystem.getInstance().getCouponDao();
+//		compDao = CouponSystem.getInstance().getCompDao();
+//		custDao = CouponSystem.getInstance().getCustDao();
+//		coupDao = CouponSystem.getInstance().getCouponDao();
 	}
 	
 	

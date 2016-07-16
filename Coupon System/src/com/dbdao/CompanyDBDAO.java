@@ -4,7 +4,9 @@ import java.sql.*;
 import java.util.Collection;
 import java.util.*;
 
+import com.added.functions.DBconnector;
 import com.added.functions.DBconnectorV2;
+import com.added.functions.DBconnectorV3;
 import com.added.functions.SharingData;
 import com.dao.interfaces.*;
 import com.javabeans.*;
@@ -12,6 +14,7 @@ import com.javabeans.*;
 /**
  * This is Company Database DAO Class.
  * Just impelemnts the methods from CompanyDAO in 'com.dao.interfaces' package. 
+ * 
  * 
  * @author Raziel
  *
@@ -32,7 +35,7 @@ public class CompanyDBDAO implements CompanyDAO {
 			
 			
 			String sqlQuery = "INSERT INTO company (COMP_NAME, PASSWORD, EMAIL) VALUES(?,?,?)";
-			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
 			
 			// now we will put the in their places.
 			prep.setString(1, company.getCompName());
@@ -79,7 +82,7 @@ public class CompanyDBDAO implements CompanyDAO {
 			
 			
 			String sqlUpdate = "UPDATE company SET Comp_name=?, password=?, email=? WHERE Comp_ID=?";
-			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement (sqlUpdate);
+			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement (sqlUpdate);
 			prep.setString(1, company.getCompName());
 			prep.setString(2, company.getPassword());
 			prep.setString(3, company.getEmail());
@@ -106,11 +109,9 @@ public class CompanyDBDAO implements CompanyDAO {
 		
 		try {
 
-			
 			String sqlSEL = "SELECT * FROM company WHERE Comp_ID= ?" ;
-			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlSEL);
+			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlSEL);
 			prep.setLong(1, id);
-			
 			ResultSet rs = prep.executeQuery();
 			rs.next();
 			compName = rs.getString("Comp_name");
@@ -119,8 +120,6 @@ public class CompanyDBDAO implements CompanyDAO {
 			
 
 			c = new Company(id, compName, password, email);
-			String companyInfo = c.toString();
-			SharingData.setVarchar2(companyInfo);
 
 			// Letting the other Classes (if they asking) that the getID Function was run Succsefully.
 			SharingData.setFlag1(true);
@@ -144,7 +143,7 @@ public class CompanyDBDAO implements CompanyDAO {
 		
 		try {
 			
-			Statement stat = DBconnectorV2.getConnection().createStatement();
+			Statement stat = DBconnectorV3.getConnection().createStatement();
 			rs = stat.executeQuery(sql);
 			
 			while(rs.next()) {
@@ -176,7 +175,7 @@ public class CompanyDBDAO implements CompanyDAO {
 		try {
 			
 			String sql = "SELECT Coup_ID FROM coupon WHERE Owner_ID=?";
-			PreparedStatement stat = DBconnectorV2.getConnection().prepareStatement (sql);
+			PreparedStatement stat = DBconnectorV3.getConnection().prepareStatement (sql);
 			stat.setLong(1, compID);
 			ResultSet rs = stat.executeQuery();
 			while (rs.next()) {
@@ -203,10 +202,9 @@ public class CompanyDBDAO implements CompanyDAO {
 			String sqlName = "SELECT Comp_name, password FROM company WHERE "
 					+ "Comp_ID= '" + compID + "'" + " AND " + "password= '" 
 					+ password + "'";
-			stat1 = DBconnectorV2.getConnection().createStatement();
+			stat1 = DBconnectorV3.getConnection().createStatement();
 		    rs1 = stat1.executeQuery(sqlName);
 		    rs1.next();
-		    stat1.clearBatch();
 
 			if (rs1.getRow() != 0) {
 				
@@ -215,11 +213,12 @@ public class CompanyDBDAO implements CompanyDAO {
 				hasRows = true;
 				String sqlGetID = "SELECT Comp_id from company WHERE Comp_id='" + compID + "'";
 				//System.out.println(hasRows);
-				stat2 = DBconnectorV2.getConnection().createStatement();
+				stat2 = DBconnectorV3.getConnection().createStatement();
 				rs2 = stat2.executeQuery(sqlGetID);
 				rs2.next();
 				SharingData.setIdsShare(rs2.getLong(1));
 //				stat2.clearBatch();
+
 				
 			}
 
@@ -227,8 +226,8 @@ public class CompanyDBDAO implements CompanyDAO {
             	SharingData.setExeptionMessage(e.getMessage());
 	        
             } // catch
-
-	return hasRows;
+        
+	   return hasRows;
 	}	
 	
 	/**
@@ -249,7 +248,7 @@ public class CompanyDBDAO implements CompanyDAO {
 			//String compName, email, password;
 			
 			String sqlDELid = "DELETE FROM " + table + " WHERE Comp_ID =" + id ;
-			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlDELid);
+			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlDELid);
 			prep.executeUpdate();
 			
 		}

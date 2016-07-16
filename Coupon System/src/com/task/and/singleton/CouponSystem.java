@@ -12,13 +12,15 @@ public class CouponSystem {
 			private DailyCouponExpirationTask dailyTask = null;
 			private Thread dailyTaskThread = null;
 			
+			// Constructor
 			private CouponSystem() {
 				compDao = new CompanyDBDAO();
 				custDao = new CustomerDBDAO();
 				couponDao = new CouponDBDAO();
 				dailyTask = new DailyCouponExpirationTask(compDao, custDao, couponDao);
 				dailyTaskThread = new Thread(dailyTask);
-				dailyTaskThread.start();		
+				dailyTaskThread.start();
+				
 			}
 			
 			public static CouponSystem getInstance() {

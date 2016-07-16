@@ -20,6 +20,7 @@ public class DBconnectorV2 {
 
 	private static ComboPooledDataSource cpds = null;
 	private static final String url = "jdbc:mysql://localhost:3306/coupon?characterEncoding=UTF-8&useSSL=false";
+//	private static final String url = "jdbc:mysql://localhost:3306/coupon";
 	private static final String driverClass = "com.mysql.jdbc.Driver";
 	private static final String userDBname = "root";
 	private static final String passowrdDB = "12345";
@@ -27,6 +28,9 @@ public class DBconnectorV2 {
 	/**
 	 * Open Connection Pool.
 	 */
+	
+	// private constructor
+	private DBconnectorV2(){}
 	
 	public static void startPool() {
 		

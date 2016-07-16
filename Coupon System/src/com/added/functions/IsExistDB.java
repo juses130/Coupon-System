@@ -48,9 +48,10 @@ public class IsExistDB {
 				
 	
 				String sqlSEL = "SELECT Comp_ID FROM company WHERE Comp_ID= ?" ;
-				PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlSEL);
+				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlSEL);
 				prep.setLong(1, id);
 				rs = prep.executeQuery();
+				
 				
 				boolean hasRows = false;
 				
@@ -64,7 +65,7 @@ public class IsExistDB {
 //					answer = false;
 					answer2 = false;
 				}
-				
+
 			} catch (SQLException e) {
 				SharingData.setExeptionMessage(e.getMessage());			
 				} // catch
@@ -78,7 +79,7 @@ public class IsExistDB {
 			
 
 			String sqlSEL = "SELECT cust_ID FROM customer WHERE cust_ID= ?" ;
-			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlSEL);
+			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlSEL);
 			prep.setLong(1, id);
 			rs = prep.executeQuery();
 			
@@ -109,7 +110,7 @@ public class IsExistDB {
 			
 
 			String sqlSEL = "SELECT coup_ID FROM " + table + " WHERE coup_ID= ?" ;
-			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlSEL);
+			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlSEL);
 			prep.setLong(1, coupID);
 			rs = prep.executeQuery();
 			
@@ -141,12 +142,12 @@ public class IsExistDB {
 			
 
 			String sqlkNAME = "SELECT Comp_name FROM coupon.company WHERE Comp_name= ?" ;
-			PreparedStatement prep1 = DBconnectorV2.getConnection().prepareStatement(sqlkNAME);
+			PreparedStatement prep1 = DBconnectorV3.getConnection().prepareStatement(sqlkNAME);
 			prep1.setString(1, name);
 			rs = prep1.executeQuery();
 		
 			String sqlPassword = "SELECT password FROM coupon.company WHERE `password`= ?" ;
-			PreparedStatement prep2 = DBconnectorV2.getConnection().prepareStatement(sqlPassword);
+			PreparedStatement prep2 = DBconnectorV3.getConnection().prepareStatement(sqlPassword);
 			prep2.setString(1, password);
 			rs = prep2.executeQuery();
 			
@@ -179,7 +180,7 @@ public class IsExistDB {
 
 			
 			String sqlPassword = "SELECT password FROM coupon.company WHERE `password`= ?" ;
-			PreparedStatement prep2 = DBconnectorV2.getConnection().prepareStatement(sqlPassword);
+			PreparedStatement prep2 = DBconnectorV3.getConnection().prepareStatement(sqlPassword);
 			prep2.setString(1, password);
 			rs = prep2.executeQuery();
 			
@@ -214,7 +215,7 @@ public class IsExistDB {
 			String sqlName = "SELECT Comp_ID, password FROM company WHERE "
 					+ "Comp_ID= " + id + " AND " + "password= '" 
 					+ password + "'";
-			stat = DBconnectorV2.getConnection().createStatement();
+			stat = DBconnectorV3.getConnection().createStatement();
 			rs = stat.executeQuery(sqlName);
 			rs.next();
 		   
@@ -244,7 +245,7 @@ public class IsExistDB {
 			String sqlName = "SELECT Comp_name, password FROM company WHERE "
 					+ "Comp_name= '" + name + "' AND " + "password= '" 
 					+ password + "'";
-			stat = DBconnectorV2.getConnection().createStatement();
+			stat = DBconnectorV3.getConnection().createStatement();
 			rs = stat.executeQuery(sqlName);
 			rs.next();
 		   
@@ -270,7 +271,7 @@ public class IsExistDB {
 		   DBconnector.getCon();
 			String sqlName = "SELECT " + column + " FROM " + table + " WHERE "
 					+ column + "='" + name + "'";
-			stat = DBconnectorV2.getConnection().createStatement();
+			stat = DBconnectorV3.getConnection().createStatement();
 			rs = stat.executeQuery(sqlName);
 			rs.next();
 		   
@@ -301,7 +302,7 @@ public class IsExistDB {
 		   DBconnector.getCon();
 			String sqlAll = "SELECT " + column + " FROM " + table + " WHERE "
 					+ column + "=?";
-			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlAll);
+			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlAll);
 			prep.setString(1, name);
 			rs = prep.executeQuery();
 			rs.next();
@@ -335,7 +336,7 @@ public class IsExistDB {
 			String sqlName = "SELECT Cust_ID, password FROM customer WHERE "
 					+ "Cust_ID= " + id + " AND " + "password= '" 
 					+ password + "'";
-			stat = DBconnectorV2.getConnection().createStatement();
+			stat = DBconnectorV3.getConnection().createStatement();
 			rs = stat.executeQuery(sqlName);
 			rs.next();
 		   
@@ -365,7 +366,7 @@ public class IsExistDB {
 			String sqlName = "SELECT Cust_name, password FROM customer WHERE "
 					+ "Cust_name= '" + name + "' AND " + "password= '" 
 					+ password + "'";
-			stat = DBconnectorV2.getConnection().createStatement();
+			stat = DBconnectorV3.getConnection().createStatement();
 			rs = stat.executeQuery(sqlName);
 			rs.next();
 		   
@@ -392,7 +393,7 @@ public class IsExistDB {
 			
 
 			String sqlSEL = "SELECT Comp_name FROM coupon.company WHERE Email= ?" ;
-			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlSEL);
+			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlSEL);
 			prep.setString(1, email);
 			rs = prep.executeQuery();
 			

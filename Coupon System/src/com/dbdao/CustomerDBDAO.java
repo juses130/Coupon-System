@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.added.functions.DBconnectorV2;
+import com.added.functions.DBconnectorV3;
 import com.added.functions.SharingData;
 import com.dao.interfaces.CustomerDAO;
 import com.javabeans.Coupon;
@@ -34,7 +34,7 @@ public class CustomerDBDAO implements CustomerDAO {
 				try {
 					
 					String sqlQuery = "INSERT INTO customer (CUST_NAME, PASSWORD) VALUES(?,?)";
-					PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
+					PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
 					//short cou = 1;
 					
 					// now we will put the in their places.
@@ -89,7 +89,7 @@ public class CustomerDBDAO implements CustomerDAO {
 
 			
 			String sqlSEL = "SELECT * FROM customer WHERE Cust_ID= ?" ;
-			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlSEL);
+			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlSEL);
 			prep.setLong(1, id);
 			
 			ResultSet rs = prep.executeQuery();
@@ -123,7 +123,7 @@ public class CustomerDBDAO implements CustomerDAO {
 		
 		try {
 			
-			Statement stat = DBconnectorV2.getConnection().createStatement();
+			Statement stat = DBconnectorV3.getConnection().createStatement();
 			rs = stat.executeQuery(sql);
 			
 			while(rs.next()) {
@@ -153,7 +153,7 @@ public class CustomerDBDAO implements CustomerDAO {
 		try {
 			
 			String sql = "SELECT COUP_ID FROM Customer_Coupon WHERE CUST_ID=?";
-			PreparedStatement stat = DBconnectorV2.getConnection().prepareStatement(sql);
+			PreparedStatement stat = DBconnectorV3.getConnection().prepareStatement(sql);
 			stat.setLong(1, custId);
 			ResultSet rs = stat.executeQuery();
 
@@ -187,7 +187,7 @@ public class CustomerDBDAO implements CustomerDAO {
 			String sqlName = "SELECT Cust_ID, password FROM customer WHERE "
 					+ "Cust_ID= '" + custID + "'" + " AND " + "password= '" 
 					+ password + "'";
-			stat1 = DBconnectorV2.getConnection().createStatement();
+			stat1 = DBconnectorV3.getConnection().createStatement();
 		    rs1 = stat1.executeQuery(sqlName);
 		    rs1.next();
 
@@ -224,7 +224,7 @@ public class CustomerDBDAO implements CustomerDAO {
 			//String compName, email, password;
 			
 			String sqlDELid = "DELETE FROM " + table + " WHERE Cust_ID =" + id;
-			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement(sqlDELid);
+			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlDELid);
 			prep.executeUpdate();
 			
 		}
@@ -241,7 +241,7 @@ public class CustomerDBDAO implements CustomerDAO {
 			
 			
 			String sqlUpdateCustomerTable = "UPDATE customer SET Cust_name=?, password=? WHERE Cust_ID=?";
-			PreparedStatement prep = DBconnectorV2.getConnection().prepareStatement (sqlUpdateCustomerTable);
+			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement (sqlUpdateCustomerTable);
 			prep.setString(1, customer.getCustName());
 			prep.setString(2, customer.getPassword());
 			prep.setLong(3, customer.getId());
@@ -250,7 +250,7 @@ public class CustomerDBDAO implements CustomerDAO {
 			//prep.close();
 			
 			String sqlUpdateCustomer_CouponTable = "UPDATE customer_coupon SET Cust_ID=? WHERE Cust_ID=?";
-			PreparedStatement prep1 = DBconnectorV2.getConnection().prepareStatement(sqlUpdateCustomer_CouponTable);
+			PreparedStatement prep1 = DBconnectorV3.getConnection().prepareStatement(sqlUpdateCustomer_CouponTable);
 			prep1.setLong(1, customer.getId());
 			prep1.setLong(2, customer.getId());
 			prep1.executeUpdate();

@@ -2,24 +2,19 @@ package com.facade;
 
 import java.util.Set;
 
-import com.added.functions.SharingData;
-import com.dao.interfaces.CompanyDAO;
-import com.dao.interfaces.CouponDAO;
-import com.dao.interfaces.CustomerDAO;
 import com.dbdao.CouponDBDAO;
 import com.dbdao.CustomerDBDAO;
 import com.javabeans.*;
-import com.task.and.singleton.CouponSystem;
 
 public class CustomerFacade {
 
-	private CustomerDAO custDao = null;
-	private CouponDAO coupDao = null;
+//	private CustomerDAO custDao = null;
+//	private CouponDAO coupDao = null;
 	
 	public CustomerFacade(){
 		
-		custDao = CouponSystem.getInstance().getCustDao();
-		coupDao = CouponSystem.getInstance().getCouponDao();
+//		custDao = CouponSystem.getInstance().getCustDao();
+//		coupDao = CouponSystem.getInstance().getCouponDao();
 	}
 	
 	public Coupon purchaseCoupon(Coupon coupon) {
