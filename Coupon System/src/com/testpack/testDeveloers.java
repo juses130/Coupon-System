@@ -62,7 +62,6 @@ public class testDeveloers {
 		
 		
 		// When we finished - close the connection + Daily Task Thread.
-		DBconnectorV3.getConnection().close();
 		CouponSystem.getInstance().stop();
 	} // main
 
@@ -407,9 +406,11 @@ public class testDeveloers {
 	    	String password = userInputString();
 	    	
 	    	// In the admin, we're just need to check pass&user without to go to the DB.
-	    	AdminFacade ad = new AdminFacade();
+//	    	AdminFacade ad = new AdminFacade();
 	    	
-	    	boolean existOrNot = ad.login(userName, password);
+	    	
+	    	
+	    	boolean existOrNot = CouponSystem.getInstance().login(userName, password, ClientType.ADMIN);
 	   		if(existOrNot == false){
 	        	return false;
 	        	} // if
@@ -421,13 +422,12 @@ public class testDeveloers {
 		// Company choice
 		else if (choice == 2) {
 			System.out.println("\n" + "Please type your Company-ID and Password." + "\n");
-	    	System.out.print("Type Your Company ID: ");
-	    	long compID = userInputLong();
+	    	System.out.print("Type Your Company Name: ");
+	    	String userName = userInputString();
 	    	System.out.print("Type Your Company Password: ");
 	    	String password = userInputString();
 	    	
-	    	CompanyFacade co = new CompanyFacade();
-	    	boolean existOrNot = co.login(compID, password);
+	    	boolean existOrNot = CouponSystem.getInstance().login(userName, password, ClientType.COMPANY);
 	    	
 	   		if(existOrNot == false){
 	        	printNoExistOrCurrect();
@@ -435,20 +435,19 @@ public class testDeveloers {
 	        	} // if
 	        	else {
 	        		printFoundInDB("Company");
-	        		SharingData.setIdsShare(compID);
+	        		SharingData.getIdsShare();
 	        		return true;
 	        	} // else
 		} // else if - Company
 		// Customer choice
 		else if (choice == 3) {
 			System.out.println("\n" + "Please type your Customer-ID and Password." + "\n");
-	    	System.out.print("Type Your Customer ID: ");
-	    	long custID = userInputLong();
+	    	System.out.print("Type Your Customer Full Name: ");
+	    	String userName = userInputString();
 	    	System.out.print("Type Your Customer Password: ");
 	    	String password = userInputString();
 	    	
-	    	CustomerFacade cusF = new CustomerFacade();
-	    	boolean existOrNot = cusF.login(custID, password);
+	    	boolean existOrNot = CouponSystem.getInstance().login(userName, password, ClientType.CUSTOMER);
 	    	
 	   		if(existOrNot == false){
 	        	printNoExistOrCurrect();
@@ -457,7 +456,7 @@ public class testDeveloers {
 	        	} // if
 	        	else {
 	        		printFoundInDB("Customer User");
-	        		SharingData.setIdsShare(custID);
+	        		SharingData.getIdsShare();
 	        		return true;
 	        	} // else
 		} // else if - Customer
@@ -650,16 +649,16 @@ public class testDeveloers {
 				printGoingBackToUsage();
 				break;
 			}
-			Company c = new Company();
-			AdminFacade ad = new AdminFacade();
-			
-			c.setCompName(name);
-			c.setEmail(email);
-			c.setPassword(password);
-			ad.createCompanyA(c);
+			Company company = new Company();
+				
+			company.setCompName(name);
+			company.setEmail(email);
+			company.setPassword(password);
+			CouponSystem.getInstance().getCompDao().createCompany(company);;
+
 			
 			if(SharingData.isFlag1() == true) {
-				System.out.println(c.toString());
+				System.out.println(company.toString());
 				System.out.println("------------ Company Added Successfully ----------" + "\n");
 			} // if
 			else {
@@ -696,7 +695,6 @@ public class testDeveloers {
     	while(true) {
     		
     		Company company = new Company();
-    		AdminFacade adminF = new AdminFacade();
     			
     			System.out.print("Type Your Company ID: ");
     			SharingData.setLongNum1(userInputLong());
@@ -716,7 +714,7 @@ public class testDeveloers {
     			else {	
     			      try {
     			    	  company.setId(SharingData.getLongNum1());
-    			    	  adminF.removeCompanyA(company);
+    			    	  CouponSystem.getInstance().getCompDao().removeCompany(company);
     			    	  
 					  } catch (Exception e) {
 						System.out.println("Error:");
@@ -768,26 +766,25 @@ public class testDeveloers {
      		break;
      		} // if
      		else { // Move on to this block if we got 'TRUE' in the IF condition:
- 	    		AdminFacade admF = new AdminFacade();
  	    		
- 	    		Company ca = new Company();
- 	    		ca = admF.getCompanyA(c.getId());
+ 	    		Company company = new Company();
+ 	    		CouponSystem.getInstance().getCompDao().getCompany(company.getId());
      		        printFoundInDB("Company"); 
      	    		System.out.print("NEW Email: ");
-     	    		ca.setEmail(userInputString());
+     	    		company.setEmail(userInputString());
      	    		System.out.print("New Password: ");
-     	            ca.setPassword(userInputString());
+     	    		company.setPassword(userInputString());
      	            
      	    		//ca.setEmail(ca.getEmail());
      	    		//ca.setPassword(ca.getPassword());
      	    		//ca.setId(c.getId());
      	    		//c.setPassword(password);
      	    		
-     	     		admF.updateCompanyA(ca);
+     	     		CouponSystem.getInstance().getCompDao().getCompany(company.getId());
 
      	     		if(SharingData.isFlag1() == true) {
      	     			//System.out.println("\n" + SharingData.getVarchar4());
-     	     			System.out.println(ca.toString());
+     	     			System.out.println(company.toString());
      	     			System.out.println("------------ Company Updated Successfully ----------" + "\n");
      	     			printGoingBackToUsage();
      	     			//printAdminFacadeMenu();

@@ -98,10 +98,10 @@ public class CompanyFacade {
 		return coupons;	
 	}
 	
-    public boolean login(long compID, String password) {
+    public boolean login(String compName, String password) {
 		
 		CompanyDBDAO db = new CompanyDBDAO();
-		boolean exsistOrNot = db.login(compID, password);
+		boolean exsistOrNot = db.login(compName, password);
 		
 		if(exsistOrNot != true) {
 			return false;

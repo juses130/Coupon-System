@@ -52,10 +52,10 @@ public class CustomerFacade {
 		return coupons;
 	}
 	
-    public boolean login(long custID, String password) {
+    public boolean login(String userName, String password) {
 		
     	CustomerDBDAO cus = new CustomerDBDAO();
-		boolean exsistOrNot = cus.login(custID, password);
+		boolean exsistOrNot = cus.login(userName, password);
 		
 		if(exsistOrNot != true) {
 			return false;

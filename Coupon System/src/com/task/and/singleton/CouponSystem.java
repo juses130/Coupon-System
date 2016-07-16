@@ -1,7 +1,17 @@
 package com.task.and.singleton;
 
+import java.sql.ClientInfoStatus;
+import java.sql.SQLException;
+
+import com.added.functions.DBconnectorV3;
 import com.dao.interfaces.*;
 import com.dbdao.*;
+import com.facade.AdminFacade;
+import com.facade.ClientType;
+import com.facade.CompanyFacade;
+import com.facade.CustomerFacade;
+import com.javabeans.Customer;
+import com.unusedclasses.CouponClientFacade;
 
 public class CouponSystem {
 
@@ -30,9 +40,10 @@ public class CouponSystem {
 				return instance;
 			}
 		
-			public void stop() {
+			public void stop() throws SQLException {
 				dailyTask.stop();
 				dailyTaskThread.interrupt();
+				DBconnectorV3.getConnection().close();
 			}
 			public CompanyDAO getCompDao() {
 				return compDao;
@@ -44,6 +55,25 @@ public class CouponSystem {
 		
 			public CouponDAO getCouponDao() {
 				return couponDao;
+			}
+			
+			public boolean login(String userName, String password, ClientType type) {
+				if(type == ClientType.ADMIN) {
+					AdminFacade admF = new AdminFacade();
+					boolean exsistOrNot = admF.login(userName, password);
+					return exsistOrNot;
+				} // if - it admin
+				else if (type == ClientType.COMPANY) {
+					CompanyFacade comF = new CompanyFacade();
+					boolean exsistOrNot = comF.login(userName, password);
+					return exsistOrNot;
+				} // else if - its company
+				else if (type == ClientType.CUSTOMER) {
+					CustomerFacade cusF = new CustomerFacade();
+					boolean exsistOrNot = cusF.login(userName, password);
+					return exsistOrNot;
+				} // else if - customer
+				return false;
 			}
 	
 }

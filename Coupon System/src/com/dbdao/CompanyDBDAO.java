@@ -188,7 +188,7 @@ public class CompanyDBDAO implements CompanyDAO {
 	}
 
 	@Override
-	public boolean login(long compID, String password) {
+	public boolean login(String compName, String password) {
 		
 		ResultSet rs1 = null;
 		ResultSet rs2 = null;
@@ -200,7 +200,7 @@ public class CompanyDBDAO implements CompanyDAO {
 			
 			
 			String sqlName = "SELECT Comp_name, password FROM company WHERE "
-					+ "Comp_ID= '" + compID + "'" + " AND " + "password= '" 
+					+ "Comp_name= '" + compName + "'" + " AND " + "password= '" 
 					+ password + "'";
 			stat1 = DBconnectorV3.getConnection().createStatement();
 		    rs1 = stat1.executeQuery(sqlName);
@@ -208,10 +208,10 @@ public class CompanyDBDAO implements CompanyDAO {
 
 			if (rs1.getRow() != 0) {
 				
-				// In case we have the row, we'll return 'true' and set the Company ID to some shared variable.
+				// In case we have the row, we'll return 'true' and set the Company Name to some shared variable.
 				// we need this ID for putting it in other TABLES such as Company_Coupon.
 				hasRows = true;
-				String sqlGetID = "SELECT Comp_id from company WHERE Comp_id='" + compID + "'";
+				String sqlGetID = "SELECT Comp_id from company WHERE Comp_name='" + compName + "'";
 				//System.out.println(hasRows);
 				stat2 = DBconnectorV3.getConnection().createStatement();
 				rs2 = stat2.executeQuery(sqlGetID);

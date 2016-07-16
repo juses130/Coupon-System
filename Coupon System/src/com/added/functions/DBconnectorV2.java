@@ -12,10 +12,11 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
  * 
  * This two external files helping us two create a good Connection Pool.
  * 
+ * Update: This function is unsued anymore - use DBconnectorV3.
  * @author Raziel
  *
  */
-
+@Deprecated
 public class DBconnectorV2 {
 
 	private static ComboPooledDataSource cpds = null;
