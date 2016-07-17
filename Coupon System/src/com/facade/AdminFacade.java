@@ -37,7 +37,7 @@ public class AdminFacade {
 	 *  Company Access
 	 */
 	
-	public void createCompanyA(Company company) {
+	public void createCompany(Company company) {
 		
 		try {
 			compDao.createCompany(company);
@@ -47,7 +47,7 @@ public class AdminFacade {
 		
 	} // createCompanyA - function
 	
-	public void removeCompanyA(Company company) throws SQLException{
+	public void removeCompany(Company company) throws SQLException{
 		
 		Coupon coupon = new Coupon();
 		coupon.setOwnerID(company.getId());
@@ -57,7 +57,7 @@ public class AdminFacade {
 		
 	} // removeCompanyA - function
 	
-	public void updateCompanyA(Company company) {
+	public void updateCompany(Company company) {
 		try {
 			compDao.updateCompany(company);
 		} catch (SQLException e) {
@@ -67,17 +67,28 @@ public class AdminFacade {
 		
 	} // updateCompanyA - function
 
-	public Company getCompanyA(long id) {
+	public Company getCompany(long id) {
 		Company c = new Company();
-		c = compDao.getCompany(id);
+		try {
+			c = compDao.getCompany(id);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return c;
 		
 		
 	} // getCompanyA - function
 	
 	public Collection<Company> getAllCompaniesA() {
-		return compDao.getAllCompanies();
-		
+		Collection<Company> companies = null;
+		try {
+			companies = compDao.getAllCompanies();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return companies;
 		
 	} // getAllCompaniesA - function
 	
@@ -85,7 +96,7 @@ public class AdminFacade {
 	 *  Customer Access
 	 */
 	
-	public void createCustomerA(Customer customer) {
+	public void createCustomer(Customer customer) {
 		
 		IsExistDB.stringExistV3("customer", "cust_name", customer.getCustName());
 		if(IsExistDB.getAnswer() == false) {
@@ -93,15 +104,15 @@ public class AdminFacade {
 		}
 	} // createCustomerA - function
 	
-	public void removeCustomerA(Customer customer) {
+	public void removeCustomer(Customer customer) {
 		custDao.removeCustomer(customer);
 	}
 	
-	public void updateCustomerA(Customer customer) {
+	public void updateCustomer(Customer customer) {
 		custDao.updateCustomer(customer);
 	} // createCustomerA - function
 	
-	public Customer getCustomerA(long id) {
+	public Customer getCustomer(long id) {
 		
 		Customer c = new Customer();
 		c.setId(id);
@@ -113,7 +124,7 @@ public class AdminFacade {
 		return c;
 	}
 	
-	public Collection<Customer> getAllCustomersA() {
+	public Collection<Customer> getAllCustomers() {
 		return custDao.getAllCustomers();
 	} // getAllCompaniesA - function
 	

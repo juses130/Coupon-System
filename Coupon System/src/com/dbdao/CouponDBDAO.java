@@ -11,6 +11,7 @@ import com.dao.interfaces.CouponDAO;
 import com.javabeans.Coupon;
 import com.javabeans.CouponType;
 import com.mysql.jdbc.SQLError;
+import com.sun.xml.internal.bind.annotation.OverrideAnnotationOf;
 
 import sun.net.dns.ResolverConfigurationImpl;
 
@@ -79,8 +80,8 @@ public class CouponDBDAO implements CouponDAO{
      * @author Raziel
      */
 	@Deprecated
-	@Override
-	public void updateCoupon(Coupon coupon) {
+	
+	public void updateCoupon1(Coupon coupon) {
 		
        try {			
 			
@@ -111,7 +112,8 @@ public class CouponDBDAO implements CouponDAO{
        
 	}
 
-	public Coupon updateCouponV2(Coupon coupon) {
+	@Override
+	public Coupon updateCoupon(Coupon coupon) {
 		
 		// copy all the coupon to new Coupon Object.
 		Coupon couponUP = null;
@@ -396,7 +398,7 @@ public class CouponDBDAO implements CouponDAO{
 		// creating ResultSet
 		ResultSet rs = null;
 		try {
-			
+			//if (getCoupon(coupon.getOwnerID()))
 			IsExistDB.idExist(coupon.getOwnerID(), "company", "owner_id", "owner_id");
 			if(IsExistDB.getAnswer2() == true) {
 			

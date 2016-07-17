@@ -76,7 +76,7 @@ public class DailyCouponExpirationTask implements Runnable {
 	private void deleteCoupon(Coupon coupon) {
 		// Remove coupon from company  customer_coupon  company_coupon
 		CompanyFacade compF = new CompanyFacade();
-		compF.removeCouponA(coupon);
+		compF.removeCoupon(coupon);
 
 	}
 

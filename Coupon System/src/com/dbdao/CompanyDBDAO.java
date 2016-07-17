@@ -28,12 +28,8 @@ public class CompanyDBDAO implements CompanyDAO {
 	@Override
 	public void createCompany(Company company) {
 		
-		// creating ResultSet
-		ResultSet rs = null;
 		
 		try {
-			
-			
 			String sqlQuery = "INSERT INTO company (COMP_NAME, PASSWORD, EMAIL) VALUES(?,?,?)";
 			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
 			
@@ -46,15 +42,12 @@ public class CompanyDBDAO implements CompanyDAO {
 			prep.executeUpdate();
 
 			// This 2 lines will make it run to the next null row. and line 3 will set the ID (next new row).
-			rs = prep.getGeneratedKeys();
+			ResultSet rs = prep.getGeneratedKeys();
 			rs.next();
 			company.setId(rs.getLong(1));
 			
 			// Letting the others (if the asking) that the Company Added Succsefully.
 			SharingData.setFlag1(true);
-
-
-			
 		} // try 
 		catch (SQLException e) {
 			SharingData.setFlag1(false);
@@ -67,7 +60,6 @@ public class CompanyDBDAO implements CompanyDAO {
 	public void removeCompany(Company company) throws SQLException{
 		
 		long id = company.getId();
-		
 		removeMethod(id, "company");
 		removeMethod(id, "company_coupon");
 		
@@ -77,9 +69,6 @@ public class CompanyDBDAO implements CompanyDAO {
 	public void updateCompany(Company company) {
 
 		try {
-			
-			
-			
 			String sqlUpdate = "UPDATE company SET Comp_name=?, password=?, email=? WHERE Comp_ID=?";
 			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement (sqlUpdate);
 			prep.setString(1, company.getCompName());
@@ -125,6 +114,7 @@ public class CompanyDBDAO implements CompanyDAO {
 			
 		}
 		catch (SQLException e) {
+			// throw new DaoException("", e);
 			SharingData.setExeptionMessage(e.getMessage());
 		}
 		return c;
@@ -181,7 +171,7 @@ public class CompanyDBDAO implements CompanyDAO {
 				coupons.add(couponDB.getCoupon(rs.getLong("Coup_ID")));
 			}	
 		} catch (SQLException e) {
-			e.printStackTrace();
+			SharingData.setExeptionMessage(e.getMessage());
 		}
 		return coupons;
 	}
@@ -240,20 +230,16 @@ public class CompanyDBDAO implements CompanyDAO {
 	 * @author Raziel
 	 */
 	
-	private void removeMethod(long id, String table) {
+	private void removeMethod(long id, String table) throws SQLException{
 		
-		try {
 			
-			//String compName, email, password;
-			
-			String sqlDELid = "DELETE FROM " + table + " WHERE Comp_ID =" + id ;
-			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlDELid);
-			prep.executeUpdate();
-			
-		}
-		catch (SQLException e) {
-			SharingData.setExeptionMessage(e.getMessage());
-			}
+		//String compName, email, password;
+		
+		String sqlDELid = "DELETE FROM " + table + " WHERE Comp_ID =" + id ;
+		PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlDELid);
+		prep.executeUpdate();
+		
+		
 		
 	} // removeMethod
 

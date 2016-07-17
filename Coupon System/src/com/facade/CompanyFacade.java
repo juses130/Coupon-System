@@ -1,6 +1,7 @@
 package com.facade;
 
 
+import java.sql.SQLException;
 import java.util.*;
 
 import com.added.functions.SharingData;
@@ -8,7 +9,6 @@ import com.dao.interfaces.CompanyDAO;
 import com.dao.interfaces.CouponDAO;
 import com.dao.interfaces.CustomerDAO;
 import com.dbdao.CompanyDBDAO;
-import com.dbdao.CouponDBDAO;
 import com.javabeans.*;
 import com.task.and.singleton.CouponSystem;
 
@@ -37,62 +37,61 @@ public class CompanyFacade {
 	public Collection<Coupon> getAllCoupons(long compID) {
 		
 		Collection<Coupon> coupons = new HashSet<>();
-		CompanyDBDAO compDB = new CompanyDBDAO();
-		coupons = compDB.getCoupons(compID);
+		try {
+			coupons = compDao.getCoupons(compID);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		return coupons;
 	}
 	
-	public void removeCouponA(Coupon coupon) {
-		
-		CouponDBDAO couDB = new CouponDBDAO();
-		couDB.removeCoupon(coupon);
+	public void removeCoupon(Coupon coupon) {
+		coupDao.removeCoupon(coupon);
 	}
 	
-	public Coupon updateCouponA(Coupon coupon) {
-		CouponDBDAO cupDB = new CouponDBDAO();
-		cupDB.updateCouponV2(coupon);
+	public Coupon updateCoupon(Coupon coupon) {
+		coupDao.updateCoupon(coupon);
 		
 		return coupon;
 	}
 	
 	public Company viewCompay(long id) {
-		
 		Company c = new Company();
-		CompanyDBDAO comDB = new CompanyDBDAO();
-		c = comDB.getCompany(id);
+		try {
+			c = compDao.getCompany(id);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		return c;
 	}
 	
 	public Coupon getCouponA(Coupon coupon) {
-		
-		CouponDBDAO couDB = new CouponDBDAO();
-		coupon = couDB.getCoupon(coupon.getId());
+		coupon = coupDao.getCoupon(coupon.getId());
 		
 		return coupon;
 	}
 	
 	public Set<Coupon> getCouponsByType(long custID, CouponType category) {
 		
-		CouponDBDAO coupDB = new CouponDBDAO();
-		Set<Coupon> coupons = coupDB.getCouponByType("company_coupon", "comp_id" ,custID, category);
+		Set<Coupon> coupons = coupDao.getCouponByType("company_coupon", "comp_id" ,custID, category);
 
 		return coupons;
 
 	}
 	
-	public Set<Coupon> getCouponsOfCompanyF(long compID) {
-		CouponDBDAO coupDB = new CouponDBDAO();
-		Set<Coupon> coupons = coupDB.getCouponsOfCompany(compID);
+	public Set<Coupon> getCouponsOfCompany(long compID) {
+		Set<Coupon> coupons = coupDao.getCouponsOfCompany(compID);
 		
 		return coupons;
 
 	}
 	
 	public Set<Coupon> getCouponsOfCompanyByPrice(double maxPrice) {
-		CouponDBDAO coupDB = new CouponDBDAO();
-		Set<Coupon> coupons = coupDB.getCouponByPrice("company_coupon" ,"comp_id", SharingData.getIdsShare() ,maxPrice);
+		Set<Coupon> coupons = coupDao.getCouponByPrice("company_coupon" ,"comp_id", SharingData.getIdsShare() ,maxPrice);
 		
 		return coupons;	
 	}

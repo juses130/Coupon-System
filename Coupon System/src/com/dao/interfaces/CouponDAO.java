@@ -5,9 +5,9 @@ import com.javabeans.*;
 
 public interface CouponDAO {
 
-	public long createCoupon(Coupon newCoupon);
+	public long createCoupon(Coupon newCoupons);
 	public void removeCoupon(Coupon remCoupon);
-	public void updateCoupon(Coupon upCoupon);
+	public Coupon updateCoupon(Coupon upCoupon);
 	public Coupon getCoupon(long id);
 	public Collection<Coupon> getAllCoupon();
 	/**
@@ -24,6 +24,7 @@ public interface CouponDAO {
 	 * @author Raziel
 	 */
 	public void setCreator(short companyCreator);
-	Set<Coupon> getCouponByPrice(String table, String colmun, long compID, double maxPrice);
-	Set<Coupon> getCouponByType(String table, String colmun, long id, CouponType category);
+	public Set<Coupon> getCouponByPrice(String table, String colmun, long compID, double maxPrice);
+	public Set<Coupon> getCouponByType(String table, String colmun, long id, CouponType category);
+	public Set<Coupon> getCouponsOfCompany(long compID);
 }

@@ -5,14 +5,13 @@ import java.time.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import com.added.functions.DBconnector;
-import com.added.functions.DBconnectorV2;
+import javax.print.attribute.standard.PrinterMoreInfoManufacturer;
+
 import com.added.functions.DBconnectorV3;
 import com.added.functions.IsExistDB;
 import com.added.functions.SharingData;
 import com.facade.*;
 import com.javabeans.*;
-import com.sun.xml.internal.bind.v2.runtime.output.StAXExStreamWriterOutput;
 import com.task.and.singleton.CouponSystem;
 
 
@@ -76,7 +75,7 @@ public class testDeveloers {
 
 
 	public static void printWellcom() {
-		System.out.println("Wellcom To Our Basic Program - Working with DataBase (SQL) :)");
+		System.out.println("Wellcom To Our Coupon System Management - Working with DataBase (Based on MySQL) :)");
 		System.out.println("Written By Raziel, Avi and Yiftach.");
 		System.out.println("Beta Version: 1.0");
 		System.out.println("******************");
@@ -654,11 +653,12 @@ public class testDeveloers {
 				break;
 			}
 			Company company = new Company();
-				
+			AdminFacade admF = new AdminFacade();	
 			company.setCompName(name);
 			company.setEmail(email);
 			company.setPassword(password);
-			CouponSystem.getInstance().getCompDao().createCompany(company);;
+//			CouponSystem.getInstance().getCompDao().createCompany(company);
+			admF.createCompany(company);
 
 			
 			if(SharingData.isFlag1() == true) {
@@ -683,6 +683,7 @@ public class testDeveloers {
 				break;
 			} // if 
 			else {
+				printAdminFacadeMenu();
 				continue;
 			}
 		} // while loop
@@ -773,20 +774,14 @@ public class testDeveloers {
  	    		
  	    		Company company = new Company();
 				AdminFacade admF = new AdminFacade();
-				company = admF.getCompanyA(c.getId());
+				company = admF.getCompany(c.getId());
      		        printFoundInDB("Company"); 
      	    		System.out.print("NEW Email: ");
      	    		company.setEmail(userInputString());
      	    		System.out.print("New Password: ");
      	    		company.setPassword(userInputString());
-     	            
-     	    		//ca.setEmail(ca.getEmail());
-     	    		//ca.setPassword(ca.getPassword());
-     	    		//ca.setId(c.getId());
-     	    		//c.setPassword(password);
-     	    		
-     	     		//CouponSystem.getInstance().getCompDao().updateCompany(company);
-					admF.updateCompanyA(company);
+     	           
+					admF.updateCompany(company);
 
      	     		if(SharingData.isFlag1() == true) {
      	     			//System.out.println("\n" + SharingData.getVarchar4());
@@ -838,7 +833,7 @@ public class testDeveloers {
         	} // if - isExist
         	else {
         		AdminFacade admF = new AdminFacade();
-        		Company c = admF.getCompanyA(SharingData.getLongNum1());
+        		Company c = admF.getCompany(SharingData.getLongNum1());
         		        		
         		if(SharingData.isFlag1() == true) {
         			// Print the Company:
@@ -910,7 +905,7 @@ public class testDeveloers {
     		
     		c.setCustName(name);
     		c.setPassword(password);
-    		admF.createCustomerA(c);
+    		admF.createCustomer(c);
     		
     		if(SharingData.isFlag1() == true) {
     			System.out.println(c.toString());
@@ -969,7 +964,7 @@ public class testDeveloers {
     			else {	
     				Customer cus = new Customer();
     				cus.setId(SharingData.getLongNum1());
-    			      admF.removeCustomerA(cus);
+    			      admF.removeCustomer(cus);
     			      //System.out.println(SharingData.getVarchar4());
         			  
     			      printCustomerRemoved();
@@ -1037,7 +1032,7 @@ public class testDeveloers {
      	    c.setCustName(name);
      	    c.setPassword(password);
      	    		
-     	    admF.updateCustomerA(c);
+     	    admF.updateCustomer(c);
 
      	    if(SharingData.isFlag1() == true) {
      	    System.out.println("\n" + SharingData.getVarchar4());
@@ -1070,7 +1065,7 @@ public class testDeveloers {
     	
     	System.out.println("Here is your Company Coupons List: ");
     	CompanyFacade compF = new CompanyFacade();
-    	Set<Coupon> coupons = compF.getCouponsOfCompanyF(SharingData.getIdsShare());
+    	Set<Coupon> coupons = compF.getCouponsOfCompany(SharingData.getIdsShare());
     	
     	System.out.println(coupons.toString());
     }
@@ -1117,8 +1112,6 @@ public class testDeveloers {
 	 *
 	 */
     
-	 // TODO: to change all of this section to Facades access!
-
     /**
      * Unused Function.
      * It was used for the first developer's version. 
@@ -1214,7 +1207,7 @@ public class testDeveloers {
         	} // if - isExist
         	else {
         		AdminFacade admF = new AdminFacade();
-        		Customer c = admF.getCustomerA(SharingData.getLongNum1());
+        		Customer c = admF.getCustomer(SharingData.getLongNum1());
         		
         		// Print the Customer:
         		System.out.println(c.toString());
@@ -1232,7 +1225,7 @@ public class testDeveloers {
     		
     		AdminFacade admF = new AdminFacade();
     		System.out.println("Here is your Customers List: " + "\n");
-    		System.out.println("\n" + admF.getAllCustomersA());
+    		System.out.println("\n" + admF.getAllCustomers());
     		
     		printAdminFacadeMenu();
     		break;		
@@ -1434,7 +1427,7 @@ public class testDeveloers {
     	} // switch
 	
 } // CompanyMenu - Function
-    
+   
     private static void addCoupon_T() throws SQLException {
     	
 	while (true){
@@ -1555,7 +1548,7 @@ public class testDeveloers {
     			Coupon c = new Coupon();
 				c.setId(SharingData.getLongNum1());
 				System.out.println(c.toString());
-				comF.removeCouponA(c);
+				comF.removeCoupon(c);
 				printCouponRemoved();
     		} // else
     	} // while loop
@@ -1611,7 +1604,7 @@ public class testDeveloers {
            
 			coup = new Coupon(endDate, amount, message, price);
 			coup.setId(id);
-			comF.updateCouponA(coup);
+			comF.updateCoupon(coup);
 			
 			if(SharingData.getExeptionMessage() != null) {
 				System.out.println(SharingData.getExeptionMessage());
@@ -1658,14 +1651,21 @@ public class testDeveloers {
     	} // while loop
 
     	} // getCouponID_T - Function
+    
+    /**
+     * Unused Function
+     * 
+     * @author Raziel
+     */
+    @Deprecated
     private static void getAllCoupon_T() {
 
     	while(true) {
     		
-    		CustomerFacade cusF = new CustomerFacade();
+//    		CustomerFacade cusF = new CustomerFacade();
     		
     		System.out.println("Here is your Couponos List: " + "\n");
-       		//System.out.println(cusF.getAllCoupons());
+//       		System.out.println(cusF.getAllPurchasedCoupons(custID));
     		break;
     			
     	} // while loop
@@ -1693,13 +1693,8 @@ public class testDeveloers {
     	else {
     		
     	    boolean on = true;
-    	    while(on == true) {
-        	
-        	
-        	
+    	    while(on == true) {   	
     		short userChoiceOfSideWork = userInputFadacesShort();
-    		//AdminFacade adminF = new AdminFacade();
-    		
     		
     		//Check the user choice and switch it:
     		switch (userChoiceOfSideWork) {
@@ -1870,11 +1865,12 @@ public class testDeveloers {
     } // CustomerFacade_T
     
     private static void Facade_T() throws SQLException{
+    	    	
+    	// checks if we have some error
+    	if(SharingData.getExeptionMessage() != null) {
+    		System.out.println(SharingData.getExeptionMessage());
+    	}
     	
-    	// Getting in throw the CouponSystem.
-    	
-//    	DBconnectorV2.startPool();
-    	SharingData.getExeptionMessage();
     	try {
 			TimeUnit.SECONDS.sleep(5);
 			System.out.println("[Expired Coupos Deleted!]");
@@ -1954,9 +1950,8 @@ public class testDeveloers {
 		case 1: { // Delete and Reset the Table
 			
 			try {
-				DBconnector.getCon();
 				String sql = "truncate table company";
-				Statement stat = DBconnector.getInstatce().createStatement();
+				Statement stat = DBconnectorV3.getConnection().createStatement();
 				stat.executeUpdate(sql);
 				System.out.println("The table has been RESET!");
 				
@@ -1966,7 +1961,7 @@ public class testDeveloers {
 				e.getMessage();
 			} // catch
 			finally {
-				DBconnector.getInstatce().close();
+				DBconnectorV3.getConnection().close();
 			}
 		
 			printGoingBackToUsage();
