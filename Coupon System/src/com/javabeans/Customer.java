@@ -21,7 +21,7 @@ public class Customer {
 	public Customer() {}
 	
 	//Getters && Setters
-	
+
 	public long getId() {
 		return id;
 	}

@@ -12,6 +12,7 @@ import com.dao.interfaces.CouponDAO;
 import com.dao.interfaces.CustomerDAO;
 import com.dbdao.*;
 import com.javabeans.*;
+import com.mysql.fabric.xmlrpc.Client;
 import com.task.and.singleton.CouponSystem;
 
 
@@ -128,13 +129,13 @@ public class AdminFacade {
 		return custDao.getAllCustomers();
 	} // getAllCompaniesA - function
 	
-	public boolean login(String userName, String password) {
-		
+	public AdminFacade login(String userName, String password, ClientType clientType) throws LoginException{
 		if(userName.toLowerCase().equals(adminUser) && String.valueOf(password).equals(AdminFacade.password)) {
-			return true;
-		}
+			return this;
+		} // if
 		else {
-			return false;
+			throw new LoginException("Admin Login Failed");
 		}
-	}
+	} // login
+
 }

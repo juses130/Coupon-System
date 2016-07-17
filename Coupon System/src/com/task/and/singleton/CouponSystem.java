@@ -3,6 +3,8 @@ package com.task.and.singleton;
 import java.sql.ClientInfoStatus;
 import java.sql.SQLException;
 
+import javax.security.auth.login.LoginException;
+
 import com.added.functions.DBconnectorV3;
 import com.added.functions.SharingData;
 import com.dao.interfaces.*;
@@ -11,8 +13,11 @@ import com.facade.AdminFacade;
 import com.facade.ClientType;
 import com.facade.CompanyFacade;
 import com.facade.CustomerFacade;
+import com.javabeans.CouponType;
 import com.javabeans.Customer;
 import com.unusedclasses.CouponClientFacade;
+
+import ExeptionErrors.DaoExeption;
 
 public class CouponSystem {
 
@@ -66,23 +71,45 @@ public class CouponSystem {
 				return couponDao;
 			}
 			
-			public boolean login(String userName, String password, ClientType type) {
+			public ClientType login(String userName, String password, ClientType type)  {
+				
 				if(type == ClientType.ADMIN) {
 					AdminFacade admF = new AdminFacade();
-					boolean exsistOrNot = admF.login(userName, password);
-					return exsistOrNot;
+					try {
+						admF = admF.login(userName, password, ClientType.ADMIN);
+					} catch (LoginException e) {
+						e.getMessage();
+					} // catch
+					
+					return ClientType.ADMIN;
 				} // if - it admin
 				else if (type == ClientType.COMPANY) {
 					CompanyFacade comF = new CompanyFacade();
-					boolean exsistOrNot = comF.login(userName, password);
-					return exsistOrNot;
+					try {
+						comF = comF.login(userName, password, ClientType.COMPANY);
+					} catch (LoginException e) {
+						e.getMessage();
+					} catch (DaoExeption e) {
+						e.getMessage();
+					} // catch
+					
+					return ClientType.COMPANY;
 				} // else if - its company
 				else if (type == ClientType.CUSTOMER) {
 					CustomerFacade cusF = new CustomerFacade();
-					boolean exsistOrNot = cusF.login(userName, password);
-					return exsistOrNot;
+					try {
+						cusF = cusF.login(userName, password, ClientType.CUSTOMER);
+					} catch (LoginException e) {
+						e.getMessage();
+					} catch (DaoExeption e) {
+						e.getMessage();
+					} // catch
+					
+					return ClientType.CUSTOMER;
 				} // else if - customer
-				return false;
+				else {
+					return null;
+				}
 			}
 	
 }

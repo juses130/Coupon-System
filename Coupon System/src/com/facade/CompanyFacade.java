@@ -4,6 +4,8 @@ package com.facade;
 import java.sql.SQLException;
 import java.util.*;
 
+import javax.security.auth.login.LoginException;
+
 import com.added.functions.SharingData;
 import com.dao.interfaces.CompanyDAO;
 import com.dao.interfaces.CouponDAO;
@@ -12,8 +14,12 @@ import com.dbdao.CompanyDBDAO;
 import com.javabeans.*;
 import com.task.and.singleton.CouponSystem;
 
-public class CompanyFacade {
+import ExeptionErrors.DaoExeption;
 
+public class CompanyFacade {
+	
+	private long compId;
+	private String compName;
 	private CompanyDAO compDao = null;
 	private CustomerDAO custDao = null;
 	private CouponDAO coupDao = null;
@@ -96,17 +102,24 @@ public class CompanyFacade {
 		return coupons;	
 	}
 	
-    public boolean login(String compName, String password) {
-		
-		CompanyDBDAO db = new CompanyDBDAO();
-		boolean exsistOrNot = db.login(compName, password);
-		
-		if(exsistOrNot != true) {
-			return false;
+    public CompanyFacade login(String compName, String password, ClientType clientType) throws DaoExeption, LoginException {
+    	
+    	boolean loginSuccessful  = false;
+    	try {
+    		loginSuccessful  = compDao.login(compName, password);
+		} catch (Exception e) {
+			throw new DaoExeption("Company Login Failed");
 		}
-		else {
-			return true;
-		} // else
+    	
+    	if (loginSuccessful && clientType.equals(ClientType.COMPANY)) {
+			//company = compDao.getCompany(compName);
+			this.compId = compDao.getCompany(compName);
+			this.compName = compName;
+			return this;
+		} else {
+			throw new LoginException("Company Login Failed.");
+		}
+    	
 	} // login - function
 	
 	

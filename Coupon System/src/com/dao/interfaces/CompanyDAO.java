@@ -20,4 +20,6 @@ public interface CompanyDAO {
 
 	public boolean login(String compName, String password);
 
+	public long getCompany(String compName);
+
 }

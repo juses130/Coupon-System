@@ -2,12 +2,18 @@ package com.facade;
 
 import java.util.Set;
 
+import javax.security.auth.login.LoginException;
+
 import com.dao.interfaces.*;
 import com.javabeans.*;
 import com.task.and.singleton.CouponSystem;
 
+import ExeptionErrors.DaoExeption;
+
 public class CustomerFacade {
 
+	private long custId;
+	private String custName;
 //	private CompanyDAO compDao = null;
 	private CustomerDAO custDao = null;
 	private CouponDAO coupDao = null;
@@ -49,17 +55,23 @@ public class CustomerFacade {
 		return coupons;
 	}
 	
-    public boolean login(String userName, String password) {
-		
+    public CustomerFacade login(String custName, String password, ClientType clientType) throws LoginException, DaoExeption {
     	
-		boolean exsistOrNot = custDao.login(userName, password);
-		
-		if(exsistOrNot != true) {
-			return false;
+    	boolean loginSuccessful  = false;
+    	try {
+    		loginSuccessful  = custDao.login(custName, password);
+		} catch (Exception e) {
+			throw new DaoExeption("Customer Login Failed");
 		}
-		else {
-			return true;
-		} // else
+    	
+    	if (loginSuccessful && clientType.equals(ClientType.COMPANY)) {
+			//company = compDao.getCompany(compName);
+			this.custId = custDao.getCustomer(custName);
+			this.custName = custName;
+			return this;
+		} else {
+			throw new LoginException("Company Login Failed.");
+		}
 	} // login - function
 	
 }

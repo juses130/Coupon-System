@@ -114,7 +114,7 @@ public class CompanyDBDAO implements CompanyDAO {
 			
 		}
 		catch (SQLException e) {
-			// throw new DaoException("", e);
+			// TODO:
 			SharingData.setExeptionMessage(e.getMessage());
 		}
 		return c;
@@ -242,5 +242,38 @@ public class CompanyDBDAO implements CompanyDAO {
 		
 		
 	} // removeMethod
+
+	
+	@Override
+	public long getCompany(String compName) {
+		
+		Company c = new Company();
+		String email, password;
+		long id;
+		
+		try {
+
+			String sqlSEL = "SELECT * FROM company WHERE comp_name= ?" ;
+			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlSEL);
+			prep.setString(1, compName);
+			ResultSet rs = prep.executeQuery();
+			rs.next();
+			id = rs.getLong("comp_id");
+			email = rs.getString("Email");
+			password = rs.getString("password");
+			
+
+			c = new Company(id, compName, password, email);
+
+			// Letting the other Classes (if they asking) that the getID Function was run Succsefully.
+			SharingData.setFlag1(true);
+			
+		}
+		catch (SQLException e) {
+			// TODO:
+			SharingData.setExeptionMessage(e.getMessage());
+		}
+		return c.getId();
+	}
 
 }

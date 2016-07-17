@@ -406,16 +406,15 @@ public class testDeveloers {
 	    	
 	    	// In the admin, we're just need to check pass&user without to go to the DB.
 //	    	AdminFacade ad = new AdminFacade();
+	    	boolean flag = false;
 	    	
-	    	
-	    	
-	    	boolean existOrNot = CouponSystem.getInstance().login(userName, password, ClientType.ADMIN);
-	   		if(existOrNot == false){
-	        	return false;
+	    	if(CouponSystem.getInstance().login(userName, password, ClientType.ADMIN) != null) {
+	    		flag = true;
+	    	    printAdminFacadeMenu();
+	        	return flag;
 	        	} // if
 	        	else {
-	        		printAdminFacadeMenu();
-	        		return true;
+	        		return false;
 	        	} // else
 		} // if - Admin
 		// Company choice
@@ -426,17 +425,16 @@ public class testDeveloers {
 	    	System.out.print("Type Your Company Password: ");
 	    	String password = userInputString();
 	    	
-	    	boolean existOrNot = CouponSystem.getInstance().login(userName, password, ClientType.COMPANY);
-	    	
-	   		if(existOrNot == false){
-	        	printNoExistOrCurrect();
-	        	return false;
-	        	} // if
-	        	else {
-	        		printFoundInDB("Company");
-	        		SharingData.getIdsShare();
-	        		return true;
-	        	} // else
+	    	if(CouponSystem.getInstance().login(userName, password, ClientType.COMPANY) != null) {
+		    	boolean flag = false;
+
+	    		flag = true;
+    	        printAdminFacadeMenu();
+        	    return flag;
+        	} // if
+        	else {
+        		return false;
+        	} // else
 		} // else if - Company
 		// Customer choice
 		else if (choice == 3) {
@@ -445,24 +443,23 @@ public class testDeveloers {
 	    	String userName = userInputString();
 	    	System.out.print("Type Your Customer Password: ");
 	    	String password = userInputString();
-	    	
-	    	boolean existOrNot = CouponSystem.getInstance().login(userName, password, ClientType.CUSTOMER);
-	    	
-	   		if(existOrNot == false){
-	        	printNoExistOrCurrect();
-	        	printFacadeMenu();
-	        	return false;
-	        	} // if
-	        	else {
-	        		printFoundInDB("Customer User");
-	        		SharingData.getIdsShare();
-	        		return true;
-	        	} // else
-		} // else if - Customer
-		
-		return false;
 
-    		}
+	    	if(CouponSystem.getInstance().login(userName, password, ClientType.CUSTOMER) != null) {
+	    		boolean flag = false;
+
+	    		flag = true;
+    	        printAdminFacadeMenu();
+        	    return flag;
+        	} // if
+        	else {
+        		
+		} // else
+		} // else if - Customer
+		return false;
+		} // login_T
+
+ 
+		
 	
 	private static void loadDriver() {
 
@@ -632,7 +629,7 @@ public class testDeveloers {
      * @author Raziel
      */
     
-    private static void addCompnay_T() throws SQLException {
+    private static void addCompnay_T()  {
 		
 		while (true){
 			
@@ -815,7 +812,7 @@ public class testDeveloers {
     private static void getCompanyID_T() {
     	
     	while(true) {
-        	System.out.println("Type The Company ID:");
+        	System.out.println("Type The Company Name:");
         	SharingData.setLongNum1(userInputLong());
         	
         	IsExistDB.idExist(SharingData.getLongNum1(), "company", "comp_id", "comp_id");
@@ -1428,7 +1425,7 @@ public class testDeveloers {
 	
 } // CompanyMenu - Function
    
-    private static void addCoupon_T() throws SQLException {
+    private static void addCoupon_T() {
     	
 	while (true){
 
@@ -1681,7 +1678,7 @@ public class testDeveloers {
 	 *
 	 */
 
-    private static void AdminFacade_T() throws SQLException {
+    private static void AdminFacade_T() {
     	
     	// Note: AdminFacade Usage Print is in the login Option.
     	boolean existOrNot = login_T();
@@ -1749,7 +1746,7 @@ public class testDeveloers {
     	} // else
     } // AdminFacade_T
     
-    private static void CompanyFacade_T() throws SQLException {
+    private static void CompanyFacade_T() {
     	
         boolean existOrNot = login_T();
     	
@@ -1813,7 +1810,7 @@ public class testDeveloers {
     	
     } // CompanyFacade_T
     
-    private static void CustomerFacade_T() throws SQLException{
+    private static void CustomerFacade_T(){
     	
     	boolean existOrNot = login_T();
      	
@@ -1864,7 +1861,7 @@ public class testDeveloers {
     	
     } // CustomerFacade_T
     
-    private static void Facade_T() throws SQLException{
+    private static void Facade_T() {
     	    	
     	// checks if we have some error
     	if(SharingData.getExeptionMessage() != null) {

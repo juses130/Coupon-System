@@ -115,6 +115,37 @@ public class CustomerDBDAO implements CustomerDAO {
 	}
 
 	@Override
+	public long getCustomer(String custName) {
+		
+		Customer c = new Customer();
+		String password;
+		long id;
+		
+		try {
+
+			String sqlSEL = "SELECT * FROM customer WHERE cust_name= ?" ;
+			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlSEL);
+			prep.setString(1, custName);
+			ResultSet rs = prep.executeQuery();
+			rs.next();
+			id = rs.getLong("cust_id");
+			password = rs.getString("password");
+			
+
+			c = new Customer(id, custName, password);
+
+			// Letting the other Classes (if they asking) that the getID Function was run Succsefully.
+			SharingData.setFlag1(true);
+			
+		}
+		catch (SQLException e) {
+			// TODO:
+			SharingData.setExeptionMessage(e.getMessage());
+		}
+		return c.getId();
+	}
+	
+	@Override
     public Collection<Customer> getAllCustomers() {
 		
 		String sql = "SELECT * FROM customer";
@@ -283,6 +314,7 @@ public class CustomerDBDAO implements CustomerDAO {
 		
 		return coupons;
 	}
+
 
 
 }
