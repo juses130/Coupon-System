@@ -13,6 +13,8 @@ import com.added.functions.DBconnectorV3;
 import com.added.functions.SharingData;
 import com.dao.interfaces.*;
 import com.dbdao.CouponDBDAO;
+import com.facade.CompanyFacade;
+import com.facade.CustomerFacade;
 import com.javabeans.*;
 
 /**
@@ -73,8 +75,8 @@ public class DailyCouponExpirationTask implements Runnable {
 	
 	private void deleteCoupon(Coupon coupon) {
 		// Remove coupon from company  customer_coupon  company_coupon
-		CouponDBDAO coupDB = new CouponDBDAO();
-		coupDB.removeCoupon(coupon);
+		CompanyFacade compF = new CompanyFacade();
+		compF.removeCouponA(coupon);
 
 	}
 

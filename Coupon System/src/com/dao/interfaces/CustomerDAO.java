@@ -13,5 +13,7 @@ public interface CustomerDAO {
 	public Collection<Customer> getAllCustomers();
 	public Set<Coupon> getCoupons(long custId);
 	public boolean login(String custName, String password);
+	public Set<Coupon> getCouponByPrice(String string, String string2, long custID, double maxPrice);
+	public Set<Coupon> getCouponByType(String string, String string2, long custID, CouponType category);
 	
 }

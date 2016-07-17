@@ -52,8 +52,7 @@ public class CompanyDBDAO implements CompanyDAO {
 			
 			// Letting the others (if the asking) that the Company Added Succsefully.
 			SharingData.setFlag1(true);
-			String tostring = company.toString();
-			SharingData.setVarchar4(tostring);
+
 
 			
 		} // try 

@@ -40,14 +40,14 @@ public class IsExistDB {
 	
 	// Functions
 	
-   public static void idExist(long id) {
+   public static void idExist(long id, String table, String selectColmun, String whereColmun) {
 		
 			try {
 				
 				ResultSet rs = null;
 				
 	
-				String sqlSEL = "SELECT Comp_ID FROM company WHERE Comp_ID= ?" ;
+				String sqlSEL = "SELECT " + selectColmun + " FROM " + table + " WHERE " + whereColmun +"= ?" ;
 				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlSEL);
 				prep.setLong(1, id);
 				rs = prep.executeQuery();
@@ -174,7 +174,7 @@ public class IsExistDB {
    public static void idPasswordExist(long id, String password) {
 	// TODO: when we add to the project 'passwordHASH' we will need an update here.
    	try {
-   		    idExist(id);
+   		    idExist(id, "company", "comp_id", "comp_id");
 			ResultSet rs = null;
 			
 
@@ -268,7 +268,6 @@ public class IsExistDB {
 	   //boolean hasRows = false;
 	   try {
 		
-		   DBconnector.getCon();
 			String sqlName = "SELECT " + column + " FROM " + table + " WHERE "
 					+ column + "='" + name + "'";
 			stat = DBconnectorV3.getConnection().createStatement();
@@ -299,7 +298,6 @@ public class IsExistDB {
 	   ResultSet rs = null;
 	   try {
 			
-		   DBconnector.getCon();
 			String sqlAll = "SELECT " + column + " FROM " + table + " WHERE "
 					+ column + "=?";
 			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlAll);

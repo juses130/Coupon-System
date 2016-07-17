@@ -111,19 +111,20 @@ public class shortTest {
 //			e.printStackTrace();
 //		}
 		
-		DBconnectorV2.startPool();
+		CouponSystem.getInstance();
 		
-		addCouponsFor(8);
+		addCouponsFor(7);
 		if(SharingData.getExeptionMessage() != null) {
 		System.out.println(SharingData.getExeptionMessage());
 		}
+		CouponSystem.getInstance().stop();
 		
 	} // main
 	
 	public static void addCouponsFor(long id) {
 		CompanyFacade comF = new CompanyFacade();
 
-		for(int i = 0; i < 25; i++) {
+		for(int i = 0; i < 100; i++) {
 			Coupon c = new Coupon();
 			c.setAmount(i);
 			c.setMessage("check message");

@@ -4,6 +4,7 @@ import java.sql.ClientInfoStatus;
 import java.sql.SQLException;
 
 import com.added.functions.DBconnectorV3;
+import com.added.functions.SharingData;
 import com.dao.interfaces.*;
 import com.dbdao.*;
 import com.facade.AdminFacade;
@@ -22,6 +23,7 @@ public class CouponSystem {
 			private DailyCouponExpirationTask dailyTask = null;
 			private Thread dailyTaskThread = null;
 			
+			
 			// Constructor
 			private CouponSystem() {
 				compDao = new CompanyDBDAO();
@@ -29,6 +31,7 @@ public class CouponSystem {
 				couponDao = new CouponDBDAO();
 				dailyTask = new DailyCouponExpirationTask(compDao, custDao, couponDao);
 				dailyTaskThread = new Thread(dailyTask);
+				DBconnectorV3.startPool();
 				dailyTaskThread.start();
 				
 			}
@@ -40,11 +43,17 @@ public class CouponSystem {
 				return instance;
 			}
 		
-			public void stop() throws SQLException {
+			public void stop() {
 				dailyTask.stop();
 				dailyTaskThread.interrupt();
-				DBconnectorV3.getConnection().close();
+				
+				try {
+					DBconnectorV3.getConnection().close();
+				} catch (SQLException e) {
+					SharingData.setExeptionMessage(e.getMessage());
+				} // catch
 			}
+			
 			public CompanyDAO getCompDao() {
 				return compDao;
 			}

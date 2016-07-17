@@ -10,6 +10,9 @@ import com.added.functions.SharingData;
 import com.dao.interfaces.CouponDAO;
 import com.javabeans.Coupon;
 import com.javabeans.CouponType;
+import com.mysql.jdbc.SQLError;
+
+import sun.net.dns.ResolverConfigurationImpl;
 
 /**
  * This is Coupon Database DAO Class.
@@ -34,7 +37,11 @@ public class CouponDBDAO implements CouponDAO{
 			return coupon.getId();
 		}
 		else if (creatorMethod == 2) { // if the user is a customer
-			purchaseCouponByCustomer(coupon);
+			try {
+				purchaseCouponByCustomer(coupon);
+			} catch (SQLException e) {
+				SharingData.setExeptionMessage(e.getMessage() + e.getErrorCode());
+			} // catch
 			return coupon.getId();
 		}
 		else {
@@ -210,9 +217,9 @@ public class CouponDBDAO implements CouponDAO{
 		return coupons;
 	} // getAllCoupon - function
 
-	@Override
+	
 	@Deprecated
-	public Set<Coupon> getCouponByType(CouponType category) {
+	public Set<Coupon> getCouponByType1(CouponType category) {
 		
 		Set<Coupon> coupons = new HashSet<>();
 		
@@ -236,7 +243,8 @@ public class CouponDBDAO implements CouponDAO{
 		return coupons;
 	}
 
-	public Set<Coupon> getCouponByTypeV2(String table, String colmun, long id, CouponType category) {
+	@Override
+	public Set<Coupon> getCouponByType(String table, String colmun, long id, CouponType category) {
 		
 		Set<Coupon> coupons = new HashSet<>();
 		
@@ -298,7 +306,8 @@ public class CouponDBDAO implements CouponDAO{
 	 * @return - Set<Coupon> 
 	 */
 
-    public Set<Coupon> getCouponByPriceV2(String table, String colmun, long compID, double maxPrice) {
+    @Override
+    public Set<Coupon> getCouponByPrice(String table, String colmun, long compID, double maxPrice) {
     	Set<Coupon> coupons = new HashSet<>();
 		try {
 			String sql = "SELECT coupon.Coup_id from coupon JOIN " + table + " ON " + table + ".Coup_ID= coupon.Coup_id WHERE " + table + "." + colmun + "=" + compID + " AND coupon.Price <= " + maxPrice;
@@ -333,7 +342,6 @@ public class CouponDBDAO implements CouponDAO{
 				long id = coupon.getId();
 				prep.setLong(1, id);
 				prep.executeUpdate();
-				prep.clearBatch();
 				
 			} catch (SQLException e) {
 				SharingData.setExeptionMessage(e.getMessage());
@@ -358,11 +366,11 @@ public class CouponDBDAO implements CouponDAO{
 			
 				prep.setLong(1, compID);
 				prep.executeUpdate();
-				prep.clearBatch();
 				
 			} catch (SQLException e) {
 				SharingData.setExeptionMessage(e.getMessage());
 			} // catch
+			
 	} // removeMethod
 
 	private void removeMethodByCouponID(long coupID) {
@@ -374,7 +382,6 @@ public class CouponDBDAO implements CouponDAO{
 		
 			prep.setLong(1, coupID);
 			prep.executeUpdate();
-			prep.clearBatch();
 			
 		} catch (SQLException e) {
 			SharingData.setExeptionMessage(e.getMessage());
@@ -390,7 +397,7 @@ public class CouponDBDAO implements CouponDAO{
 		ResultSet rs = null;
 		try {
 			
-			IsExistDB.idExist(coupon.getOwnerID());
+			IsExistDB.idExist(coupon.getOwnerID(), "company", "owner_id", "owner_id");
 			if(IsExistDB.getAnswer2() == true) {
 			
 			// 1. Adding the new coupon to the COUPON TABLE. 
@@ -413,9 +420,7 @@ public class CouponDBDAO implements CouponDAO{
 			rs.next();
 			id = rs.getLong(1);
 			coupon.setId(id);
-//			prep.close();
-			prep.clearBatch();
-//			rs.close();
+
 			
 			
 			
@@ -426,7 +431,6 @@ public class CouponDBDAO implements CouponDAO{
 				"," + coupon.getId() + ");";
 			PreparedStatement prep1 = DBconnectorV3.getConnection().prepareStatement(sqlQuery1);
 			prep1.executeUpdate();
-			prep1.clearBatch();
 			
 		} // if
 		} catch (SQLException e) {
@@ -438,24 +442,34 @@ public class CouponDBDAO implements CouponDAO{
 		
 	}
 
-	private Coupon purchaseCouponByCustomer(Coupon coupon) {
+	private Coupon purchaseCouponByCustomer(Coupon coupon) throws SQLException {
 		Coupon purchasedCoupon = null;
 		
-		try{
-			purchasedCoupon = getCoupon(coupon.getId());
+		IsExistDB.idExist(coupon.getId(), "customer_coupon", "coup_id", "cust_id");
+		if (IsExistDB.getAnswer2() == false) {
+			try {
+				throw new SQLException("ERROR: You can't buy the same coupon again until it's expired.");
+			} catch (SQLException e) {
+				SharingData.setExeptionMessage(e.getMessage());
+			} // catch		
+		}
+		else {
+			try{
+				purchasedCoupon = getCoupon(coupon.getId());
+				// We need to Check if the customer purchased this coupon before.
+				
+				String sqlPurchaseCoupomForCustomer = "INSERT INTO customer_coupon (Cust_id, Coup_id) VALUES (" + SharingData.getIdsShare() + "," + coupon.getId() + ")";
+				PreparedStatement prep1 = DBconnectorV3.getConnection().prepareStatement(sqlPurchaseCoupomForCustomer);
+				prep1.executeUpdate();
 			
-			String sqlPurchaseCoupomForCustomer = "INSERT INTO customer_coupon (Cust_id, Coup_id) VALUES (" + SharingData.getIdsShare() + "," + coupon.getId() + ")";
-			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlPurchaseCoupomForCustomer);
-			prep.executeUpdate();
-//			prep.close();
-//			prep.clearBatch();
-		}
-		catch (SQLException e) {
-			SharingData.setExeptionMessage(e.getMessage());
-		}
+			} // try
+			catch (SQLException e) {
+				SharingData.setExeptionMessage(e.getMessage());
+			} // catch
 
-		
+		} // else
 		return purchasedCoupon;
+		
 	} // createCouponByCustomer
 
 	public void setCreator(short creator) {

@@ -14,24 +14,23 @@ import com.task.and.singleton.CouponSystem;
 
 public class CompanyFacade {
 
-//	private CompanyDAO compDao = null;
-//	private CustomerDAO custDao = null;
-//	private CouponDAO coupDao = null;
+	private CompanyDAO compDao = null;
+	private CustomerDAO custDao = null;
+	private CouponDAO coupDao = null;
 //	
 	public CompanyFacade() {
 		
-//		compDao = CouponSystem.getInstance().getCompDao();
-//		custDao = CouponSystem.getInstance().getCustDao();
-//		coupDao = CouponSystem.getInstance().getCouponDao();
+		compDao = CouponSystem.getInstance().getCompDao();
+		custDao = CouponSystem.getInstance().getCustDao();
+		coupDao = CouponSystem.getInstance().getCouponDao();
 	}
 	
 	
 	public void createCouponF(Coupon coupon) {
 		
-		CouponDBDAO cou = new CouponDBDAO();
 		short companyCreator = 1;
-		cou.setCreator(companyCreator);
-		cou.createCoupon(coupon);
+		coupDao.setCreator(companyCreator);
+		coupDao.createCoupon(coupon);
 		
 	} // createCouponF
 	
@@ -77,7 +76,7 @@ public class CompanyFacade {
 	public Set<Coupon> getCouponsByType(long custID, CouponType category) {
 		
 		CouponDBDAO coupDB = new CouponDBDAO();
-		Set<Coupon> coupons = coupDB.getCouponByTypeV2("company_coupon", "comp_id" ,custID, category);
+		Set<Coupon> coupons = coupDB.getCouponByType("company_coupon", "comp_id" ,custID, category);
 
 		return coupons;
 
@@ -93,7 +92,7 @@ public class CompanyFacade {
 	
 	public Set<Coupon> getCouponsOfCompanyByPrice(double maxPrice) {
 		CouponDBDAO coupDB = new CouponDBDAO();
-		Set<Coupon> coupons = coupDB.getCouponByPriceV2("company_coupon" ,"comp_id", SharingData.getIdsShare() ,maxPrice);
+		Set<Coupon> coupons = coupDB.getCouponByPrice("company_coupon" ,"comp_id", SharingData.getIdsShare() ,maxPrice);
 		
 		return coupons;	
 	}

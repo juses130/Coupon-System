@@ -12,6 +12,7 @@ import com.added.functions.DBconnectorV3;
 import com.added.functions.SharingData;
 import com.dao.interfaces.CustomerDAO;
 import com.javabeans.Coupon;
+import com.javabeans.CouponType;
 import com.javabeans.Customer;
 
 /**
@@ -168,7 +169,7 @@ public class CustomerDBDAO implements CustomerDAO {
 
 	public Set<Coupon> getAllCouponsByPrice(long custID ,double maxPrice) {
 		CouponDBDAO coupDB = new CouponDBDAO();
-		Set<Coupon> coupons = coupDB.getCouponByPriceV2("customer_coupon" , "cust_id", custID, maxPrice);
+		Set<Coupon> coupons = coupDB.getCouponByPrice("customer_coupon" , "cust_id", custID, maxPrice);
 		
 		return coupons;
 	}
@@ -184,13 +185,14 @@ public class CustomerDBDAO implements CustomerDAO {
         try {
 			
 			
-			String sqlName = "SELECT Cust_name, password FROM customer WHERE "
+			String sqlName = "SELECT Cust_id, Cust_name, password FROM customer WHERE "
 					+ "Cust_name= '" + userName + "'" + " AND " + "password= '" 
 					+ password + "'";
 			stat1 = DBconnectorV3.getConnection().createStatement();
 		    rs1 = stat1.executeQuery(sqlName);
+		    
 		    rs1.next();
-
+		    SharingData.setIdsShare(rs1.getLong(1));
 			if (rs1.getRow() != 0) {
 				hasRows = true;
 			}
@@ -265,6 +267,22 @@ public class CustomerDBDAO implements CustomerDAO {
 
 		
 	}
-	
+
+	@Override
+	public Set<Coupon> getCouponByPrice(String table, String colmun, long custID, double maxPrice) {
+		CouponDBDAO coupDB = new CouponDBDAO();
+		Set<Coupon> coupons = coupDB.getCouponByPrice(table, colmun, custID, maxPrice);
+		
+		return coupons;
+	}
+
+	@Override
+	public Set<Coupon> getCouponByType(String table, String colmun, long custID, CouponType category) {
+		CouponDBDAO coupDB = new CouponDBDAO();
+		Set<Coupon> coupons = coupDB.getCouponByType(table, colmun, custID, category);
+		
+		return coupons;
+	}
+
 
 }

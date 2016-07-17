@@ -6,6 +6,7 @@ import java.util.Collection;
 import javax.security.auth.login.LoginException;
 
 import com.added.functions.IsExistDB;
+import com.added.functions.SharingData;
 import com.dao.interfaces.CompanyDAO;
 import com.dao.interfaces.CouponDAO;
 import com.dao.interfaces.CustomerDAO;
@@ -20,16 +21,16 @@ public class AdminFacade {
 	private static final String adminUser = "admin";
 	private static final String password = "1234";
 	
-//	private CompanyDAO compDao = null;
-//	private CustomerDAO custDao = null;
-//	private CouponDAO coupDao = null;
+	private static CompanyDAO compDao = null;
+	private CustomerDAO custDao = null;
+	private CouponDAO coupDao = null;
 	
 	// constructor
 	public AdminFacade() {
 		
-//		compDao = CouponSystem.getInstance().getCompDao();
-//		custDao = CouponSystem.getInstance().getCustDao();
-//		coupDao = CouponSystem.getInstance().getCouponDao();
+		compDao = CouponSystem.getInstance().getCompDao();
+		custDao = CouponSystem.getInstance().getCustDao();
+		coupDao = CouponSystem.getInstance().getCouponDao();
 	}
 
 	/*
@@ -37,52 +38,45 @@ public class AdminFacade {
 	 */
 	
 	public void createCompanyA(Company company) {
-		CompanyDBDAO coDB = new CompanyDBDAO();
-//		IsExistDB.stringExistV3("company", "comp_name", company.getCompName());
-//		if(IsExistDB.isDosentExistInDB() == false) {
-			coDB.createCompany(company);
-//		}
+		
+		try {
+			compDao.createCompany(company);
+		} catch (SQLException e) {
+			SharingData.setExeptionMessage(e.getMessage() + e.getErrorCode());
+		}
 		
 	} // createCompanyA - function
 	
 	public void removeCompanyA(Company company) throws SQLException{
 		
 		Coupon coupon = new Coupon();
-		CompanyDBDAO coDB = new CompanyDBDAO();
-		CouponDBDAO couDB = new CouponDBDAO();
-		
-		coDB.removeCompany(company);
-		
 		coupon.setOwnerID(company.getId());
-		couDB.removeCouponOwnerID(coupon.getOwnerID());
-		couDB.removeCoupon(coupon);
+		compDao.removeCompany(company);
+		coupDao.removeCouponOwnerID(coupon.getOwnerID());
+		coupDao.removeCoupon(coupon);
 		
-
 	} // removeCompanyA - function
 	
 	public void updateCompanyA(Company company) {
-		
-		CompanyDBDAO coDB = new CompanyDBDAO();
-		coDB.updateCompany(company);
+		try {
+			compDao.updateCompany(company);
+		} catch (SQLException e) {
+			SharingData.setExeptionMessage(e.getMessage() + e.getErrorCode());
+		}
 		
 		
 	} // updateCompanyA - function
 
 	public Company getCompanyA(long id) {
-		
-		CompanyDBDAO coDB = new CompanyDBDAO();
 		Company c = new Company();
-		c = coDB.getCompany(id);
-		//System.out.println(c.toString());
+		c = compDao.getCompany(id);
 		return c;
 		
 		
 	} // getCompanyA - function
 	
 	public Collection<Company> getAllCompaniesA() {
-	
-		CompanyDBDAO coDB = new CompanyDBDAO();
-		return coDB.getAllCompanies();
+		return compDao.getAllCompanies();
 		
 		
 	} // getAllCompaniesA - function
@@ -95,41 +89,32 @@ public class AdminFacade {
 		
 		IsExistDB.stringExistV3("customer", "cust_name", customer.getCustName());
 		if(IsExistDB.getAnswer() == false) {
-			CustomerDBDAO cuDB = new CustomerDBDAO();
-			cuDB.createCustomer(customer);
+			custDao.createCustomer(customer);
 		}
 	} // createCustomerA - function
 	
 	public void removeCustomerA(Customer customer) {
-		CustomerDBDAO cuDB = new CustomerDBDAO();
-		cuDB.removeCustomer(customer);
+		custDao.removeCustomer(customer);
 	}
 	
 	public void updateCustomerA(Customer customer) {
-		// TODO
-		CustomerDBDAO cuDB = new CustomerDBDAO();
-		cuDB.updateCustomer(customer);
+		custDao.updateCustomer(customer);
 	} // createCustomerA - function
 	
 	public Customer getCustomerA(long id) {
 		
-		CustomerDBDAO cusDB = new CustomerDBDAO();
 		Customer c = new Customer();
 		c.setId(id);
-		c = cusDB.getCustomer(id);
+		c = custDao.getCustomer(id);
 		
 		// set the Collection of the Coupons.
-		c.setCoupons(cusDB.getCoupons(id));
+		c.setCoupons(custDao.getCoupons(id));
 		
 		return c;
 	}
 	
 	public Collection<Customer> getAllCustomersA() {
-		
-		CustomerDBDAO coDB = new CustomerDBDAO();
-		return coDB.getAllCustomers();
-		
-		
+		return custDao.getAllCustomers();
 	} // getAllCompaniesA - function
 	
 	public boolean login(String userName, String password) {

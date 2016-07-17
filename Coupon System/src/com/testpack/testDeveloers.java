@@ -466,13 +466,18 @@ public class testDeveloers {
     		}
 	
 	private static void loadDriver() {
-		//String driverName = loadFromFIle();
-//		Class.forName("com.mysql.jdbc.Driver");
-//		DBconnectorV2.startPool();
-//		DBconnector.getCon();
-		DBconnectorV3.startPool();
+
+		CouponSystem.getInstance();
+//		DBconnectorV3.startPool();
 		
+		try {
+			if(DBconnectorV3.getConnection().isClosed() != true) {
 				System.out.println("----------- DRIVER LOADED -----------------" + "\n");
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		} // catch
+				
 	}
 	
 	/**
@@ -604,12 +609,11 @@ public class testDeveloers {
         	}
         	case 5: {
         		getAllCompanies_T();
-        		printDbDAOMenu();
         		break;
         	}
         	case 822: { // Developers Option: Reset Table Company
-        		resetTable_T();
-        		printDbDAOMenu();
+//        		resetTable_T();
+//        		printDbDAOMenu();
         		break;
         	}
 
@@ -705,7 +709,7 @@ public class testDeveloers {
     				break;
     			}
     			
-    			IsExistDB.idExist(SharingData.getLongNum1());
+    			IsExistDB.idExist(SharingData.getLongNum1(), "company", "comp_id", "comp_id");
     			if(IsExistDB.getAnswer2() == false) {		
          		printNoExistOrCurrect();
          		//printAdminFacadeMenu();
@@ -758,7 +762,7 @@ public class testDeveloers {
                   
 
      		// Check if the NAME exist..
-            IsExistDB.idExist(c.getId());
+            IsExistDB.idExist(c.getId(), "company", "comp_id", "comp_id");
             if(IsExistDB.getAnswer2() == false) {
      				
      		printNoExistOrCurrect();
@@ -768,7 +772,8 @@ public class testDeveloers {
      		else { // Move on to this block if we got 'TRUE' in the IF condition:
  	    		
  	    		Company company = new Company();
- 	    		CouponSystem.getInstance().getCompDao().getCompany(company.getId());
+				AdminFacade admF = new AdminFacade();
+				company = admF.getCompanyA(c.getId());
      		        printFoundInDB("Company"); 
      	    		System.out.print("NEW Email: ");
      	    		company.setEmail(userInputString());
@@ -780,7 +785,8 @@ public class testDeveloers {
      	    		//ca.setId(c.getId());
      	    		//c.setPassword(password);
      	    		
-     	     		CouponSystem.getInstance().getCompDao().getCompany(company.getId());
+     	     		//CouponSystem.getInstance().getCompDao().updateCompany(company);
+					admF.updateCompanyA(company);
 
      	     		if(SharingData.isFlag1() == true) {
      	     			//System.out.println("\n" + SharingData.getVarchar4());
@@ -817,7 +823,7 @@ public class testDeveloers {
         	System.out.println("Type The Company ID:");
         	SharingData.setLongNum1(userInputLong());
         	
-        	IsExistDB.idExist(SharingData.getLongNum1());
+        	IsExistDB.idExist(SharingData.getLongNum1(), "company", "comp_id", "comp_id");
         	if(SharingData.getLongNum1() == 0) {
         		System.out.println("Typing 'Zero' is mean = quit..");
         		printGoingBackToUsage();
@@ -1204,7 +1210,6 @@ public class testDeveloers {
         	
         	if (IsExistDB.getAnswer2() == false) { // checks if the ID exist in the DB.
         		printNoExistOrCurrect();
-    			printDbDAOMenu();
     			break;
         	} // if - isExist
         	else {
@@ -1252,25 +1257,34 @@ public class testDeveloers {
     			+ "please type '0' and go back to Customer Side Menu and check with Get's Options." + "\n");
     	
     	System.out.print("Type the Coupon ID (Or '0' for exit): ");
-    	long id = sc.nextShort();
-    	if(id == 0) {
+    	long coupID = sc.nextLong();
+    	if(coupID == 0) {
     		printGoingBackToUsage();
     		break;
     	}
-    	IsExistDB.idExistV2Coupon(id, "Coupon");
+    	IsExistDB.idExistV2Coupon(coupID, "Coupon");
 		if(IsExistDB.getAnswer2() == false) {
+			printNoExistOrCurrect();
 			break;
 		} // if - false
+		
 		else {
 	    	CustomerFacade cusF = new CustomerFacade();
 	    	Coupon coupon = new Coupon();
-	    	coupon.setId(id);
+	    	coupon.setId(coupID);
 	    	coupon = cusF.purchaseCoupon(coupon);
-	    	
 	    	System.out.println();
-	    	System.out.println("------------ Coupon Added Successfully ----------" + "\n");
+	    	
 		}
-    	
+    	if(SharingData.getExeptionMessage() != null) {
+    		System.out.print("***************************************************************");
+    		System.out.println(SharingData.getExeptionMessage());
+    		System.out.print("***************************************************************");
+
+    	}
+    	else {
+    		System.out.println("------------ Coupon Added Successfully ----------" + "\n");
+    	}
     	} // while loop
     	
     } // purchaseCoupon_T
@@ -1455,7 +1469,7 @@ public class testDeveloers {
         int amount = userInputInt();
 		
         System.out.print("In Category: ");
-        String category = userInputString();
+        String category = userInputString().toUpperCase();
         
         System.out.print("NEW Massage: ");
         String message = userInputString();
@@ -1500,10 +1514,10 @@ public class testDeveloers {
 		short choice1 = userInputShort();
 		
 		if (choice1 == 1) {
+			printCompanyFacadeMenu();
 			continue;
 		} // if 
 		else {
-			printDbDAOMenu();
 			break;
 		}
 	
@@ -1860,7 +1874,6 @@ public class testDeveloers {
     	// Getting in throw the CouponSystem.
     	
 //    	DBconnectorV2.startPool();
-    	CouponSystem.getInstance();
     	SharingData.getExeptionMessage();
     	try {
 			TimeUnit.SECONDS.sleep(5);
