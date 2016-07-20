@@ -10,11 +10,10 @@ import com.dao.interfaces.CompanyDAO;
 import com.dao.interfaces.CouponDAO;
 import com.dao.interfaces.CustomerDAO;
 import com.dbdao.CompanyDBDAO;
+import com.exeptionerrors.*;
 import com.javabeans.*;
 import com.task.and.singleton.CouponClientFacade;
 import com.task.and.singleton.CouponSystem;
-
-import ExeptionErrors.*;
 
 public class CompanyFacade implements CouponClientFacade{
 	

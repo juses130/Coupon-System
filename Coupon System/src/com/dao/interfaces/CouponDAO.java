@@ -1,9 +1,9 @@
 package com.dao.interfaces;
 
 import java.util.*;
-import com.javabeans.*;
 
-import ExeptionErrors.DaoExeption;
+import com.exeptionerrors.DaoExeption;
+import com.javabeans.*;
 
 public interface CouponDAO {
 

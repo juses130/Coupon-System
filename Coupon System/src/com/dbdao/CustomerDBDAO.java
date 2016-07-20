@@ -13,16 +13,15 @@ import javax.swing.tree.ExpandVetoException;
 import com.added.functions.DBconnectorV3;
 import com.added.functions.SharingData;
 import com.dao.interfaces.CustomerDAO;
+import com.exeptionerrors.DaoExeption;
+import com.exeptionerrors.FiledErrorException;
+import com.exeptionerrors.LoginException;
 import com.facade.DetectionBy;
 import com.javabeans.Coupon;
 import com.javabeans.CouponType;
 import com.javabeans.Customer;
 import com.mchange.util.DuplicateElementException;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
-
-import ExeptionErrors.DaoExeption;
-import ExeptionErrors.FiledErrorException;
-import ExeptionErrors.LoginException;
 
 /**
  * This is Customer Database DAO Class.

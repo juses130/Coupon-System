@@ -3,11 +3,10 @@ package com.task.and.singleton;
 
 import java.net.ConnectException;
 
+import com.exeptionerrors.ConnectorExeption;
+import com.exeptionerrors.DaoExeption;
+import com.exeptionerrors.LoginException;
 import com.facade.ClientType;
-
-import ExeptionErrors.ConnectorExeption;
-import ExeptionErrors.DaoExeption;
-import ExeptionErrors.LoginException;
 
 /**
  * This is the interface 'CouponClientFacade'.

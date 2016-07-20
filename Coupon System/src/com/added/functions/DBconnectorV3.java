@@ -2,8 +2,8 @@ package com.added.functions;
 
 import java.sql.*;
 
-import ExeptionErrors.ConnectorExeption;
-import ExeptionErrors.DaoExeption;
+import com.exeptionerrors.ConnectorExeption;
+import com.exeptionerrors.DaoExeption;
 
 /**
  * This is Version 3 of DataBase Connector.

@@ -4,11 +4,10 @@ import java.sql.SQLException;
 import java.util.Set;
 
 import com.dao.interfaces.*;
+import com.exeptionerrors.*;
 import com.javabeans.*;
 import com.task.and.singleton.CouponClientFacade;
 import com.task.and.singleton.CouponSystem;
-
-import ExeptionErrors.*;
 
 public class CustomerFacade implements CouponClientFacade {
 

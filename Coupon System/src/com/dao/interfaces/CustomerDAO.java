@@ -3,11 +3,10 @@ package com.dao.interfaces;
 import java.util.Collection;
 import java.util.Set;
 
+import com.exeptionerrors.DaoExeption;
+import com.exeptionerrors.FiledErrorException;
+import com.exeptionerrors.LoginException;
 import com.javabeans.*;
-
-import ExeptionErrors.DaoExeption;
-import ExeptionErrors.FiledErrorException;
-import ExeptionErrors.LoginException;
 
 public interface CustomerDAO {
 	public void createCustomer(Customer newCustomer) throws DaoExeption;

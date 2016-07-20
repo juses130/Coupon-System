@@ -1,10 +1,10 @@
 package com.testpack;
 
 import com.added.functions.DBconnectorV3;
+import com.exeptionerrors.ConnectorExeption;
+import com.exeptionerrors.DaoExeption;
+import com.exeptionerrors.FiledErrorException;
 import com.facade.AdminFacade;
-import ExeptionErrors.ConnectorExeption;
-import ExeptionErrors.DaoExeption;
-import ExeptionErrors.FiledErrorException;
 
 public class testBySingleton { 
 	public static void main(String[] args) {
