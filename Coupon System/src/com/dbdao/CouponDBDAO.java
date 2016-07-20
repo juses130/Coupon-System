@@ -29,9 +29,39 @@ public class CouponDBDAO implements CouponDAO{
 	@Override
 	public Coupon createCoupon(Coupon coupon) throws DaoExeption{
 
-		purchaseCouponByCustomer(coupon);
-		return coupon;
+		if(existOrNotByName(coupon) == false) {
+			
+			long id = -1;
+			try {
 
+				String sqlQuery = "INSERT INTO coupon (Title, Start_Date, End_Date, " + 
+				"Amount, Category, Message, Price, Image, Owner_ID)" + "VALUES(?,?,?,?,?,?,?,?,?)";	
+				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
+				prep.setString(1, coupon.getTitle());
+				prep.setDate(2, Date.valueOf(coupon.getStartDate()));
+				prep.setDate(3, Date.valueOf(coupon.getEndDate()));
+				prep.setInt(4, coupon.getAmount());
+				prep.setString(5, coupon.getType().toString());
+				prep.setString(6, coupon.getMessage());
+				prep.setDouble(7, coupon.getPrice());
+				prep.setString(8, coupon.getImage());
+				prep.setLong(9, coupon.getOwnerID());
+				
+				prep.executeUpdate();
+				ResultSet rs = prep.getGeneratedKeys();
+				rs.next();
+				id = rs.getLong(1);
+				coupon.setId(id);
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new DaoExeption("Error: Creating New Coupon - FAILED (something went wrong)");
+			}
+			return coupon;
+		}
+		else {
+			throw new DaoExeption("Error: Creating New CouponID - FAILED (Coupon is already exist in the DataBase)");
+		}
 	} // createCoupon - function
 
 	@Override
@@ -173,21 +203,6 @@ public class CouponDBDAO implements CouponDAO{
 		return coupons;
 	}
     
-	/**
-	 * 
-	 * Function Version 2 of getCouponByPrice.
-	 * it's saving code writing and we can use this function 
-	 * for Customer needs and Company needs.
-	 * 
-	 * I'ts checking the prices before putting it in the SET<>
-	 * 
-	 * @param table (Customer_Coupom OR Company_Coupon)
-	 * @param column (Comp_ID OR Cust_ID)
-	 * @param long (compID)
-	 * @param maxPrice (double)
-	 * @return - Set<Coupon> 
-	 */
-
     @Override
     public Set<Coupon> getCouponByPrice(String table, String colmun, long compID, double maxPrice) throws DaoExeption{
     	Set<Coupon> coupons = new HashSet<>();
@@ -235,39 +250,39 @@ public class CouponDBDAO implements CouponDAO{
 
     private boolean existOrNotByID(Coupon coupon) throws DaoExeption {
 		
-		Statement stat = null;
-		ResultSet rs = null;
-		boolean answer = false;
-		String sqlName = "SELECT coup_ID FROM coupon WHERE "
-		+ "coup_ID= " + "" + coupon.getId() + "";
-		
-		try {
-			stat = DBconnectorV3.getConnection().createStatement();
-			rs = stat.executeQuery(sqlName);
-			rs.next();
-					   
-			if (rs.getRow() != 0) {
-				answer = true;
-			} // if
-		} catch (SQLException e) {
-			throw new DaoExeption("Error: cannot make sure if the coupon is in the DataBase");
-		}
-		
-		   
-		return answer;
+    	boolean answer = false;
+    	if (coupon.getId() > 0) {
+    		try {
+        		
+        		String sqlName = "SELECT coup_ID FROM coupon WHERE "
+        		+ "coup_ID= " + "'" + coupon.getId() + "'";
+        		
+        		Statement stat = DBconnectorV3.getConnection().createStatement();
+        		ResultSet rs = stat.executeQuery(sqlName);
+    			rs.next();
+    					   
+    			if (rs.getRow() != 0) {
+    				answer = true;
+    			} // if
+    		} catch (SQLException e) {
+    			throw new DaoExeption("Error: cannot make sure if the coupon is in the DataBase");
+    		}
+    		return answer;
+    	}
+    	else {
+    	throw new DaoExeption("Error: Detecting CouponID - FAILED (ID cannot contain Zero!)");
+    	} // else
 	}
 
     private boolean existOrNotByName(Coupon coupon) throws DaoExeption {
 		
- 	    Statement stat = null;
- 		ResultSet rs = null;
  		boolean answer = false;
  		   
  		  try {
  				String sqlName = "SELECT coup_ID FROM coupon WHERE "
  				+ "coup_ID= '" + coupon.getTitle() + "'";
- 				stat = DBconnectorV3.getConnection().createStatement();
- 				rs = stat.executeQuery(sqlName);
+ 				Statement stat = DBconnectorV3.getConnection().createStatement();
+ 				ResultSet rs = stat.executeQuery(sqlName);
  				rs.next();
  			   
  				if (rs.getRow() != 0) {
@@ -279,69 +294,6 @@ public class CouponDBDAO implements CouponDAO{
  	            } // catch
  		  return answer;
  	}
-	
-	private Coupon purchaseCouponByCustomer(Coupon coupon) throws DaoExeption {
-		Coupon purchasedCoupon = null;
-		
-		if(existOrNotByID(coupon) == true) {
-			try{
-				purchasedCoupon = getCoupon(coupon.getId());
-				// We need to Check if the customer purchased this coupon before.
-				if(previouslyPurchased(coupon) == false) {
-					
-					String sqlPurchaseCoupomForCustomer = "INSERT INTO customer_coupon (Cust_id, Coup_id) VALUES (" + SharingData.getIdsShare() + "," + coupon.getId() + ")";
-					PreparedStatement prep1 = DBconnectorV3.getConnection().prepareStatement(sqlPurchaseCoupomForCustomer);
-					prep1.executeUpdate();
-				} // if - previouslyPurchased
-				else {
-					throw new DaoExeption("Error: Purchase Coupon - FAILED (You can buy the coupon only once)");
-				} // else - previouslyPurchased
-			} // try
-			catch (SQLException | NullPointerException e) {
-				throw new DaoExeption("Error: Purchase Coupon - FAILED");			
-			} // catch
-		return purchasedCoupon;
-		}
-		else {
-			throw new DaoExeption("Error: Purchase Coupon - FAILED (Coupon dosen't exist in the DataBase)");
-		}
-	} // createCouponByCustomer
 
-	/**
-	 * 
-	 * This methods will help us to make sure that the customer didn't bought the current coupon in the past.
-	 * 
-	 * @param coupon
-	 * @return boolean
-	 * 
-	 * @author Raziel
-	 * @throws DaoExeption 
-	 */
-	
-	private boolean previouslyPurchased(Coupon coupon) throws DaoExeption {
 
-		boolean answer = false;
-		
-		try {
-			
-			Statement stat = null;
-			
-			String sqlName = "SELECT cust_id FROM customer_coupon WHERE coup_id=" + coupon.getId();
-			stat = DBconnectorV3.getConnection().createStatement();
-			ResultSet rs = stat.executeQuery(sqlName);
-			rs.next();
-					   
-			if (rs.getRow() != 0) {
-				answer = true;
-			} // if
-		} catch (SQLException e) {
-			e.printStackTrace();
-//			throw new DaoExeption("Error: cannot make sure if the coupon is in the DataBase");
-		}
-		
-		return answer;
-		
-	}
-
-	
 } // Class

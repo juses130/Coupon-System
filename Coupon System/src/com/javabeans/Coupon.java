@@ -147,8 +147,8 @@ public class Coupon {
 
 	public void setEndDate(LocalDate endDate) throws FiledErrorException {
 		
-		if(endDate.isAfter(LocalDate.now())) { // if the STARTDate is before today, throw exception
-			throw new FiledErrorException("Error: The End-Date Of The Coupon Has To Be AFTER Today AND The Start-Date!");
+		if(endDate.isBefore(LocalDate.now())) { // if the STARTDate is before today, throw exception
+			throw new FiledErrorException("Error: The End-Date Of The Coupon Has To Be AFTER Today!");
 		}
 		else {
 			this.endDate = endDate;
@@ -250,6 +250,6 @@ public class Coupon {
 	@Override
 	public String toString() {
 		return "\n" + "Coupon [id=" + id + ", title=" + title + ", startDate=" + startDate + ", endDate=" + endDate
-				+ ", Category= " + category + ", amount=" + amount + ", message=" + message + ", price=" + price + "$ " + ", image=" + image + "]";
+				+ ", Category= " + category + ", amount=" + amount + ", message=" + message + ", price=" + price + "$ " + ", image=" + image + "Owner ID=" + ownerID + "]";
 	}
 }

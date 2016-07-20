@@ -30,7 +30,7 @@ public class Company {
 
 	public Company(long id, String compName, String password, String email) throws FiledErrorException {
 		
-		setId(id);
+//		setId(id);
 		setCompName(compName);
 		setEmail(email);
 		setPassword(password);
@@ -47,7 +47,6 @@ public class Company {
 	}
 
 	public void setId(long id) {
-		
 		if(id < 0) { // if id is UNDER '0' then reset 'this.id' to 0.
 			id = 0;
 			this.id = id;

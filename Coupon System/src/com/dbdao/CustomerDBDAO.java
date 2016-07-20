@@ -37,20 +37,16 @@ public class CustomerDBDAO implements CustomerDAO {
 	@Override
 	public boolean login(String userName, String password) throws DaoExeption {
 		
-		ResultSet rs1 = null;
-		Statement stat1 = null;
-
-
 		boolean hasRows = false;
         String sqlName = "SELECT Cust_id, Cust_name, password FROM customer WHERE "
 				+ "Cust_name= '" + userName + "'" + " AND " + "password= '" 
 				+ password + "'";
 		try {
-			stat1 = DBconnectorV3.getConnection().createStatement();
-			rs1 = stat1.executeQuery(sqlName);
+			Statement stat = DBconnectorV3.getConnection().createStatement();
+			ResultSet rs = stat.executeQuery(sqlName);
 			
-			rs1.next();
-			if (rs1.getRow() != 0) {
+			rs.next();
+			if (rs.getRow() != 0) {
 					hasRows = true;
 				}
 			
@@ -63,9 +59,8 @@ public class CustomerDBDAO implements CustomerDAO {
 	@Override
 	public void createCustomer(Customer customer) throws DaoExeption{
 		
-		// check if the company not exist && if the instances are not empty
+		// check if the cost not exist && if the instances are not empty
 		if (existOrNotByID(customer) == false) {
-			ResultSet rs = null;
 			try {
 				
 				String sqlQuery = "INSERT INTO customer (CUST_NAME, PASSWORD) VALUES(?,?)";
@@ -78,7 +73,7 @@ public class CustomerDBDAO implements CustomerDAO {
 				
 
 				// This 2 lines will make it run to the next null row. and line 3 will set the ID (next new row).
-				rs = prep.getGeneratedKeys();
+				ResultSet rs = prep.getGeneratedKeys();
 //				rs.next();
 				while(rs.next()) {
 					customer.setId(rs.getLong(1));;

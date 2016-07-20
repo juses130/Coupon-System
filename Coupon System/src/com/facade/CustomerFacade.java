@@ -1,6 +1,5 @@
 package com.facade;
 
-import java.sql.SQLException;
 import java.util.Set;
 
 import com.dao.interfaces.*;
@@ -11,9 +10,7 @@ import com.task.and.singleton.CouponSystem;
 
 public class CustomerFacade implements CouponClientFacade {
 
-	private long custId;
-	private String custName;
-//	private CompanyDAO compDao = null;
+	private CompanyDAO compDao = null;
 	private CustomerDAO custDao = null;
 	private CouponDAO coupDao = null;
 	

@@ -8,11 +8,11 @@ import com.javabeans.*;
 public interface CompanyDAO {
 
 	public void createCompany(Company company) throws DaoExeption;
-
-	public Coupon createCoupon(Coupon coupon) throws DaoExeption;
 	
 	public void removeCompany(Company company) throws DaoExeption;
-
+	
+	public Coupon createCoupon(Company company ,Coupon coupon) throws DaoExeption;
+	
 	public void updateCompany(Company company) throws DaoExeption;
 
 	public Company getCompany(long id) throws DaoExeption;

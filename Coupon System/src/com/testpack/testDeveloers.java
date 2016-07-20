@@ -460,7 +460,8 @@ public class testDeveloers {
 	    	String userName = userInputString();
 	    	System.out.print("Type Your Company Password: ");
 	    	String password = userInputString();
-	    	
+	    	// share this with company create and checks.. we are login with NAME
+	    	SharingData.setVarchar4(userName);
 		    try {
 				client = CouponSystem.getInstance().login(userName, password, ClientType.COMPANY);
 			} catch (LoginException | DaoExeption | ConnectorExeption e) {
@@ -1461,13 +1462,17 @@ public class testDeveloers {
         System.out.print("NEW Imag link: ");
         String imag = userInputString();
         
-        long ownerID = SharingData.getIdsShare();
-        
+        String ownerName = SharingData.getVarchar4();
+		Company company = new Company();
+
 		// putting all the variables
         try {
-			comF = new CompanyFacade();
-			coup = new Coupon(title, startDate, endDate, amount, CouponType.valueOf(category), message, price, imag, ownerID);
-		} catch (ConnectorExeption | FiledErrorException e1) {
+			AdminFacade admF = new AdminFacade();
+        	comF = new CompanyFacade();
+			
+			company = admF.getCompany(ownerName);
+			coup = new Coupon(title, startDate, endDate, amount, CouponType.valueOf(category), message, price, imag, company.getId());
+		} catch (ConnectorExeption | FiledErrorException | DaoExeption e1) {
 			System.out.println(e1.getMessage());;
 		}
         
@@ -1480,7 +1485,7 @@ public class testDeveloers {
 		}
 		
 		try {
-			comF.createCoupon(coup);
+			comF.createCoupon(company,coup);
 			System.out.println(coup.toString());
 			System.out.println("------------ Coupon Added Successfully ----------" + "\n");
 

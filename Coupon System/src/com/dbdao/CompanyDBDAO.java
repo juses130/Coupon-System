@@ -99,10 +99,37 @@ public class CompanyDBDAO implements CompanyDAO {
 	} // createCompany - Function
 	
 	@Override
-	public Coupon createCoupon(Coupon coupon) throws DaoExeption{
+	public Coupon createCoupon(Company company ,Coupon coupon) throws DaoExeption{
 
-		
-		return coupon;
+		if(existOrNotByCoupName(coupon) == false) {
+			// We need to Check if the Company ownes this coupon before.
+			if(bothExistInSameTable(coupon, company, SqlAction.CREATE_COUPON) == false) {
+				try{
+					/* creating the coupon in Coupon Table First. 
+					 * and if we don't get Exception it will move on to 
+					 * create the coupon in the Company_Coupon Table.
+					*/
+					CouponDBDAO coupDB = new CouponDBDAO();
+					coupDB.createCoupon(coupon);
+					
+						String sqlCompanyCoupn = "INSERT INTO Company_coupon (Comp_id, Coup_id) VALUES (" + company.getId() + "," + coupon.getId() + ")";
+						PreparedStatement prep1 = DBconnectorV3.getConnection().prepareStatement(sqlCompanyCoupn);
+						prep1.executeUpdate();
+
+				} // try
+				catch (SQLException | NullPointerException e) {
+					throw new DaoExeption("Error: Creating Coupon - FAILED");			
+				} // catch
+				return coupon;
+			} // if - it's bought before
+			else {
+				throw new DaoExeption("Error: Creating Coupon - FAILED (You can create only ONE coupon with the same name!)");
+			} // else - it's bought before
+
+		} // if - exist
+		else {
+			throw new DaoExeption("Error: Creating Coupon - FAILED (Coupon already exist in the DataBase)");
+		}
 
 	} // createCoupon - function
 	
@@ -110,7 +137,7 @@ public class CompanyDBDAO implements CompanyDAO {
 	public void removeCompany(Company company) throws DaoExeption{
 		
 		// check if the company exist
-		if (existOrNotByID(company.getId()) == true) {
+		if (existOrNotByCompID(company.getId()) == true) {
 			removeMethod(company.getId());
 		}
 		else {
@@ -123,7 +150,7 @@ public class CompanyDBDAO implements CompanyDAO {
 	public void updateCompany(Company company) throws DaoExeption{
 		
 		// check if the company exist
-		if (existOrNotByID(company.getId()) == true) {
+		if (existOrNotByCompID(company.getId()) == true) {
 			try {
 				String sqlUpdate = "UPDATE company SET Comp_name=?, password=?, email=? WHERE Comp_ID=?";
 				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement (sqlUpdate);
@@ -150,7 +177,7 @@ public class CompanyDBDAO implements CompanyDAO {
 		company.setId(id);
 		
 		// check if the company exist
-		if (existOrNotByID(company.getId()) == true) {
+		if (existOrNotByCompID(company.getId()) == true) {
 			
 			String compName = null, email = null, password = null;
 			
@@ -306,51 +333,91 @@ public class CompanyDBDAO implements CompanyDAO {
 		
 	} // removeMethod
 	
-    private boolean existOrNotByID(long id) throws DaoExeption {
-//		// TODO: Why did I check the enum here? I know i need to split the createCoupon - one for the company and one for the customerDBDAO
-//    	if(client == ClientTable.COMPANY) {
-//    		
-//    		boolean answer = false;
-//    		try {
-//        		
-//        		String sqlName = "SELECT Comp_ID FROM company WHERE "
-//        		+ "Comp_ID= " + "'" + id + "'";
-//        		
-//        		Statement stat = DBconnectorV3.getConnection().createStatement();
-//        		ResultSet rs = stat.executeQuery(sqlName);
-//    			rs.next();
-//    					   
-//    			if (rs.getRow() != 0) {
-//    				answer = true;
-//    			} // if
-//    		} catch (SQLException e) {
-//    			throw new DaoExeption("Error: cannot make sure if the company is in the DataBase");
-//    		}
-//    		return answer;
-//    	}
-//    	else if (client == ClientTable.COUPON) {
-//    		boolean answer = false;
-//    		try {
-//        		
-//        		String sqlName = "SELECT Comp_ID FROM company WHERE "
-//        		+ "Comp_ID= " + "'" + id + "'";
-//        		
-//        		Statement stat = DBconnectorV3.getConnection().createStatement();
-//        		ResultSet rs = stat.executeQuery(sqlName);
-//    			rs.next();
-//    					   
-//    			if (rs.getRow() != 0) {
-//    				answer = true;
-//    			} // if
-//    		} catch (SQLException e) {
-//    			throw new DaoExeption("Error: cannot make sure if the company is in the DataBase");
-//    		}
-//    	}
-		return false;
+    private boolean existOrNotByCompID(long compID) throws DaoExeption {
     	
-		
-	}
+    	boolean answer = false;
+    	if(compID > 0) {
+    		
+    		try {
+        		String sqlName = "SELECT Comp_ID FROM company WHERE "
+        		+ "Comp_ID= " + "'" + compID + "'";
+        		
+        		Statement stat = DBconnectorV3.getConnection().createStatement();
+        		ResultSet rs = stat.executeQuery(sqlName);
+    			rs.next();
+    					   
+    			if (rs.getRow() != 0) {
+    				answer = true;
+    			} // if
+    		} catch (SQLException e) {
+    			throw new DaoExeption("Error: cannot make sure if the company is in the DataBase");
+    		}
+    		return answer;
+    	} // if - compnay
+    	throw new DaoExeption("Error: Confirming CompanyID - FAILED (ID cannot contain Zero!)");
+    	}
+    
+    private boolean existOrNotByCoupID(long coupID) throws DaoExeption {
+    	
+    	boolean answer = false;
+    	if (coupID > 0) {
+    		try {
+        		
+        		String sqlName = "SELECT coup_ID FROM coupon WHERE "
+        		+ "coup_ID= " + "'" + coupID + "'";
+        		
+        		Statement stat = DBconnectorV3.getConnection().createStatement();
+        		ResultSet rs = stat.executeQuery(sqlName);
+    			rs.next();
+    					   
+    			if (rs.getRow() != 0) {
+    				answer = true;
+    			} // if
+    		} catch (SQLException e) {
+    			throw new DaoExeption("Error: cannot make sure if the coupon is in the DataBase");
+    		}
+    		return answer;
+    	}
+    	throw new DaoExeption("Error: Confirming CouponID - FAILED (ID cannot contain Zero!)");
+    	}
 
+    
+    
+    private boolean bothExistInSameTable(Coupon coupon, Company company, SqlAction action) throws DaoExeption {
+    	boolean answer = false;
+
+    	if(action == SqlAction.CREATE_COUPON) {
+    		if (company.getId() > 0 && coupon.getId() == 0) {
+        		try {
+            		
+            		String sqlName = "SELECT Comp_ID FROM company_coupon WHERE "
+            		+ "Comp_ID= " + "'" + company.getId() + "' AND coup_id='" + coupon.getId() + "'";
+            		
+            		Statement stat = DBconnectorV3.getConnection().createStatement();
+            		ResultSet rs = stat.executeQuery(sqlName);
+        			rs.next();
+        					   
+        			if (rs.getRow() != 0) {
+        				answer = true;
+        			} // if
+        		} catch (SQLException e) {
+        			throw new DaoExeption("Error: cannot make sure if the company is in the DataBase");
+        		}
+        		return answer;
+        	}
+        	throw new DaoExeption("Error: Confirming CouponID or CompanyID - FAILED (IDs cannot contain Zero!)");
+        	
+    	} // if - CREATE_COUPON
+    	else if (action == SqlAction.REMOVE_COUPON) {
+    		
+    	}
+    	else if (action == SqlAction.UPDATE_COUPON) {
+    		
+    	}
+    	return answer;
+    } // bothExistInSameTable
+
+    
     private boolean existOrNotByName(Company company) throws DaoExeption {
 		
  	    Statement stat = null;
@@ -382,7 +449,7 @@ public class CompanyDBDAO implements CompanyDAO {
 		ResultSet rs = null;
 		
 		// check if the company exist
-		if (existOrNotByID(coupon.getId()) == true) {
+		if (existOrNotByCompID(coupon.getId()) == true) {
 			try {
 				String sqlQuery = "INSERT INTO coupon (Title, Start_Date, End_Date, " + 
 				"Amount, Category, Message, Price, Image, Owner_ID)" + "VALUES(?,?,?,?,?,?,?,?,?)";	
@@ -423,4 +490,23 @@ public class CompanyDBDAO implements CompanyDAO {
 		
 	}
 
+    private boolean existOrNotByCoupName(Coupon coupon) throws DaoExeption {
+		
+ 		boolean answer = false;
+ 		   
+ 		  try {
+ 				String sqlName = "SELECT coup_ID FROM coupon WHERE "
+ 				+ "coup_ID= '" + coupon.getTitle() + "'";
+ 				Statement stat = DBconnectorV3.getConnection().createStatement();
+ 				ResultSet rs = stat.executeQuery(sqlName);
+ 				rs.next();
+ 			   
+ 				if (rs.getRow() != 0) {
+ 					answer = true;
+ 				} // if
+ 	            } catch (SQLException e) {
+ 	 	   			throw new DaoExeption("Error: cannot make sure if the coupon is in the DataBase");
+ 	            } // catch
+ 		  return answer;
+ 	}
 }
