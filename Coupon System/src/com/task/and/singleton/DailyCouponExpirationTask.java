@@ -17,6 +17,9 @@ import com.facade.CompanyFacade;
 import com.facade.CustomerFacade;
 import com.javabeans.*;
 
+import ExeptionErrors.ConnectorExeption;
+import ExeptionErrors.DaoExeption;
+
 /**
  * This is Version 2 of this Class.
  * 
@@ -35,6 +38,7 @@ public class DailyCouponExpirationTask implements Runnable {
 
 	}
 
+	//TODO: change the logic here from DBDAO USE to CompDAO and the rest
 	@Override
 	public void run() {
 		Set<Coupon> coupons = new HashSet<>();
@@ -42,17 +46,17 @@ public class DailyCouponExpirationTask implements Runnable {
 		
 		try {
 		String sqlSelectByEndDate = "SELECT * FROM coupon WHERE End_Date < CURDATE()";
-		PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlSelectByEndDate, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+		PreparedStatement prep = null;
+		prep = DBconnectorV3.getConnection().prepareStatement(sqlSelectByEndDate, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
 		rs = prep.executeQuery(sqlSelectByEndDate);
 		CouponDBDAO coupDB = new CouponDBDAO();
 		
 		while(rs.next()) { 
-			coupons.add(coupDB.getCoupon(rs.getLong(1)));
-		}
-		prep.clearBatch();
+		     coupons.add(coupDB.getCoupon(rs.getLong(1)));
+		} // while
 		} // try
-		catch (SQLException e) {
-			System.out.println(e.getMessage());
+		catch (SQLException | DaoExeption e) {
+			e.printStackTrace();
 		} // catch
 		
 		Company company = new Company();
@@ -67,7 +71,7 @@ public class DailyCouponExpirationTask implements Runnable {
 						try {
 							TimeUnit.HOURS.sleep(24);
 						} catch (InterruptedException e) {
-							SharingData.setExeptionMessage(e.getMessage());
+							e.getMessage();
 							Thread.currentThread().interrupt();
 						}
 					}
@@ -75,8 +79,13 @@ public class DailyCouponExpirationTask implements Runnable {
 	
 	private void deleteCoupon(Coupon coupon) {
 		// Remove coupon from company  customer_coupon  company_coupon
-		CompanyFacade compF = new CompanyFacade();
-		compF.removeCoupon(coupon);
+		CompanyFacade compF = null;
+		try {
+			compF = new CompanyFacade();
+			compF.removeCoupon(coupon);
+		} catch (DaoExeption | ConnectorExeption e) {
+			e.printStackTrace();
+		} // catch
 
 	}
 

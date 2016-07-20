@@ -41,18 +41,7 @@ public abstract class SharingData {
 	
 	
 	// boolean
-	private static boolean flag1 = false;
-
-	
-	
-	public static boolean isFlag1() {
-		return flag1;
-	}
-
-
-	public static void setFlag1(boolean flag1) {
-		SharingData.flag1 = flag1;
-	}
+//	private static boolean flag1 = false;
 
 
 	private SharingData() {}

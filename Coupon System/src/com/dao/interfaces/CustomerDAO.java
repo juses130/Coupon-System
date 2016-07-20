@@ -5,18 +5,23 @@ import java.util.Set;
 
 import com.javabeans.*;
 
+import ExeptionErrors.DaoExeption;
+import ExeptionErrors.FiledErrorException;
+import ExeptionErrors.LoginException;
+
 public interface CustomerDAO {
-	public void createCustomer(Customer newCustomer);
-	public void removeCustomer(Customer remCustomer);
-	public void updateCustomer(Customer updateCustomer);
-	public Customer getCustomer(long id);
-	public Collection<Customer> getAllCustomers();
-	public Set<Coupon> getCoupons(long custId);
-	public boolean login(String custName, String password);
-	public long getCustomer(String custName);
+	public void createCustomer(Customer newCustomer) throws DaoExeption;
+	public void removeCustomer(Customer customer) throws DaoExeption, FiledErrorException;
+	public void updateCustomer(Customer updateCustomer) throws DaoExeption;
+	public Customer getCustomer(long id) throws DaoExeption;
+	public Collection<Customer> getAllCustomers() throws DaoExeption;
+	public Set<Coupon> getCoupons(long custId) throws DaoExeption;
+	public boolean login(String custName, String password) throws DaoExeption;
+	public Customer getCustomer(String custName) throws DaoExeption, FiledErrorException;
+	
 	//TODO: change this new two function.. it's looking bad and too much general.
-	public Set<Coupon> getCouponByPrice(String string, String string2, long custID, double maxPrice);
-	public Set<Coupon> getCouponByType(String string, String string2, long custID, CouponType category);
+	public Set<Coupon> getCouponByPrice(String string, String string2, long custID, double maxPrice) throws DaoExeption;
+	public Set<Coupon> getCouponByType(String string, String string2, long custID, CouponType category) throws DaoExeption;
 	
 	
 }

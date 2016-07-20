@@ -5,9 +5,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import com.facade.AdminFacade;
+import com.facade.CompanyFacade;
+
+import ExeptionErrors.DaoExeption;
+
 /**
  * 
- * @author Raziel
+ *
  * This Class is A Helper Class.
  * is checks IF the ID | NAME | PASSWORD is exist in the DataBase of this program.
  * It's based on the SELECT syntax.
@@ -132,7 +137,16 @@ public class IsExistDB {
 
 } // idExistV2Coupon
 
-   
+   public static boolean compNsameExist(String compName) throws DaoExeption {
+	   AdminFacade admF = new AdminFacade();
+	   admF.getCompany(compName);
+	   if(admF.getCompany(compName) != null) {
+		   return true;
+	   }
+	   else {
+		   return false;
+	   }
+   }
    
    public static void namePasswordExist(String name, String password){
 		
@@ -210,8 +224,6 @@ public class IsExistDB {
 	   ResultSet rs = null;
 	   //boolean hasRows = false;
 	   try {
-		
-		   DBconnector.getCon();
 			String sqlName = "SELECT Comp_ID, password FROM company WHERE "
 					+ "Comp_ID= " + id + " AND " + "password= '" 
 					+ password + "'";
@@ -329,11 +341,9 @@ public class IsExistDB {
 	   ResultSet rs = null;
 	   //boolean hasRows = false;
 	   try {
-		
-		   DBconnector.getCon();
 			String sqlName = "SELECT Cust_ID, password FROM customer WHERE "
-					+ "Cust_ID= " + id + " AND " + "password= '" 
-					+ password + "'";
+			+ "Cust_ID= " + id + " AND " + "password= '" 
+			+ password + "'";
 			stat = DBconnectorV3.getConnection().createStatement();
 			rs = stat.executeQuery(sqlName);
 			rs.next();

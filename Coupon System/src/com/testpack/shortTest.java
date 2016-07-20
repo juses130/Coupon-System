@@ -15,14 +15,18 @@ import com.added.functions.IsExistDB;
 import com.added.functions.SharingData;
 import com.dbdao.CompanyDBDAO;
 import com.dbdao.CouponDBDAO;
+import com.dbdao.CustomerDBDAO;
 import com.facade.AdminFacade;
 import com.facade.CompanyFacade;
 import com.javabeans.Company;
 import com.javabeans.Coupon;
 import com.javabeans.CouponType;
+import com.javabeans.Customer;
 import com.sun.org.apache.bcel.internal.generic.DADD;
 import com.task.and.singleton.CouponSystem;
 import com.task.and.singleton.DailyCouponExpirationTask;
+
+import ExeptionErrors.DaoExeption;
 
 /**
  * This is a Test Class.
@@ -39,7 +43,7 @@ import com.task.and.singleton.DailyCouponExpirationTask;
 
 public class shortTest {
 	
-	public static void main(String[] args) throws SQLException {
+	public static void main(String[] args) {
 
 		CouponDBDAO dbcoup = new CouponDBDAO();
 		CompanyDBDAO dbcomp = new CompanyDBDAO();
@@ -113,15 +117,31 @@ public class shortTest {
 		
 		CouponSystem.getInstance();
 		
-		addCouponsFor(7);
-		if(SharingData.getExeptionMessage() != null) {
-		System.out.println(SharingData.getExeptionMessage());
+		AdminFacade adminFacade = new AdminFacade();
+		CustomerDBDAO customerDBDAO = new CustomerDBDAO();
+		Customer c = new Customer();
+		
+//		c.setCustName("bizu");
+//		c.setPassword("1234");
+		
+		try {
+			System.out.println(customerDBDAO.getCustomer("bizu"));
+//			adminFacade.createCustomer(c);
+//			CustomerDBDAO customerDBDAO = new CustomerDBDAO();
+//			System.out.println(customerDBDAO.getCustomer(c.getCustName()).toString());;
+		} catch (DaoExeption e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());;
+//			e.printStackTrace();
 		}
+//		System.out.println(c.toString());
+//		addCouponsFor(7);
+
 		CouponSystem.getInstance().stop();
 		
 	} // main
 	
-	public static void addCouponsFor(long id) {
+	public static void addCouponsFor(long id) throws DaoExeption {
 		CompanyFacade comF = new CompanyFacade();
 
 		for(int i = 0; i < 100; i++) {
@@ -134,7 +154,7 @@ public class shortTest {
 			c.setType(CouponType.valueOf("TRAVEL"));
 			c.setEndDate(LocalDate.of(2016, 1, 1));
 			c.setOwnerID(id);
-			comF.createCouponF(c);
+			comF.createCoupon(c);
 			
 			System.out.println(c.toString());
 		} // for

@@ -1,9 +1,10 @@
-package com.facade;
+package checkingpack;
 
 
 import java.sql.SQLException;
 import java.util.*;
 
+import javax.security.auth.login.LoginException;
 
 import com.added.functions.SharingData;
 import com.dao.interfaces.CompanyDAO;
@@ -11,12 +12,11 @@ import com.dao.interfaces.CouponDAO;
 import com.dao.interfaces.CustomerDAO;
 import com.dbdao.CompanyDBDAO;
 import com.javabeans.*;
-import com.task.and.singleton.CouponClientFacade;
 import com.task.and.singleton.CouponSystem;
 
-import ExeptionErrors.*;
+import ExeptionErrors.DaoExeption;
 
-public class CompanyFacade implements CouponClientFacade{
+public class CompanyFacade {
 	
 	private long compId;
 	private String compName;
@@ -24,7 +24,7 @@ public class CompanyFacade implements CouponClientFacade{
 	private CustomerDAO custDao = null;
 	private CouponDAO coupDao = null;
 //	
-	public CompanyFacade() throws ConnectorExeption{
+	public CompanyFacade() {
 		
 		compDao = CouponSystem.getInstance().getCompDao();
 		custDao = CouponSystem.getInstance().getCustDao();
@@ -32,51 +32,56 @@ public class CompanyFacade implements CouponClientFacade{
 	}
 	
 	
-	public void createCoupon(Coupon coupon) throws DaoExeption{
+	public void createCouponF(Coupon coupon) {
+		
+		short companyCreator = 1;
+		coupDao.setCreator(companyCreator);
 		coupDao.createCoupon(coupon);
 		
 	} // createCouponF
 	
-	public Collection<Coupon> getAllCoupons(long compID) throws DaoExeption{
+	public Collection<Coupon> getAllCoupons(long compID) {
 		
 		Collection<Coupon> coupons = new HashSet<>();
 		try {
 			coupons = compDao.getCoupons(compID);
-		} catch (DaoExeption e) {
-			throw new DaoExeption("Error: Getting all coupons - FAILED (check the company ID)");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		return coupons;
 	}
 	
-	public void removeCoupon(Coupon coupon) throws DaoExeption{
+	public void removeCoupon(Coupon coupon) {
 		coupDao.removeCoupon(coupon);
 	}
 	
-	public Coupon updateCoupon(Coupon coupon) throws DaoExeption{
+	public Coupon updateCoupon(Coupon coupon) {
 		coupDao.updateCoupon(coupon);
 		
 		return coupon;
 	}
 	
-	public Company viewCompay(long id) throws DaoExeption{
+	public Company viewCompay(long id) {
 		Company c = new Company();
 		try {
 			c = compDao.getCompany(id);
-		} catch (DaoExeption e) {
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		return c;
 	}
 	
-	public Coupon getCoupon(Coupon coupon) throws DaoExeption{
+	public Coupon getCouponA(Coupon coupon) {
 		coupon = coupDao.getCoupon(coupon.getId());
 		
 		return coupon;
 	}
 	
-	public Set<Coupon> getCouponsByType(long custID, CouponType category) throws DaoExeption{
+	public Set<Coupon> getCouponsByType(long custID, CouponType category) {
 		
 		Set<Coupon> coupons = coupDao.getCouponByType("company_coupon", "comp_id" ,custID, category);
 
@@ -84,30 +89,36 @@ public class CompanyFacade implements CouponClientFacade{
 
 	}
 	
-	public Set<Coupon> getCouponsOfCompany(long compID) throws DaoExeption{
+	public Set<Coupon> getCouponsOfCompany(long compID) {
 		Set<Coupon> coupons = coupDao.getCouponsOfCompany(compID);
 		
 		return coupons;
 
 	}
 	
-	public Set<Coupon> getCouponsOfCompanyByPrice(double maxPrice) throws DaoExeption{
+	public Set<Coupon> getCouponsOfCompanyByPrice(double maxPrice) {
 		Set<Coupon> coupons = coupDao.getCouponByPrice("company_coupon" ,"comp_id", SharingData.getIdsShare() ,maxPrice);
 		
 		return coupons;	
 	}
 	
-    public CompanyFacade login(String compName, String password, ClientType type) throws LoginException ,DaoExeption {
-		CompanyDBDAO companyDBDAO = new CompanyDBDAO();
+    public CompanyFacade login(String compName, String password, ClientType clientType) throws DaoExeption, LoginException {
     	boolean loginSuccessful  = false;
+    	try {
+    		loginSuccessful  = compDao.login(compName, password);
+		} catch (Exception e) {
+			throw new DaoExeption("Company Login Failed");
+		}
     	
-			loginSuccessful = companyDBDAO.login(compName, password);
-			if(loginSuccessful == true) {
-	    		return this;
-	    	}
-			else {
-			throw new LoginException("Company Login Failed");
-			}
+    	if (loginSuccessful && clientType.equals(ClientType.COMPANY)) {
+			//company = compDao.getCompany(compName);
+			this.compId = compDao.getCompany(compName);
+			this.compName = compName;
+			return this;
+		} else {
+			throw new LoginException("Company Login Failed.");
+		}
+    	
 	} // login - function
 	
 	

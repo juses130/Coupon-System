@@ -1,25 +1,32 @@
 package com.dao.interfaces;
 
-import java.sql.SQLException;
 import java.util.*;
+
+
 import com.javabeans.*;
+
+import ExeptionErrors.DaoExeption;
 
 public interface CompanyDAO {
 
-	public void createCompany(Company company) throws SQLException;
+	public void createCompany(Company company) throws DaoExeption;
 
-	public void removeCompany(Company company) throws SQLException;
+	public Coupon createCoupon(Coupon coupon) throws DaoExeption;
+	
+	public void removeCompany(Company company) throws DaoExeption;
 
-	public void updateCompany(Company company) throws SQLException;
+	public void updateCompany(Company company) throws DaoExeption;
 
-	public Company getCompany(long id) throws SQLException;
+	public Company getCompany(long id) throws DaoExeption;
 
-	public Collection<Company> getAllCompanies() throws SQLException;
+	public Collection<Company> getAllCompanies() throws DaoExeption;
 
-	public Collection<Coupon> getCoupons(long compID) throws SQLException;
+	public Collection<Coupon> getCoupons(long compID) throws DaoExeption;
 
-	public boolean login(String compName, String password);
+	public boolean login(String compName, String password) throws DaoExeption;
 
-	public long getCompany(String compName);
+	public Company getCompany(String compName) throws DaoExeption;
+
+	
 
 }

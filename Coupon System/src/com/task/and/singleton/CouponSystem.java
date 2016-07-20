@@ -1,25 +1,18 @@
 package com.task.and.singleton;
 
-import java.sql.ClientInfoStatus;
 import java.sql.SQLException;
 
-import javax.security.auth.login.LoginException;
 
 import com.added.functions.DBconnectorV3;
-import com.added.functions.SharingData;
 import com.dao.interfaces.*;
 import com.dbdao.*;
 import com.facade.AdminFacade;
 import com.facade.ClientType;
 import com.facade.CompanyFacade;
 import com.facade.CustomerFacade;
-import com.javabeans.CouponType;
-import com.javabeans.Customer;
-import com.unusedclasses.CouponClientFacade;
+import ExeptionErrors.*;
 
-import ExeptionErrors.DaoExeption;
-
-public class CouponSystem {
+public class CouponSystem implements CouponClientFacade {
 
 			public static CouponSystem instance = null;
 			private CompanyDAO compDao = null;
@@ -30,33 +23,30 @@ public class CouponSystem {
 			
 			
 			// Constructor
-			private CouponSystem() {
+			private CouponSystem() throws ConnectorExeption {
 				compDao = new CompanyDBDAO();
 				custDao = new CustomerDBDAO();
 				couponDao = new CouponDBDAO();
 				dailyTask = new DailyCouponExpirationTask(compDao, custDao, couponDao);
 				dailyTaskThread = new Thread(dailyTask);
+				
 				DBconnectorV3.startPool();
 				dailyTaskThread.start();
 				
 			}
 			
-			public static CouponSystem getInstance() {
+			public static CouponSystem getInstance() throws ConnectorExeption {
 				if (instance == null) {
 					instance = new CouponSystem();
 				}
 				return instance;
 			}
 		
-			public void stop() {
+			public void stop() throws ConnectorExeption, SQLException {
 				dailyTask.stop();
 				dailyTaskThread.interrupt();
-				
-				try {
-					DBconnectorV3.getConnection().close();
-				} catch (SQLException e) {
-					SharingData.setExeptionMessage(e.getMessage());
-				} // catch
+			
+				DBconnectorV3.getConnection().close();
 			}
 			
 			public CompanyDAO getCompDao() {
@@ -71,45 +61,29 @@ public class CouponSystem {
 				return couponDao;
 			}
 			
-			public ClientType login(String userName, String password, ClientType type)  {
+			public CouponClientFacade login(String userName, String password, ClientType type) throws LoginException, DaoExeption, ConnectorExeption{
 				
-				if(type == ClientType.ADMIN) {
+				CouponClientFacade client = null;
+				
+				if(type.equals(ClientType.ADMIN) ) {
 					AdminFacade admF = new AdminFacade();
-					try {
-						admF = admF.login(userName, password, ClientType.ADMIN);
-					} catch (LoginException e) {
-						e.getMessage();
-					} // catch
-					
-					return ClientType.ADMIN;
-				} // if - it admin
-				else if (type == ClientType.COMPANY) {
-					CompanyFacade comF = new CompanyFacade();
-					try {
-						comF = comF.login(userName, password, ClientType.COMPANY);
-					} catch (LoginException e) {
-						e.getMessage();
-					} catch (DaoExeption e) {
-						e.getMessage();
-					} // catch
-					
-					return ClientType.COMPANY;
-				} // else if - its company
-				else if (type == ClientType.CUSTOMER) {
-					CustomerFacade cusF = new CustomerFacade();
-					try {
-						cusF = cusF.login(userName, password, ClientType.CUSTOMER);
-					} catch (LoginException e) {
-						e.getMessage();
-					} catch (DaoExeption e) {
-						e.getMessage();
-					} // catch
-					
-					return ClientType.CUSTOMER;
-				} // else if - customer
-				else {
-					return null;
+					client = admF.login(userName, password, type);
+					return client;
 				}
-			}
+				else if (type == ClientType.COMPANY) {
+					CompanyFacade compF = new CompanyFacade();			
+					client = compF.login(userName, password, type);
+
+					return client;
+				}
+				else if (type.equals(ClientType.CUSTOMER)) {
+					CustomerFacade custF = new CustomerFacade();
+					client = custF.login(userName, password, type);
+					return client;
+				}
+				return null;
+				}
+			
+			
 	
 }

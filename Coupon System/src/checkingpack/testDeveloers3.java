@@ -1,19 +1,18 @@
-package com.testpack;
+package checkingpack;
 
 import java.sql.*;
 import java.time.*;
 import java.util.*;
-import com.added.functions.DBconnectorV3;
-import com.added.functions.SharingData;
-import com.facade.*;
-import com.javabeans.*;
-import com.task.and.singleton.CouponClientFacade;
-import com.task.and.singleton.CouponSystem;
+import java.util.concurrent.TimeUnit;
 
-import ExeptionErrors.ConnectorExeption;
-import ExeptionErrors.DaoExeption;
-import ExeptionErrors.FiledErrorException;
-import ExeptionErrors.LoginException;
+import javax.print.attribute.standard.PrinterMoreInfoManufacturer;
+
+import com.added.functions.DBconnectorV3;
+import com.added.functions.IsExistDB;
+import com.added.functions.SharingData;
+import checkingpack.*;
+import com.javabeans.*;
+import com.task.and.singleton.CouponSystem;
 
 
 /**
@@ -37,7 +36,7 @@ import ExeptionErrors.LoginException;
  * @author Raziel
  */
 
-public class testDeveloers {
+public class testDeveloers3 {
 	
 	// This static short is helping to the function userInput
 	private static short counterWorngTimes = 0;
@@ -62,12 +61,7 @@ public class testDeveloers {
 		
 		
 		// When we finished - close the connection + Daily Task Thread.
-		try {
-			CouponSystem.getInstance().stop();
-		} catch (ConnectorExeption e) {	
-			System.out.println(e.getMessage());
-		}
-
+		CouponSystem.getInstance().stop();
 	} // main
 
 	
@@ -400,9 +394,7 @@ public class testDeveloers {
 	
 	private static boolean login_T() {
 
-		// Choice is the User-choice of the main menu.
 		short choice = SharingData.getShortNum1();
-		CouponClientFacade client = null;
 		
 		// Admin choice
 		if (choice == 1) {
@@ -413,32 +405,12 @@ public class testDeveloers {
 	    	String password = userInputString();
 	    	
 	    	// In the admin, we're just need to check pass&user without to go to the DB.
-	    	AdminFacade admF = null;
-			try {
-				admF = new AdminFacade();
-			} catch (ConnectorExeption e1) {
-				System.out.println(e1.getMessage());
-			}
-	    	
-	
-			try {
-				client = CouponSystem.getInstance().login(userName, password, ClientType.ADMIN);
-			} catch (LoginException | ConnectorExeption e) {
-				// TODO Auto-generated catch block
-				System.out.println("\n" + e.getMessage());
-			} catch (DaoExeption e) {
-				// TODO Auto-generated catch block
-				System.out.println("\n" + e.getMessage());
-			}
+//	    	AdminFacade ad = new AdminFacade();
 	    	boolean flag = false;
 	    	
-	    	/*
-	    	 * Explain of this IF condition:
-	    	 * The question is ONLY if 'client' is not Null && 'client'.class is equals to adminfacade.class then it's ok.
-	    	 */
-	    	
-	    	if(client != null && client.getClass().equals(admF.getClass())) {
+	    	if(CouponSystem.getInstance().login(userName, password, ClientType.ADMIN) != null) {
 	    		flag = true;
+	    	    printAdminFacadeMenu();
 	        	return flag;
 	        	} // if
 	        	else {
@@ -447,67 +419,43 @@ public class testDeveloers {
 		} // if - Admin
 		// Company choice
 		else if (choice == 2) {
-			
-			CompanyFacade compF = null;
-			try {
-				compF = new CompanyFacade();
-			} catch (ConnectorExeption e1) {
-				System.out.println(e1.getMessage());
-			}
-//	    	CouponClientFacade client = null;
-	    	
 			System.out.println("\n" + "Please type your Company-ID and Password." + "\n");
 	    	System.out.print("Type Your Company Name: ");
 	    	String userName = userInputString();
 	    	System.out.print("Type Your Company Password: ");
 	    	String password = userInputString();
 	    	
-		    try {
-				client = CouponSystem.getInstance().login(userName, password, ClientType.COMPANY);
-			} catch (LoginException | DaoExeption | ConnectorExeption e) {
-				// TODO Auto-generated catch block
-				System.out.println("\n" + e.getMessage());;
-			}
-	
-	    	boolean flag = false;
-	    	
-	    	if(client != null && client.getClass().equals(compF.getClass())) {
+	    	if(CouponSystem.getInstance().login(userName, password, ClientType.COMPANY) != null) {
+		    	boolean flag = false;
+
 	    		flag = true;
-	        	return flag;
-	        	} // if
-	        	else {
-	        		return false;
-	        	} // else
+    	        printAdminFacadeMenu();
+        	    return flag;
+        	} // if
+        	else {
+        		return false;
+        	} // else
 		} // else if - Company
 		// Customer choice
 		else if (choice == 3) {
-			
-			CustomerFacade custF = null;
-			
 			System.out.println("\n" + "Please type your Customer-ID and Password." + "\n");
 	    	System.out.print("Type Your Customer Full Name: ");
 	    	String userName = userInputString();
 	    	System.out.print("Type Your Customer Password: ");
 	    	String password = userInputString();
 
-	    	try {
-	    		custF = new CustomerFacade();
-	    		client = CouponSystem.getInstance().login(userName, password, ClientType.CUSTOMER);
-			} catch (LoginException | ConnectorExeption | DaoExeption e) {
-				System.out.println("\n" + e.getMessage());
-		    } // catch
-	    	boolean flag = false;
-	    	if(client != null && client.getClass().equals(custF.getClass())) {
+	    	if(CouponSystem.getInstance().login(userName, password, ClientType.CUSTOMER) != null) {
+	    		boolean flag = false;
+
 	    		flag = true;
-	        	return flag;
-	        	} // if
-	        	else {
-	        		return false;
-	        	} // else
-		}// else if - Customer
-		else {
-			return false;
-		}
+    	        printAdminFacadeMenu();
+        	    return flag;
+        	} // if
+        	else {
+        		
+		} // else
+		} // else if - Customer
+		return false;
 		} // login_T
 
  
@@ -515,25 +463,16 @@ public class testDeveloers {
 	
 	private static void loadDriver() {
 
+		CouponSystem.getInstance();
+//		DBconnectorV3.startPool();
+		
 		try {
-			CouponSystem.getInstance();
-		} catch (ConnectorExeption e) {
-			System.out.println(e.getMessage());
-		}
-		
-		
-			try {
-				if(DBconnectorV3.getConnection().isClosed() != true) {
-					System.out.println("----------- DRIVER LOADED -----------------" + "\n");
-				}
-			} catch (SQLException | NullPointerException e) {
-				try {
-					throw new ConnectorExeption("Error: Connection to the Data Base - FAILED");
-				} catch (ConnectorExeption e1) {
-					System.out.println(e1.getMessage());;
-				}
+			if(DBconnectorV3.getConnection().isClosed() != true) {
+				System.out.println("----------- DRIVER LOADED -----------------" + "\n");
 			}
-		
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		} // catch
 				
 	}
 	
@@ -550,7 +489,7 @@ public class testDeveloers {
 	 */
     @Deprecated
     @SuppressWarnings("unused")
-	private static void DbDAO_T() {
+	private static void DbDAO_T() throws SQLException{
     	
     	printDbDAOMenu();
     	//printDbDAOMenu();
@@ -561,16 +500,16 @@ public class testDeveloers {
 		
 		
 		case 1: {
-//			CompanyMenu();
+			CompanyMenu();
 			break;
 		} // case 1
 		case 2: {
 			//printDbDAOMenu();
-//			CustomerMenu();
+			CustomerMenu();
 			break;
 		}
 		case 3: {
-//			CouponMenu();
+			CouponMenu();
 			break;
 		}
 		case 4: {
@@ -595,7 +534,7 @@ public class testDeveloers {
 
 		}
 		case 8: {
-//			printDbDAOMenu();
+			printDbDAOMenu();
 			
 		}
 		case 0: {
@@ -640,15 +579,7 @@ public class testDeveloers {
 		
 	}
 
-    /**
-     * Unused Function.
-     * It was used for the first developer's version. 
-     * Now We can test it By the Facade Section.
-     * 
-     * @author Raziel
-     */
-    @Deprecated
-    private static void CompanyMenu() {
+    private static void CompanyMenu() throws SQLException {
     	printUsageCompany();
 
         	short choice = userInputShort();
@@ -712,27 +643,34 @@ public class testDeveloers {
             String password = (userInputString());
 			
 			// check if the user put's somthing empty...
-
-			Company company = null;
-			try {
-			company = new Company();
+			
+			if(name.isEmpty() || email.isEmpty() || password.isEmpty()) {
+				System.out.println("\n" + "Error - the fields are empty!");
+				printGoingBackToUsage();
+				break;
+			}
+			Company company = new Company();
 			AdminFacade admF = new AdminFacade();	
 			company.setCompName(name);
 			company.setEmail(email);
 			company.setPassword(password);
 //			CouponSystem.getInstance().getCompDao().createCompany(company);
-			
-				admF.createCompany(company);
-			} catch (DaoExeption | ConnectorExeption | FiledErrorException e) {
-				// TODO im here
-				System.out.println(e.getMessage());;
-			}
+			admF.createCompany(company);
 
 			
-			if(company.getId() != 0) {
+			if(SharingData.isFlag1() == true) {
 				System.out.println(company.toString());
 				System.out.println("------------ Company Added Successfully ----------" + "\n");
-			}
+			} // if
+			else {
+				if(SharingData.getExeptionMessage() != null) {
+					printExeptionAsMessages();
+				}
+				//System.out.println(c.toString());
+				System.out.println("\n" + "****************************************************");
+    			System.out.println("Error - No Changes Were Made :(");
+				System.out.println("\n" + "****************************************************");
+			} // else
 			
 
 			System.out.println("Whould you keep adding companies? Type '1' for YES or any other Number for NO.");
@@ -768,12 +706,20 @@ public class testDeveloers {
     				//printAdminFacadeMenu();
     				break;
     			}
+    			
+    			IsExistDB.idExist(SharingData.getLongNum1(), "company", "comp_id", "comp_id");
+    			if(IsExistDB.getAnswer2() == false) {		
+         		printNoExistOrCurrect();
+         		//printAdminFacadeMenu();
+         		break;
+    			}
     			else {	
     			      try {
     			    	  company.setId(SharingData.getLongNum1());
     			    	  CouponSystem.getInstance().getCompDao().removeCompany(company);
     			    	  
 					  } catch (Exception e) {
+						System.out.println("Error:");
 						System.out.println(e.getMessage());
 					  }
         			  
@@ -805,40 +751,53 @@ public class testDeveloers {
     		Company c = new Company();
     		
     		System.out.println("Update Company:" + "\n");
-//    		System.out.println("Please type your current Company ID and Password.");
-//    		System.out.println("Note: only because it's beta version test - we asking for Company ID.");
+    		System.out.println("Please type your current Company ID and Password.");
+    		System.out.println("Note: only because it's beta version test - we asking for Company ID.");
     		//System.out.println("\n" + "Type The OLD Company Name:");
      		
     		System.out.print("Company ID: ");
             c.setId(userInputLong());
-    	    		
+                  
+
+     		// Check if the NAME exist..
+            IsExistDB.idExist(c.getId(), "company", "comp_id", "comp_id");
+            if(IsExistDB.getAnswer2() == false) {
+     				
+     		printNoExistOrCurrect();
+     		printAdminFacadeMenu();
+     		break;
+     		} // if
+     		else { // Move on to this block if we got 'TRUE' in the IF condition:
+ 	    		
  	    		Company company = new Company();
-				AdminFacade admF = null;
-				try {
-					admF = new AdminFacade();
-				} catch (ConnectorExeption e1) {
-					System.out.println(e1.getMessage());
-				}
-				try {
-					company = admF.getCompany(c.getId());
-//					 printFoundInDB("Company"); 
-//	     	    		System.out.print("NEW Email: ");
-//	     	    		company.setEmail(userInputString());
-//	     	    		System.out.print("New Password: ");
-//	     	    		company.setPassword(userInputString());
-//	     	           
-//						admF.updateCompany(company);
-				} catch (DaoExeption e) {
-					// TODO Auto-generated catch block
-					System.out.println(e.getMessage());
-//					break;
-				}
-     	     		if(company.getCompName() != null) {
+				AdminFacade admF = new AdminFacade();
+				company = admF.getCompany(c.getId());
+     		        printFoundInDB("Company"); 
+     	    		System.out.print("NEW Email: ");
+     	    		company.setEmail(userInputString());
+     	    		System.out.print("New Password: ");
+     	    		company.setPassword(userInputString());
+     	           
+					admF.updateCompany(company);
+
+     	     		if(SharingData.isFlag1() == true) {
+     	     			//System.out.println("\n" + SharingData.getVarchar4());
      	     			System.out.println(company.toString());
      	     			System.out.println("------------ Company Updated Successfully ----------" + "\n");
      	     			printGoingBackToUsage();
-     	     			printAdminFacadeMenu();
+     	     			//printAdminFacadeMenu();
      	    		} // if - is updated
+     	    		else {
+     	    			if(SharingData.getExeptionMessage() != null) {
+     	    				System.out.println(SharingData.getExeptionMessage());	
+     	    			} // if
+     	    			System.out.println("\n" + "****************************************************");
+     	    			System.out.println("Error - No Changes Were Made :(");
+     	    			System.out.println("****************************************************" + "\n");
+     	    			printGoingBackToUsage();
+     	    		} // else - flag
+     			} // else
+
      		break;
     	} // while loop
     	
@@ -853,32 +812,36 @@ public class testDeveloers {
     private static void getCompanyID_T() {
     	
     	while(true) {
-        	System.out.println("Type The Company ID:");
-        	long id = userInputLong();
+        	System.out.println("Type The Company Name:");
+//        	SharingData.setLongNum1(userInputLong());
+        	String compName = userInputString();
         	
-        	if(id == 0) {
+//        	IsExistDB.idExist(SharingData.getLongNum1(), "company", "comp_id", "comp_id");
+        	if(compName == "0") {
         		System.out.println("Typing 'Zero' is mean = quit..");
         		printGoingBackToUsage();
+        		//printDbDAOMenu();
         		break;
         	} // if - it 0 the program will break from this function.
         	
-        	
+        	if (IsExistDB.compNameExist(compName) != true) { // checks if the ID exist in the DB.
+        		printNoExistOrCurrect();
+    			//printAdminFacadeMenu();
+    			break;
+        	} // if - isExist
         	else {
-        		try {
-					AdminFacade admF = new AdminFacade();
-					Company c = admF.getCompany(id);
-				
-					System.out.println(c.toString());
-					System.out.println("\n" + "------------ Company Function (getCompany) Was Run Successfully ----------" + "\n");
-
-			    } catch (DaoExeption | ConnectorExeption e) {
-				// TODO Auto-generated catch block
-				System.out.println(e.getMessage());;
-			} // else
-					printAdminFacadeMenu();
-					break;
-				} // if - isExist
-				
+        		AdminFacade admF = new AdminFacade();
+        		Company c = admF.getCompany(SharingData.getLongNum1());
+        		        		
+        		if(SharingData.isFlag1() == true) {
+        			// Print the Company:
+            		System.out.println(c.toString());
+	    			System.out.println("\n" + "------------ Company Function (getID) Was Run Successfully ----------" + "\n");
+        	}
+        		else {
+            		System.out.println(SharingData.getExeptionMessage());
+        		}
+        	} // else
         	
     	} // while loop
 
@@ -893,16 +856,10 @@ public class testDeveloers {
     private static void getAllCompanies_T() {
 
     	while(true) {
-    		try {	
-    		AdminFacade admF = new AdminFacade();
-    		System.out.println("Here is your Companeis List: " + "\n");
+       			AdminFacade admF = new AdminFacade();
+    			System.out.println("Here is your Companeis List: " + "\n");
        			
-    			
-			System.out.println(admF.getAllCompanies().toString());
-			} catch (DaoExeption | ConnectorExeption e) {
-					// TODO Auto-generated catch block
-					System.out.println(e.getMessage());;
-				}
+    			System.out.println(admF.getAllCompaniesA().toString());
         		printAdminFacadeMenu();
 
     			break;
@@ -927,27 +884,41 @@ public class testDeveloers {
             String password = (userInputString());
     		
     		// check if the user put's somthing empty...
-    	
-    		Customer c = null;
-    		try {
-    			c = new Customer();
-        		c.setCustName(name);
-        		c.setPassword(password);
-    			AdminFacade admF = new AdminFacade();
-				admF.createCustomer(c);
-			} catch (DaoExeption | ConnectorExeption | FiledErrorException e) {
-				System.out.println(e.getMessage());
-			}
     		
-    		if(c.getId() > 0) {
+    		if(name.isEmpty() || password.isEmpty()) {
+    			System.out.println("\n" + "Error - the fields are empty!");
+    			printGoingBackToUsage();
+    			printAdminFacadeMenu();
+    			break;
+    		}
+    		
+//    		IsExistDB.stringExistV3("customer", "cust_name", name);
+//    		if(IsExistDB.getAnswer() == true) {
+//    			printDuplicatedName("Customer");
+//    			printGoingBackToUsage();
+//    			break;
+//    		}
+    		Customer c = new Customer();
+    		AdminFacade admF = new AdminFacade();
+    		
+    		c.setCustName(name);
+    		c.setPassword(password);
+    		admF.createCustomer(c);
+    		
+    		if(SharingData.isFlag1() == true) {
     			System.out.println(c.toString());
     			System.out.println("------------ Customer Added Successfully ----------" + "\n");
         		//printAdminFacadeMenu();
     		}
+    		else {
+    			if(SharingData.getExeptionMessage() != null) {
+    				printExeptionAsMessages();
+    			} // if
     			
     			System.out.println("\n" + "****************************************************");
     			System.out.println("Error - No Changes Were Made :(");
     			System.out.println("\n" + "****************************************************");
+    		} // else
     		
     		
 			System.out.println("Whould you keep adding Customers? Type '1' for YES or any other Number for NO.");
@@ -974,12 +945,7 @@ public class testDeveloers {
     	
     	while(true) {
     		
-    		AdminFacade admF = null;
-			try {
-				admF = new AdminFacade();
-			} catch (ConnectorExeption e1) {
-				System.out.println(e1.getMessage());
-			}
+    		AdminFacade admF = new AdminFacade();
     		
     			System.out.print("Type Your Customer ID: ");
     			SharingData.setLongNum1(userInputLong());
@@ -987,22 +953,19 @@ public class testDeveloers {
     				printGoingBackToUsage();
     				break;
     			}
-//    			
-//    			IsExistDB.idExistV2Customer(SharingData.getLongNum1());
-//    			if(IsExistDB.getAnswer2() == false) {		
-//         		printNoExistOrCurrect();
-//         		break;
-//    			}
+    			
+    			IsExistDB.idExistV2Customer(SharingData.getLongNum1());
+    			if(IsExistDB.getAnswer2() == false) {		
+         		printNoExistOrCurrect();
+         		break;
+    			}
     			else {	
     				Customer cus = new Customer();
     				cus.setId(SharingData.getLongNum1());
-    			      try {
-						admF.removeCustomer(cus);
-						printCustomerRemoved();
-					} catch (DaoExeption | FiledErrorException e) {
-						System.out.println(e.getMessage());
-					} // catch
-
+    			      admF.removeCustomer(cus);
+    			      //System.out.println(SharingData.getVarchar4());
+        			  
+    			      printCustomerRemoved();
     			} // else
     		
     		System.out.println("Whould you like to Removing more Customers? Type '1' for YES or any other Number for NO.");
@@ -1037,7 +1000,16 @@ public class testDeveloers {
             c.setId(userInputLong());
 //            System.out.print("Customer Name:");
 //            c.setCustName(userInputString());
-     
+     		
+            IsExistDB.idExistV2Customer(c.getId());
+            if(IsExistDB.getAnswer2() == false) {		
+     		printNoExistOrCurrect();
+     		printGoingBackToUsage();
+     		//printDbDAOMenu();
+     		break;
+     		} // if
+     		else { // Move on to this block if we got 'TRUE' in the IF condition:
+ 	
      		printFoundInDB("Customer"); 
             System.out.print("NEW Customer Name: ");
             String name = userInputString();
@@ -1051,25 +1023,30 @@ public class testDeveloers {
     			printAdminFacadeMenu();
     			break;
      	    }
-
+     	    
+     	    
+     	    AdminFacade admF = new AdminFacade();
+     		     	
+     	    c.setCustName(name);
+     	    c.setPassword(password);
      	    		
-     	    try {
-     	    	c.setCustName(name);
-          	    c.setPassword(password);
-     	    	AdminFacade admF = new AdminFacade();
-				admF.updateCustomer(c);
-				System.out.println("\n" + SharingData.getVarchar4());
-	     	    System.out.println("------------ Customer Updated Successfully ----------" + "\n");
-	     	    printGoingBackToUsage();
-			} catch (DaoExeption | ConnectorExeption | FiledErrorException e) {
-				// TODO Auto-generated catch block
-				System.out.println(e.getMessage());;
-			}
- 
-//     	    System.out.println("\n" + "****************************************************");
-//     	    System.out.println("Error - No Changes Were Made :(");
-//     	    System.out.println("****************************************************" + "\n");
+     	    admF.updateCustomer(c);
+
+     	    if(SharingData.isFlag1() == true) {
+     	    System.out.println("\n" + SharingData.getVarchar4());
+     	    System.out.println("------------ Customer Updated Successfully ----------" + "\n");
      	    printGoingBackToUsage();
+     	    } // if - is updated
+     	    else {
+     	    	if(SharingData.getExeptionMessage() != null) {
+     	    		printExeptionAsMessages();
+     	    	}
+     	    System.out.println("\n" + "****************************************************");
+     	    System.out.println("Error - No Changes Were Made :(");
+     	    System.out.println("****************************************************" + "\n");
+     	    printGoingBackToUsage();
+     	    } // else - flag
+     	} // else
 
      		break;
     	} // while loop
@@ -1085,18 +1062,10 @@ public class testDeveloers {
     private static void getAllCouponOfCompany_T() {
     	
     	System.out.println("Here is your Company Coupons List: ");
-    	CompanyFacade compF = null;
+    	CompanyFacade compF = new CompanyFacade();
+    	Set<Coupon> coupons = compF.getCouponsOfCompany(SharingData.getIdsShare());
     	
-    	Set<Coupon> coupons;
-		try {
-			compF = new CompanyFacade();
-			coupons = compF.getCouponsOfCompany(SharingData.getIdsShare());
-			System.out.println(coupons.toString());
-		} catch (DaoExeption | ConnectorExeption e) {
-			System.out.println(e.getMessage());;
-		}
-    	
-    	
+    	System.out.println(coupons.toString());
     }
     
     /** This Function is blong ONLY to CompanyFacade Access.
@@ -1105,18 +1074,13 @@ public class testDeveloers {
     */
     private static void getAllCompanyCouponsByType_T() {
    	
-   	CompanyFacade compF = null;
+   	CompanyFacade compF = new CompanyFacade();
    	
    	System.out.println("Search By Category :)");
    	System.out.print("Please insert your CATEGORY: ");
    	
-   	try {
-   		compF = new CompanyFacade();
-		Set<Coupon> couponsByType = compF.getCouponsByType(SharingData.getIdsShare() , CouponType.valueOf(userInputString().toUpperCase()));
-	   	System.out.println(couponsByType.toString());
-	} catch (DaoExeption | ConnectorExeption e) {
-		System.out.println(e.getMessage());
-	}
+   	Set<Coupon> couponsByType = compF.getCouponsByType(SharingData.getIdsShare() , CouponType.valueOf(userInputString().toUpperCase()));
+   	System.out.println(couponsByType.toString());
    } // getAllCouponsByType_T
     
     private static void getAllCouponsOfCompanyByPrice_T() {
@@ -1127,15 +1091,9 @@ public class testDeveloers {
     	double maxPrice = sc.nextDouble();
 
     	
-    	CompanyFacade compF = null;
-    	try {
-    		compF = new CompanyFacade();
-			Set<Coupon> coupons = compF.getCouponsOfCompanyByPrice(maxPrice);
-			System.out.println(coupons.toString());
-		} catch (DaoExeption | ConnectorExeption e) {
-			System.out.println(e.getMessage());
-		}
-    	
+    	CompanyFacade compF = new CompanyFacade();
+    	Set<Coupon> coupons = compF.getCouponsOfCompanyByPrice(maxPrice);
+    	System.out.println(coupons.toString());
     	
     	if(SharingData.getExeptionMessage() != null) {
         	System.out.println(SharingData.getExeptionMessage());
@@ -1184,24 +1142,77 @@ public class testDeveloers {
      * 
      * @author Raziel
      */
-   
+    @Deprecated
+    private static void CustomerMenu() throws SQLException {
+    
+    		printUsageCustomer();
+        	short choice = userInputShort();
+        	switch (choice) {
+        	
+        	case 1: {
+        		addCustomer_T();
+        		break;
+        	}
+        	case 2: {
+        		removeCustomer_T();
+        		break;
+        	}
+        	case 3: {
+        		updateCustomer_T();
+        		break;
+        	}
+        	case 4: {
+        		getCustomerID_T();
+        		break;
+        	}
+        	case 5: {
+        		getAllCustomers_T();
+        		break;
+        	}
+        	case 822: { // Developers Option: Reset Table Company
+        		resetTable_T();
+        		printDbDAOMenu();
+        		break;
+        	}
+
+        	case 0: {
+        		printDbDAOMenu();
+        		break;
+        	}
+        	
+        	} // switch
+    	
+    } // CompanyMenu - Function
+
     
     private static void getCustomerID_T() {
     	
     	while(true) {
         	System.out.print("Type The Customer ID:");
-        	long id = userInputLong();
+        	SharingData.setLongNum1(userInputLong());
         	
-        		try {
-        			AdminFacade admF = new AdminFacade();
-					Customer c = admF.getCustomer(id);
-					System.out.println(c.toString());
-	    			System.out.println("\n" + "------------ Customer Function (getID) Was Run Successfully ----------" + "\n");
-				} catch (DaoExeption | ConnectorExeption | FiledErrorException e) {
-					System.out.println(e.getMessage());
-				}
+        	IsExistDB.idExistV2Customer(SharingData.getLongNum1());
+        	if(SharingData.getLongNum1() == 0) {
+        		System.out.println("Typing 'Zero' is mean = quit..");
+        		printGoingBackToUsage();
+        		printDbDAOMenu();
+        		break;
+        	} // if - it 0 the program will break from this function.
+        	
+        	if (IsExistDB.getAnswer2() == false) { // checks if the ID exist in the DB.
+        		printNoExistOrCurrect();
+    			break;
+        	} // if - isExist
+        	else {
+        		AdminFacade admF = new AdminFacade();
+        		Customer c = admF.getCustomer(SharingData.getLongNum1());
         		
-        		// Print the Customer
+        		// Print the Customer:
+        		System.out.println(c.toString());
+        		if(SharingData.isFlag1() == true) {
+	    			System.out.println("\n" + "------------ Customer Function (getID) Was Run Successfully ----------" + "\n");
+        	}
+        	} // else
         	
     	} // while loop
 
@@ -1210,15 +1221,9 @@ public class testDeveloers {
 
     	while(true) {
     		
-    		
-    		
-    		try {
-    			AdminFacade admF = new AdminFacade();
-    			System.out.println("Here is your Customers List: " + "\n");
-				System.out.println("\n" + admF.getAllCustomers());
-			} catch (DaoExeption | ConnectorExeption e) {
-				System.out.println(e.getMessage());
-			}
+    		AdminFacade admF = new AdminFacade();
+    		System.out.println("Here is your Customers List: " + "\n");
+    		System.out.println("\n" + admF.getAllCustomers());
     		
     		printAdminFacadeMenu();
     		break;		
@@ -1248,18 +1253,29 @@ public class testDeveloers {
     		printGoingBackToUsage();
     		break;
     	}
-    		CustomerFacade cusF;
-			try {
-				cusF = new CustomerFacade();
-		    	Coupon coupon = new Coupon();
-		    	coupon.setId(coupID);
-		    	coupon = cusF.purchaseCoupon(coupon);
-		    	System.out.println(coupon.toString());
-			} catch (ConnectorExeption | DaoExeption e) {
-				System.out.println(e.getMessage());
-			}
-
+    	IsExistDB.idExistV2Coupon(coupID, "Coupon");
+		if(IsExistDB.getAnswer2() == false) {
+			printNoExistOrCurrect();
+			break;
+		} // if - false
+		
+		else {
+	    	CustomerFacade cusF = new CustomerFacade();
+	    	Coupon coupon = new Coupon();
+	    	coupon.setId(coupID);
+	    	coupon = cusF.purchaseCoupon(coupon);
+	    	System.out.println();
 	    	
+		}
+    	if(SharingData.getExeptionMessage() != null) {
+    		System.out.print("***************************************************************");
+    		System.out.println(SharingData.getExeptionMessage());
+    		System.out.print("***************************************************************");
+
+    	}
+    	else {
+    		System.out.println("------------ Coupon Added Successfully ----------" + "\n");
+    	}
     	} // while loop
     	
     } // purchaseCoupon_T
@@ -1273,14 +1289,8 @@ public class testDeveloers {
      */
     private static void getAllPurchasedCoupon_T() {
     	
-    	CustomerFacade cusF = null;
-    	Set<Coupon> c = null;
-		try {
-			cusF = new CustomerFacade();
-			c = cusF.getAllPurchasedCoupons(SharingData.getIdsShare());
-		} catch (DaoExeption | ConnectorExeption e) {
-			System.out.println(e.getMessage());
-		}
+    	CustomerFacade cusF = new CustomerFacade();
+    	Set<Coupon> c  = cusF.getAllPurchasedCoupons(SharingData.getIdsShare());
     	if (c != null) {
     		System.out.println(c.toString());
     	}
@@ -1297,19 +1307,19 @@ public class testDeveloers {
      */
     private static void getAllCustomerCouponsByType_T() {
     	
-//    	CustomerFacade cusF = new CustomerFacade();
+    	CustomerFacade cusF = new CustomerFacade();
     	
     	System.out.println("Search By Category :)");
     	System.out.print("Please insert your CATEGORY: ");
     	String type = userInputString();
     	Set<Coupon> couponsByType = null;
-//    	try {
-//    		couponsByType = cusF.getAllCouponsByType(SharingData.getIdsShare() , CouponType.valueOf(type.toUpperCase()));
-//        	System.out.println(couponsByType.toString());
-//    	}
-//    	catch (IllegalArgumentException | NullPointerException e) {
-//    		System.out.println("\n" + "Error! make sure you're putting right the Category");
-//    	}
+    	try {
+    		couponsByType = cusF.getAllCouponsByType(SharingData.getIdsShare() , CouponType.valueOf(type.toUpperCase()));
+        	System.out.println(couponsByType.toString());
+    	}
+    	catch (IllegalArgumentException | NullPointerException e) {
+    		System.out.println("\n" + "Error! make sure you're putting right the Category");
+    	}
     } // getAllCouponsByType_T
     
     /**
@@ -1323,11 +1333,14 @@ public class testDeveloers {
     	System.out.print("Type your Maximum Price: ");
     	double maxPrice = sc.nextDouble();
     	
-//    	CustomerFacade cusF = new CustomerFacade();
+    	CustomerFacade cusF = new CustomerFacade();
     	
-//    	Set<Coupon> coupons = cusF.getAllCouponsByPrice(SharingData.getIdsShare(), maxPrice);
-//    	System.out.println(coupons.toString());
+    	Set<Coupon> coupons = cusF.getAllCouponsByPrice(SharingData.getIdsShare(), maxPrice);
+    	System.out.println(coupons.toString());
     	
+    	if(SharingData.getExeptionMessage() != null) {
+    	System.out.println(SharingData.getExeptionMessage());
+    	}
     } // getAllCouponsByType_T
        
     
@@ -1372,7 +1385,7 @@ public class testDeveloers {
      * @author Raziel
      */
     @Deprecated
-    private static void CouponMenu() {
+    private static void CouponMenu() throws SQLException {
         
     	printUsageCoupon();
     	short choice = userInputShort();
@@ -1399,7 +1412,7 @@ public class testDeveloers {
     		break;
     	}
     	case 822: { // Developers Option: Reset Table Company
-//    		resetTable_T();
+    		resetTable_T();
     		printDbDAOMenu();
     		break;
     	}
@@ -1418,7 +1431,7 @@ public class testDeveloers {
 	while (true){
 
 		Coupon coup = new Coupon();
-		CompanyFacade comF = null;
+		CompanyFacade comF = new CompanyFacade();
 		
 		System.out.print("NEW Title: ");
         String title = userInputString();
@@ -1464,13 +1477,8 @@ public class testDeveloers {
         
         long ownerID = SharingData.getIdsShare();
         
-		// putting all the variables
-        try {
-			comF = new CompanyFacade();
-			coup = new Coupon(title, startDate, endDate, amount, CouponType.valueOf(category), message, price, imag, ownerID);
-		} catch (ConnectorExeption | FiledErrorException e1) {
-			System.out.println(e1.getMessage());;
-		}
+		// putting all the variables 
+		coup = new Coupon(title, startDate, endDate, amount, CouponType.valueOf(category), message, price, imag, ownerID);
         
 		// check if the user put's somthing empty...
 		if(title.isEmpty() || message.isEmpty() || category.isEmpty() || message.isEmpty() || imag.isEmpty() || price == 0) {
@@ -1480,14 +1488,18 @@ public class testDeveloers {
 			break;
 		}
 		
-		try {
-			comF.createCoupon(coup);
+		comF.createCouponF(coup);
+		
+		if(SharingData.isFlag1() == true) {
 			System.out.println(coup.toString());
 			System.out.println("------------ Coupon Added Successfully ----------" + "\n");
-
-		} catch (DaoExeption e) {
-			System.out.println(e.getMessage());
 		}
+		else {
+			//System.out.println(coup.toString());
+			System.out.println("\n" + "****************************************************");
+			System.out.println("Error - No Changes Were Made :(");
+			System.out.println("\n" + "****************************************************");
+		} // else
 				
 		System.out.println("Whould you keep adding Coupons? Type '1' for YES or any other Number for NO.");
 		short choice1 = userInputShort();
@@ -1507,27 +1519,36 @@ public class testDeveloers {
     	
     	while(true) { 
     		
-    		CompanyFacade comF = null;
+    		CompanyFacade comF = new CompanyFacade();
     		
     		System.out.print("Type Your Coupon ID: ");
     		SharingData.setLongNum1(userInputLong());
     		if (SharingData.getLongNum1() == 0) {
     			
     			printGoingBackToUsage();
+    			printDbDAOMenu();
     			break;
     		}
     		
+    		IsExistDB.idExistV2Coupon(SharingData.getLongNum1(), "coupon");
+    		if(IsExistDB.getAnswer2() == false) {		
+    			IsExistDB.idExistV2Coupon(SharingData.getLongNum1(), "company_coupon");	
+    			} // if - coupon
+    		else if(IsExistDB.getAnswer2() == false) {		
+        		IsExistDB.idExistV2Coupon(SharingData.getLongNum1(), "customer_coupon");
+			} // if - company_coupon
+    		else if(IsExistDB.getAnswer2() == false) {		
+				printNoExistOrCurrect();
+				printDbDAOMenu();
+				break;
+			} // if - customer_coupon
+    		else {
     			Coupon c = new Coupon();
 				c.setId(SharingData.getLongNum1());
 				System.out.println(c.toString());
-				try {
-					comF = new CompanyFacade();
-					comF.removeCoupon(c);
-					printCouponRemoved();
-				} catch (DaoExeption | ConnectorExeption e) {
-					System.out.println(e.getMessage());
-				}
-
+				comF.removeCoupon(c);
+				printCouponRemoved();
+    		} // else
     	} // while loop
     	
     } // removeCoupon
@@ -1539,12 +1560,22 @@ public class testDeveloers {
 		System.out.print("Coupon ID: ");
         SharingData.setIdsShare(userInputLong());
     	
+        // Check if the NAME exist..
+        IsExistDB.idExistV2Coupon(SharingData.getIdsShare(), "coupon");
+        if(IsExistDB.getAnswer2() == false) {
+ 				
+ 		printNoExistOrCurrect();
+ 		break;
+ 		} // if
+        else {
+        	printFoundInDB("Coupon");
+        	
         	// Object Coupon
         	Coupon coup;
         	
         	// DBDAO Coupon
 
-        	CompanyFacade comF = null;
+        	CompanyFacade comF = new CompanyFacade();
         	long id = SharingData.getIdsShare();
         	
 			System.out.print("NEW Coupon EndDate.. ");
@@ -1568,39 +1599,53 @@ public class testDeveloers {
             double price = sc.nextDouble();
                         
 			// putting all the variables 
-
-			try {
-				coup = new Coupon(endDate, amount, message, price);
-				coup.setId(id);
-				comF = new CompanyFacade();
-				comF.updateCoupon(coup);
-			} catch (DaoExeption | ConnectorExeption | FiledErrorException e) {
-				System.out.println(e.getMessage());;
-			}			
+           
+			coup = new Coupon(endDate, amount, message, price);
+			coup.setId(id);
+			comF.updateCoupon(coup);
+			
+			if(SharingData.getExeptionMessage() != null) {
+				System.out.println(SharingData.getExeptionMessage());
+			}
+			
+//			System.out.println("Updated Coupon:" + "\n" +  coup.toString() + "\n");
 			break;
+        }
         
     	} // while loop
-    } // updateCoupon_T
+    }
     
     private static void getCoupon_T() {
     	
     	while(true) {
         	System.out.println("Type The Coupon ID:");
         	SharingData.setLongNum1(userInputLong());
-    
-        		CompanyFacade comF = null;
+        	
+        	IsExistDB.idExistV2Coupon(SharingData.getLongNum1(), "coupon");
+        	if(SharingData.getLongNum1() == 0) {
+        		System.out.println("Typing 'Zero' is mean = quit..");
+        		printGoingBackToUsage();
+        		break;
+        	} // if - it 0 the program will break from this function.
+        	
+        	if (IsExistDB.getAnswer2() == false) { // checks if the ID exist in the DB.
+        		printNoExistOrCurrect();
+    			break;
+        	} // if - isExist
+        	else {
+        		CompanyFacade comF = new CompanyFacade();
         		Coupon c = new Coupon();
         		c.setId(SharingData.getLongNum1());
-        		try {
-        			comF = new CompanyFacade();
-					c = comF.getCoupon(c);
-	        		System.out.println(c.toString());
-		    		System.out.println("\n" + "------------ Coupon Function (getID) Was Run Successfully ----------" + "\n");
-
-				} catch (DaoExeption | ConnectorExeption e) {
-					System.out.println(e.getMessage());
-				}
-        		break;        	
+        		c = comF.getCouponA(c);
+        		
+        		// Print the Coupon:
+        		System.out.println(c.toString());
+        		
+        		if(SharingData.isFlag1() == true) {
+	    			System.out.println("\n" + "------------ Coupon Function (getID) Was Run Successfully ----------" + "\n");
+        	}
+        	} // else
+        	
     	} // while loop
 
     	} // getCouponID_T - Function
@@ -1639,22 +1684,12 @@ public class testDeveloers {
     	// Note: AdminFacade Usage Print is in the login Option.
     	boolean existOrNot = login_T();
     	
-    	
-//    	CouponClientFacade ad = null;
-//    	AdminFacade adm = new AdminFacade();
-////    	ad = null;
-//    	ad = CouponSystem.getInstance().login("admin", "1234", ClientType.ADMIN);
-//    	System.out.println(ad);
-//    	System.out.println(adm);
-//    	if(existOrNot == true) {
-//			
-//		}
     	if(existOrNot != true) {
     		printNoExistOrCurrect();
     		printGoingBackToUsage();
     	}
     	else {
-    		printAdminFacadeMenu();
+    		
     	    boolean on = true;
     	    while(on == true) {   	
     		short userChoiceOfSideWork = userInputFadacesShort();
@@ -1717,6 +1752,7 @@ public class testDeveloers {
         boolean existOrNot = login_T();
     	
     	if(existOrNot != true) {
+    		//printIDnotExist("Company");
     	}
     	else {
     		
@@ -1744,13 +1780,8 @@ public class testDeveloers {
     			break;
     		}
     		case 4: {
-    			CompanyFacade comF = null;
-    			try {
-    				comF = new CompanyFacade();
-					System.out.println(comF.viewCompay(SharingData.getIdsShare()));
-				} catch (DaoExeption | ConnectorExeption e) {
-					System.out.println(e.getMessage());;
-				}
+    			CompanyFacade comF = new CompanyFacade();
+    			System.out.println(comF.viewCompay(SharingData.getIdsShare()));
     			break;
     		}
     		case 5: {
@@ -1834,15 +1865,16 @@ public class testDeveloers {
     private static void Facade_T() {
     	    	
     	// checks if we have some error
+    	if(SharingData.getExeptionMessage() != null) {
+    		System.out.println(SharingData.getExeptionMessage());
+    	}
     	
-    	//TODO: THREAD!
-    	
-//    	try {
-//			TimeUnit.SECONDS.sleep(5);
-//			System.out.println("[Expired Coupos Deleted!]");
-//		} catch (InterruptedException e) {
-//			System.out.println(e.getMessage());
-//		} // catch
+    	try {
+			TimeUnit.SECONDS.sleep(5);
+			System.out.println("[Expired Coupos Deleted!]");
+		} catch (InterruptedException e) {
+			System.out.println(e.getMessage());
+		} // catch
     	System.out.println("*************************");
     	System.out.println("[System Loaded]");
     	System.out.println("*************************");
@@ -1892,8 +1924,53 @@ public class testDeveloers {
 	 * the project guide.
 	 * They are only for help and maintenance.
 	 *
-	 * @author Raziel
-     */ 
-
+	 */
+    
+    /**
+     * Unused Function.
+     * It was used for the first developer's version. 
+     * Now We can test it By the Facade Section.
+     * 
+     * @author Raziel
+     */
+    @Deprecated
+    private static void resetTable_T() throws SQLException {
+    	
+    	System.out.println("\n" + "This is a Developer method - Truncate Tabels (reset)");
+    	System.out.println("Would you like to rest the Company Table?" + "\n");
+		System.out.println("1. YES (delete and rest all the table data)."
+				+ "\n" + "2. NO (exit to the main usage)"
+				+ "\n");
+		short choice = userInputShort();
+		
+		switch (choice) {
+		
+		case 1: { // Delete and Reset the Table
+			
+			try {
+				String sql = "truncate table company";
+				Statement stat = DBconnectorV3.getConnection().createStatement();
+				stat.executeUpdate(sql);
+				System.out.println("The table has been RESET!");
+				
+				stat.close();
+				
+			} catch (SQLException e) {
+				e.getMessage();
+			} // catch
+			finally {
+				DBconnectorV3.getConnection().close();
+			}
+		
+			printGoingBackToUsage();
+			break;
+		} // case 1
+		case 2: {
+			
+			break;
+		}
+		} // switch
+    	
+    }
     
 } // Class	

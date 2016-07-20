@@ -1,94 +1,79 @@
 package com.facade;
 
-import java.sql.SQLException;
 import java.util.Collection;
 
-import javax.security.auth.login.LoginException;
-
-import com.added.functions.IsExistDB;
-import com.added.functions.SharingData;
 import com.dao.interfaces.CompanyDAO;
 import com.dao.interfaces.CouponDAO;
 import com.dao.interfaces.CustomerDAO;
-import com.dbdao.*;
 import com.javabeans.*;
-import com.mysql.fabric.xmlrpc.Client;
+import com.task.and.singleton.CouponClientFacade;
 import com.task.and.singleton.CouponSystem;
 
+import ExeptionErrors.ConnectorExeption;
+import ExeptionErrors.DaoExeption;
+import ExeptionErrors.FiledErrorException;
+import ExeptionErrors.LoginException;
 
 
-public class AdminFacade {
+
+public class AdminFacade implements CouponClientFacade{
 
 	private static final String adminUser = "admin";
-	private static final String password = "1234";
+	private static final String adminPassword = "1234";
 	
 	private static CompanyDAO compDao = null;
 	private CustomerDAO custDao = null;
 	private CouponDAO coupDao = null;
 	
 	// constructor
-	public AdminFacade() {
-		
+	public AdminFacade() throws ConnectorExeption {
+			
 		compDao = CouponSystem.getInstance().getCompDao();
 		custDao = CouponSystem.getInstance().getCustDao();
 		coupDao = CouponSystem.getInstance().getCouponDao();
+		
 	}
 
 	/*
 	 *  Company Access
 	 */
 	
-	public void createCompany(Company company) {
-		
-		try {
-			compDao.createCompany(company);
-		} catch (SQLException e) {
-			SharingData.setExeptionMessage(e.getMessage() + e.getErrorCode());
-		}
+	public void createCompany(Company company) throws DaoExeption {
+		compDao.createCompany(company);
 		
 	} // createCompanyA - function
 	
-	public void removeCompany(Company company) throws SQLException{
+	public void removeCompany(Company company) throws DaoExeption{
 		
 		Coupon coupon = new Coupon();
 		coupon.setOwnerID(company.getId());
 		compDao.removeCompany(company);
-		coupDao.removeCouponOwnerID(coupon.getOwnerID());
-		coupDao.removeCoupon(coupon);
 		
 	} // removeCompanyA - function
 	
-	public void updateCompany(Company company) {
-		try {
+	public void updateCompany(Company company) throws DaoExeption{
 			compDao.updateCompany(company);
-		} catch (SQLException e) {
-			SharingData.setExeptionMessage(e.getMessage() + e.getErrorCode());
-		}
-		
 		
 	} // updateCompanyA - function
 
-	public Company getCompany(long id) {
+	public Company getCompany(long id) throws DaoExeption{
 		Company c = new Company();
-		try {
-			c = compDao.getCompany(id);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		c = compDao.getCompany(id);
 		return c;
 		
 		
 	} // getCompanyA - function
 	
-	public Collection<Company> getAllCompaniesA() {
+	public Company getCompany(String compName) throws DaoExeption{
+		Company c = new Company();
+		c = compDao.getCompany(compName);
+		return c;
+	}
+	
+	public Collection<Company> getAllCompanies() throws DaoExeption{
+		
 		Collection<Company> companies = null;
-		try {
-			companies = compDao.getAllCompanies();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		companies = compDao.getAllCompanies();
 		return companies;
 		
 	} // getAllCompaniesA - function
@@ -97,45 +82,60 @@ public class AdminFacade {
 	 *  Customer Access
 	 */
 	
-	public void createCustomer(Customer customer) {
+	public void createCustomer(Customer customer) throws DaoExeption{
 		
-		IsExistDB.stringExistV3("customer", "cust_name", customer.getCustName());
-		if(IsExistDB.getAnswer() == false) {
-			custDao.createCustomer(customer);
-		}
+		custDao.createCustomer(customer);
+		
 	} // createCustomerA - function
 	
-	public void removeCustomer(Customer customer) {
-		custDao.removeCustomer(customer);
+	public void removeCustomer(Customer customer) throws DaoExeption, FiledErrorException{
+			custDao.removeCustomer(customer);
 	}
 	
-	public void updateCustomer(Customer customer) {
+	public void updateCustomer(Customer customer) throws DaoExeption{
 		custDao.updateCustomer(customer);
 	} // createCustomerA - function
 	
-	public Customer getCustomer(long id) {
+	public Customer getCustomer(long id) throws DaoExeption, FiledErrorException{
 		
-		Customer c = new Customer();
-		c.setId(id);
-		c = custDao.getCustomer(id);
+		Customer customer = new Customer();
+		customer = custDao.getCustomer(id);
 		
+		if(customer != null) {
 		// set the Collection of the Coupons.
-		c.setCoupons(custDao.getCoupons(id));
-		
-		return c;
+		customer.setCoupons(custDao.getCoupons(id));
+		}
+		return customer;
 	}
 	
-	public Collection<Customer> getAllCustomers() {
+	public Customer getCustomer(String compName) throws DaoExeption, FiledErrorException{
+		
+		Customer customer = new Customer();
+//		c.setId(id);
+		customer = custDao.getCustomer(compName);
+		
+		if(customer != null) {
+		// set the Collection of the Coupons.
+		customer.setCoupons(custDao.getCoupons(customer.getId()));
+		}
+		return customer;
+	}
+
+	public Collection<Customer> getAllCustomers() throws DaoExeption{
 		return custDao.getAllCustomers();
 	} // getAllCompaniesA - function
-	
-	public AdminFacade login(String userName, String password, ClientType clientType) throws LoginException{
-		if(userName.toLowerCase().equals(adminUser) && String.valueOf(password).equals(AdminFacade.password)) {
-			return this;
-		} // if
-		else {
-			throw new LoginException("Admin Login Failed");
-		}
-	} // login
 
+	@Override
+	public AdminFacade login(String adminName, String password, ClientType type) throws LoginException , DaoExeption {
+		if(adminName.toLowerCase().equals(adminUser) && String.valueOf(password).equals(adminPassword) 
+				&& type == ClientType.ADMIN) {
+			return this;
+		}
+		else {
+			throw new LoginException ("Admin Login - FAILED");
+		}
+		
+	}
+
+	
 }
