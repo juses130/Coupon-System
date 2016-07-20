@@ -11,6 +11,7 @@ import com.dao.interfaces.CustomerDAO;
 import com.dbdao.CompanyDBDAO;
 import com.exeptionerrors.*;
 import com.javabeans.*;
+import com.mysql.fabric.xmlrpc.Client;
 import com.task.and.singleton.CouponClientFacade;
 import com.task.and.singleton.CouponSystem;
 
@@ -36,20 +37,16 @@ public class CompanyFacade implements CouponClientFacade{
 		 */
 
 		Company newCompany = compDao.getCompany(company.getCompName());
-		
+
 		compDao.createCoupon(newCompany, coupon);
 //		coupDao.createCoupon(coupon);
 		
 	} // createCouponF
 	
 	public Collection<Coupon> getAllCoupons(long compID) throws DaoExeption{
-		
+
 		Collection<Coupon> coupons = new HashSet<>();
-		try {
-			coupons = compDao.getCoupons(compID);
-		} catch (DaoExeption e) {
-			throw new DaoExeption("Error: Getting all coupons - FAILED (check the company ID)");
-		}
+		coupons = compDao.getCoupons(compID);
 		
 		return coupons;
 	}
@@ -65,33 +62,24 @@ public class CompanyFacade implements CouponClientFacade{
 	}
 	
 	public Company viewCompay(long id) throws DaoExeption{
-		Company c = new Company();
-		try {
-			c = compDao.getCompany(id);
-		} catch (DaoExeption e) {
-			e.printStackTrace();
-		}
 		
-		return c;
+		Company company = new Company();
+		company = compDao.getCompany(id);
+		
+		return company;
 	}
 	
-	public Coupon getCoupon(Coupon coupon) throws DaoExeption{
-		coupon = coupDao.getCoupon(coupon.getId());
+	public Coupon getCoupon(Coupon coupon, Company company) throws DaoExeption{
 		
-		return coupon;
+		Company comp = compDao.getCompanyByCoupon(coupon, company);
+		Coupon newCoupon = coupDao.getCoupon(comp.getId(), ClientType.COMPANY);
+		return newCoupon;
 	}
 	
 	public Set<Coupon> getCouponsByType(long custID, CouponType category) throws DaoExeption{
 		
 		Set<Coupon> coupons = coupDao.getCouponByType("company_coupon", "comp_id" ,custID, category);
 
-		return coupons;
-
-	}
-	
-	public Set<Coupon> getCouponsOfCompany(long compID) throws DaoExeption{
-		Set<Coupon> coupons = coupDao.getCouponsOfCompany(compID);
-		
 		return coupons;
 
 	}

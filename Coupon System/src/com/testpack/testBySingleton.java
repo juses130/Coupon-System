@@ -44,12 +44,12 @@ public class testBySingleton {
 //				c.setAmount(12);
 //				admF.getCompany("mahmus");
 			
-			Company company = admF.getCompany("clickon");
-			Coupon coupon = new Coupon("XML", LocalDate.of(2016, 7, 21), LocalDate.of(2018, 1, 1), 50, CouponType.CAMPING, "no", 250, "no", company.getId());
+			Company company = compF.viewCompay(3500);
+//			Coupon coupon = new Coupon("XML", LocalDate.of(2016, 7, 21), LocalDate.of(2018, 1, 1), 50, CouponType.CAMPING, "no", 250, "no", company.getId());
 			System.out.println(company.toString());
 //			System.out.println(compF.getCoupon(coupon));
 
-			compF.createCoupon(company, coupon);
+//			compF.createCoupon(company, coupon);
 				
 //				TimeUnit.SECONDS.sleep(2);
 //				System.out.println("[Expired Coupos Deleted!]");
@@ -61,10 +61,10 @@ public class testBySingleton {
 	    	System.out.println("*************************");
 //			System.out.println(LocalDate.now());
 //				admF.createCompany(company);
-				System.out.println(company.toString());
-				System.out.println(compF.getCoupon(coupon));
+//				System.out.println(company.toString());
+//				System.out.println(compF.getCoupon(coupon));
 //				System.out.println(admF.getCompany(company.getCompName()));
-			} catch (ConnectorExeption | DaoExeption | FiledErrorException e) {
+			} catch (ConnectorExeption | DaoExeption e) {
 				System.out.println(e.getMessage());;
 			}
 		

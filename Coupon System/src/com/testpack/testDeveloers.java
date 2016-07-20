@@ -1087,10 +1087,12 @@ public class testDeveloers {
     	System.out.println("Here is your Company Coupons List: ");
     	CompanyFacade compF = null;
     	
-    	Set<Coupon> coupons;
+    	Collection<Coupon> coupons;
 		try {
+			System.out.print("Enter Your ID: ");
+			long id = userInputLong();
 			compF = new CompanyFacade();
-			coupons = compF.getCouponsOfCompany(SharingData.getIdsShare());
+			coupons = compF.getAllCoupons(id);
 			System.out.println(coupons.toString());
 		} catch (DaoExeption | ConnectorExeption e) {
 			System.out.println(e.getMessage());;
@@ -1593,15 +1595,17 @@ public class testDeveloers {
         	SharingData.setLongNum1(userInputLong());
     
         		CompanyFacade comF = null;
-        		Coupon c = new Coupon();
-        		c.setId(SharingData.getLongNum1());
+        		Coupon coupon = new Coupon();
+        		coupon.setId(SharingData.getLongNum1());
         		try {
         			comF = new CompanyFacade();
-					c = comF.getCoupon(c);
-	        		System.out.println(c.toString());
+        			Company company = new Company();
+        			company.setCompName(SharingData.getVarchar4());
+        			coupon = comF.getCoupon(coupon, company);
+	        		System.out.println(coupon.toString());
 		    		System.out.println("\n" + "------------ Coupon Function (getID) Was Run Successfully ----------" + "\n");
 
-				} catch (DaoExeption | ConnectorExeption e) {
+				} catch (DaoExeption | ConnectorExeption | FiledErrorException e) {
 					System.out.println(e.getMessage());
 				}
         		break;        	
@@ -1751,7 +1755,10 @@ public class testDeveloers {
     			CompanyFacade comF = null;
     			try {
     				comF = new CompanyFacade();
-					System.out.println(comF.viewCompay(SharingData.getIdsShare()));
+    				System.out.print("Please enter your ID: ");
+    				long id = userInputLong();
+    				System.out.println(comF.viewCompay(id));
+    				
 				} catch (DaoExeption | ConnectorExeption e) {
 					System.out.println(e.getMessage());;
 				}

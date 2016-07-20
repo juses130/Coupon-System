@@ -54,15 +54,11 @@ public class Coupon {
 
 	public Coupon(long id, String title, LocalDate startDate, LocalDate endDate, int amount, CouponType category,  String message, double price, String image) throws FiledErrorException {
 		
-		setId(id);
-		setTitle(title);
-		setStartDate(startDate);
-		setEndDate(endDate);
-		setAmount(amount);
-		setType(category);
-		setMessage(message);
-		setPrice(price);
-		setImage(image);
+		/* I took down the all setters startData + endDate because 
+		 * when the DailyTask runs, he can't access the dates if they expired or null parameters.
+		 * Still we have the protection in the setters themselfs, but in this 
+		 * construcor we have a small security hole.
+		 */
 		
 		this.id = id;
 		this.title = title;

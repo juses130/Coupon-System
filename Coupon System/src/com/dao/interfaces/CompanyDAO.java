@@ -16,6 +16,8 @@ public interface CompanyDAO {
 	public void updateCompany(Company company) throws DaoExeption;
 
 	public Company getCompany(long id) throws DaoExeption;
+	public Company getCompanyByCoupon(Coupon coupon, Company company) throws DaoExeption;
+	public Company getCompany(String compName) throws DaoExeption;
 
 	public Collection<Company> getAllCompanies() throws DaoExeption;
 
@@ -23,7 +25,7 @@ public interface CompanyDAO {
 
 	public boolean login(String compName, String password) throws DaoExeption;
 
-	public Company getCompany(String compName) throws DaoExeption;
+
 
 	
 

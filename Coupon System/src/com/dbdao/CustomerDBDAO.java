@@ -1,5 +1,6 @@
 package com.dbdao;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -231,7 +232,6 @@ public class CustomerDBDAO implements CustomerDAO {
 	public Set<Coupon> getCoupons(long custId) throws DaoExeption{
 
 		Set<Coupon> coupons = new HashSet<>();
-		CouponDBDAO coupDB = new CouponDBDAO();
 		
 		try {
 			
@@ -241,10 +241,28 @@ public class CustomerDBDAO implements CustomerDAO {
 			ResultSet rs = stat.executeQuery();
 
 			while (rs.next()) {
-				coupons.add(coupDB.getCoupon(rs.getLong("COUP_ID")));
+				String title, message, image;
+				Date stDate, enDate ;	
+				int amount;
+				CouponType type = null;
+				double price;
+				long id;
+				
+				title = rs.getString("Title");
+				stDate = rs.getDate("start_date");
+				enDate = rs.getDate("end_date");
+				amount = rs.getInt("amount");
+				type = CouponType.valueOf(rs.getString("Category").toUpperCase());
+				message = rs.getString("Message");
+				price = rs.getDouble("Price");
+				image = rs.getString("image");
+				id = rs.getLong("coup_id");
+
+				Coupon coupon = new Coupon(id, title, stDate.toLocalDate(), enDate.toLocalDate(), amount, type,  message, price, image);
+				coupons.add(coupon);
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException | FiledErrorException e) {
+			throw new DaoExeption("Error: Getting Coupons Of Customer - FAILED (somthing went wrong..)");
 		}
 		 return coupons;
 	}
