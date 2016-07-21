@@ -167,7 +167,7 @@ public class shortTest {
 			for(int i = 0; i < 100; i++) {
 				Coupon coup = new Coupon();
 				Company comp = new Company();
-				Customer customer = new Customer();
+//				Customer customer = new Customer();
 				coup.setAmount(i);
 				coup.setMessage("check message");
 				coup.setTitle("new Daily?" + i);
@@ -176,8 +176,8 @@ public class shortTest {
 				coup.setType(CouponType.valueOf("TRAVEL"));
 				coup.setEndDate(LocalDate.of(2016, 1, 1));
 				coup.setOwnerID(id);
-				comp.setCompName("clickon");
-				comF.createCoupon(comp, coup);
+//				comp.setCompName("clickon");
+//				comF.createCoupon(comp, coup);
 				custF.purchaseCoupon(coup);
 				System.out.println(coup.toString());
 			} // for

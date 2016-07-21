@@ -61,25 +61,25 @@ public class CouponSystem implements CouponClientFacade {
 				return couponDao;
 			}
 			
-			public CouponClientFacade login(String userName, String password, ClientType type) throws LoginException, DaoExeption, ConnectorExeption{
+			public CouponClientFacade login(String userName, String password, ClientType client) throws LoginException, DaoExeption, ConnectorExeption{
 				
-				CouponClientFacade client = null;
+				CouponClientFacade clientFacade = null;
 				
-				if(type.equals(ClientType.ADMIN) ) {
+				if(client.equals(ClientType.ADMIN) ) {
 					AdminFacade admF = new AdminFacade();
-					client = admF.login(userName, password, type);
-					return client;
+					clientFacade = admF.login(userName, password, client);
+					return clientFacade;
 				}
-				else if (type == ClientType.COMPANY) {
+				else if (client.equals(ClientType.COMPANY)) {
 					CompanyFacade compF = new CompanyFacade();			
-					client = compF.login(userName, password, type);
+					clientFacade = compF.login(userName, password, client);
 
-					return client;
+					return clientFacade;
 				}
-				else if (type.equals(ClientType.CUSTOMER)) {
+				else if (client.equals(ClientType.CUSTOMER)) {
 					CustomerFacade custF = new CustomerFacade();
-					client = custF.login(userName, password, type);
-					return client;
+					clientFacade = custF.login(userName, password, client);
+					return clientFacade;
 				}
 				return null;
 				}

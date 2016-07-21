@@ -132,9 +132,9 @@ public class AdminFacade implements CouponClientFacade{
 	} // getAllCompaniesA - function
 
 	@Override
-	public AdminFacade login(String adminName, String password, ClientType type) throws LoginException , DaoExeption {
+	public AdminFacade login(String adminName, String password, ClientType client) throws LoginException , DaoExeption {
 		if(adminName.toLowerCase().equals(adminUser) && String.valueOf(password).equals(adminPassword) 
-				&& type == ClientType.ADMIN) {
+				&& client == ClientType.ADMIN) {
 			return this;
 		}
 		else {

@@ -17,27 +17,24 @@ import com.task.and.singleton.CouponSystem;
 public class CompanyFacade implements CouponClientFacade{
 	
 	private CompanyDAO compDao = null;
-	private CustomerDAO custDao = null;
 	private CouponDAO coupDao = null;
+		
 //	
 	public CompanyFacade() throws ConnectorExeption{
 		
 		compDao = CouponSystem.getInstance().getCompDao();
-		custDao = CouponSystem.getInstance().getCustDao();
 		coupDao = CouponSystem.getInstance().getCouponDao();
 	}
 	
 	
-	public void createCoupon(Company company, Coupon coupon) throws DaoExeption{
+	public void createCoupon(Coupon coupon) throws DaoExeption{
 		/*  Now he will make sure that the facede will get only the 
 		 *  RIGHT parameters of the Company object.
 		 *  Even if the user puts some incurrect inputs.
 		 *  the CompanyFacade will bring the RIGHT parameters by the company Name.
 		 */
-
-		Company newCompany = compDao.getCompany(company.getCompName());
-
-		compDao.createCoupon(newCompany, coupon);
+		
+		compDao.createCoupon(coupon);
 //		coupDao.createCoupon(coupon);
 		
 	} // createCouponF
@@ -91,7 +88,8 @@ public class CompanyFacade implements CouponClientFacade{
 		return coupons;	
 	}
 	
-    public CompanyFacade login(String compName, String password, ClientType type) throws LoginException ,DaoExeption {
+	@Override
+	public CompanyFacade login(String compName, String password, ClientType type) throws LoginException ,DaoExeption {
     	boolean loginSuccessful  = false;
     	
 			loginSuccessful = compDao.login(compName, password);

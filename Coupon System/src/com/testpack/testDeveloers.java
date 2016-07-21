@@ -1489,7 +1489,7 @@ public class testDeveloers {
 		}
 		
 		try {
-			comF.createCoupon(company,coup);
+			comF.createCoupon(coup);
 			System.out.println(coup.toString());
 			System.out.println("------------ Coupon Added Successfully ----------" + "\n");
 

@@ -8,7 +8,7 @@ import com.javabeans.*;
 
 public interface CouponDAO {
 
-	public Coupon createCoupon(Coupon coupon) throws DaoExeption;
+	public Coupon createCoupon(Coupon coupon, ClientType client) throws DaoExeption;
 	public void removeCoupon(Coupon coupon) throws DaoExeption;
 	public Coupon updateCoupon(Coupon coupon) throws DaoExeption;
 	public Coupon getCoupon(long id, ClientType client) throws DaoExeption;

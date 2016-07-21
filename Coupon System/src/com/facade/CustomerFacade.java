@@ -13,7 +13,7 @@ public class CustomerFacade implements CouponClientFacade {
 //	private CompanyDAO compDao = null;
 	private CustomerDAO custDao = null;
 	private CouponDAO coupDao = null;
-	private Customer customer;
+	
 	
     public CustomerFacade login(String custName, String password, ClientType client) throws LoginException, DaoExeption {
     	
@@ -25,6 +25,7 @@ public class CustomerFacade implements CouponClientFacade {
 		}
     	
     	if(loginSuccessful == true) {
+    		
     		return this;
     	}
     	else {
@@ -43,6 +44,7 @@ public class CustomerFacade implements CouponClientFacade {
 		Coupon coup = new Coupon();
 		//TODO: add Some query that will get coupon from the couponTable and set it into customer_coupon
 		coup = coupDao.getCoupon(coupon.getId(), ClientType.CUSTOMER);
+		
 		return coup;
 		
 	} // purchaseCoupon

@@ -31,18 +31,27 @@ public class CompanyDBDAO implements CompanyDAO {
 	public boolean login(String compName, String password) throws DaoExeption  {
 		
 		boolean hasRows = false;
+//		Company company = new Company();
         try {
 			String sqlLoginCompany = "SELECT Comp_name, password FROM company WHERE "
 					+ "Comp_name= '" + compName + "'" + " AND " + "password= '" 
 					+ password + "'";
 			Statement stat = DBconnectorV3.getConnection().createStatement();
 			ResultSet rs = stat.executeQuery(sqlLoginCompany);
-		    rs.next();
 		    
-			if (rs.getRow() != 0) {
+			/*
+			 * The logical thinking here- is if the resultSet has NO ROW to next
+			 * (Because of the condition 'Pass' && 'name'). 
+			 * so, it will be throw Login Exception and will not move on.
+			 */
+			
+			rs.next();
+			if(rs.getRow() == 0) {
+	        	throw new DaoExeption("Error: Company Login - FAILD (one or more of the fields is incurrect or empty)");
+		    }
+			else {
 				hasRows = true;
 			}
-
             } catch (SQLException | NullPointerException e) {
             	/* The throw exception here is an general error, mostly sql error.
             	 * Login failed exception - because of incurrent user Or pasword will throw from the CompanyFacade.
@@ -50,10 +59,13 @@ public class CompanyDBDAO implements CompanyDAO {
     			throw new DaoExeption("Error: Company Login - FAILED (something went wrong..)");
             } // catch
         
-        if(hasRows == true) {
+//        if(company.getClass() == null) {
+//        	throw new DaoExeption("Error: Company Login - FAILD (one or more of the fields is incurrect or empty)");
+//        }
+//        else {
         	return hasRows;
-        }
-        return hasRows;
+//        }
+        
         	} // login	
 	
 	@Override
@@ -69,15 +81,12 @@ public class CompanyDBDAO implements CompanyDAO {
 					String sqlQuery = "INSERT INTO company (COMP_NAME, PASSWORD, EMAIL) VALUES(?,?,?)";
 					PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
 					
-					// now we will put the in their places.
 					prep.setString(1, company.getCompName());
 					prep.setString(2, company.getPassword());
 					prep.setString(3, company.getEmail());
 				
-					// after we "loaded" the columns, we will executeUpdate prep.
 					prep.executeUpdate();
-
-					// This 2 lines will make it run to the next null row. and line 3 will set the ID (next new row).
+					
 					ResultSet rs = prep.getGeneratedKeys();
 					while(rs.next()) {
 					company.setId(rs.getLong(1));
@@ -96,8 +105,9 @@ public class CompanyDBDAO implements CompanyDAO {
 	} // createCompany - Function
 	
 	@Override
-	public Coupon createCoupon(Company company ,Coupon coupon) throws DaoExeption{
+	public Coupon createCoupon(Coupon coupon) throws DaoExeption{
 
+		//TODO: exemine the option to send 1 sql commend and get all results!
 		if(existOrNotByCoupName(coupon) == false) {
 
 			// We need to Check if the Company ownes this coupon before.
@@ -108,7 +118,7 @@ public class CompanyDBDAO implements CompanyDAO {
 					 * create the coupon in the Company_Coupon Table.
 					*/
 					CouponDBDAO coupDB = new CouponDBDAO();
-					coupDB.createCoupon(coupon);
+					coupDB.createCoupon(coupon, ClientType.COMPANY);
 					
 						String sqlCompanyCoupn = "INSERT INTO Company_coupon (Comp_id, Coup_id) VALUES (" + company.getId() + "," + coupon.getId() + ")";
 						PreparedStatement prep1 = DBconnectorV3.getConnection().prepareStatement(sqlCompanyCoupn);
@@ -116,6 +126,7 @@ public class CompanyDBDAO implements CompanyDAO {
 
 				} // try
 				catch (SQLException | NullPointerException e) {
+					
 					throw new DaoExeption("Error: Creating Coupon By Company- FAILED");			
 				} // catch
 				return coupon;
@@ -142,6 +153,27 @@ public class CompanyDBDAO implements CompanyDAO {
 		} // else
 
 	} // removeCompany - By ID - Function
+	
+	public void removeCouponByCompany(Coupon coupon) throws DaoExeption{
+		
+		String sqlDELid1 = "DELETE FROM coupon WHERE Coup_ID =" + coupon.getId();
+		String sqlDELid2 = "DELETE FROM company_coupon WHERE Coup_ID =" + coupon.getId();
+		String sqlDELid3 = "DELETE FROM company_coupon WHERE Coup_ID =" + coupon.getId();
+
+		PreparedStatement prep;
+		try {
+			prep = DBconnectorV3.getConnection().prepareStatement(sqlDELid1);
+			prep.executeUpdate();
+			prep.clearBatch();
+			prep = DBconnectorV3.getConnection().prepareStatement(sqlDELid2);
+			prep.executeUpdate();
+			prep.clearBatch();
+			prep = DBconnectorV3.getConnection().prepareStatement(sqlDELid3);
+			prep.executeUpdate();
+		} catch (SQLException e) {
+			throw new DaoExeption("Error: Removing Coupon - FAILED");
+		}
+	} // removeMethod
 	
 	@Override
 	public void updateCompany(Company company) throws DaoExeption{
@@ -320,7 +352,7 @@ public class CompanyDBDAO implements CompanyDAO {
 			prep = DBconnectorV3.getConnection().prepareStatement(sqlDELid2);
 			prep.executeUpdate();
 		} catch (SQLException e) {
-			throw new DaoExeption("Error: Removing Company - FAILED");
+			throw new DaoExeption("Error: Removing Company - FAILED (something went wrong..)");
 		}
 		
 	} // removeMethod

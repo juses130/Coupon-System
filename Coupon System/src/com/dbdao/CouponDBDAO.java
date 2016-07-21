@@ -28,41 +28,23 @@ import sun.net.dns.ResolverConfigurationImpl;
 public class CouponDBDAO implements CouponDAO{
 	// TODO: TO add clientType for creating (admin no need, customer to customer_coupon and company to coupon + company_coupon)
 	@Override
-	public Coupon createCoupon(Coupon coupon) throws DaoExeption{
+	public Coupon createCoupon(Coupon coupon, ClientType client) throws DaoExeption{
 
 		if(existOrNotByName(coupon) == false) {
-
-			long id = -1;
-			try {
-
-				String sqlQuery = "INSERT INTO coupon (Title, Start_Date, End_Date, " + 
-				"Amount, Category, Message, Price, Image, Owner_ID)" + "VALUES(?,?,?,?,?,?,?,?,?)";	
-				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
-				prep.setString(1, coupon.getTitle());
-				prep.setDate(2, Date.valueOf(coupon.getStartDate()));
-				prep.setDate(3, Date.valueOf(coupon.getEndDate()));
-				prep.setInt(4, coupon.getAmount());
-				prep.setString(5, coupon.getType().toString());
-				prep.setString(6, coupon.getMessage());
-				prep.setDouble(7, coupon.getPrice());
-				prep.setString(8, coupon.getImage());
-				prep.setLong(9, coupon.getOwnerID());
-				
-				prep.executeUpdate();
-				ResultSet rs = prep.getGeneratedKeys();
-				rs.next();
-				id = rs.getLong(1);
-				coupon.setId(id);
-
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new DaoExeption("Error: Creating New Coupon - FAILED (something went wrong)");
+			
+			if(client == ClientType.ADMIN) {
+				coupon = createCouponMethodByADMIN(coupon);
+				return coupon;
+			} // if - ADMIN
+			else if(client == ClientType.COMPANY) {
+				coupon = createCouponMethodByCOMPANY(coupon);
+				return coupon;
 			}
-			return coupon;
 		}
 		else {
 			throw new DaoExeption("Error: Creating New CouponID - FAILED (Coupon is already exist in the DataBase)");
 		}
+		return coupon;
 	} // createCoupon - function
 
 	@Override
@@ -370,7 +352,7 @@ public class CouponDBDAO implements CouponDAO{
 				
 				try {
 					
-					String sqlSELCoupByCompany = "SELECT coup_id FROM Company_Coupon WHERE comp_id= ?" ;
+					String sqlSELCoupByCompany = "SELECT coup_id FROM Company_Coupon WHERE coup_id= ?" ;
 					PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlSELCoupByCompany);
 					prep.setLong(1, id);
 					ResultSet rs = prep.executeQuery();
@@ -459,6 +441,66 @@ public class CouponDBDAO implements CouponDAO{
 		return coupons;
 	} // getCoupon - Function
 	
+	private Coupon createCouponMethodByADMIN(Coupon coupon) throws DaoExeption {
+		long id = -1;
+		try {
+
+			String sqlQuery = "INSERT INTO coupon (Title, Start_Date, End_Date, " + 
+			"Amount, Category, Message, Price, Image, Owner_ID)" + "VALUES(?,?,?,?,?,?,?,?,?)";	
+			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
+			prep.setString(1, coupon.getTitle());
+			prep.setDate(2, Date.valueOf(coupon.getStartDate()));
+			prep.setDate(3, Date.valueOf(coupon.getEndDate()));
+			prep.setInt(4, coupon.getAmount());
+			prep.setString(5, coupon.getType().toString());
+			prep.setString(6, coupon.getMessage());
+			prep.setDouble(7, coupon.getPrice());
+			prep.setString(8, coupon.getImage());
+			prep.setLong(9, coupon.getOwnerID());
+			
+			prep.executeUpdate();
+			ResultSet rs = prep.getGeneratedKeys();
+			rs.next();
+			id = rs.getLong(1);
+			coupon.setId(id);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DaoExeption("Error: Creating New Coupon - FAILED (something went wrong)");
+		}
+		return coupon;
+	}
 	
+	private Coupon createCouponMethodByCOMPANY(Coupon coupon) throws DaoExeption {
+		long id = -1;
+		try {
+
+			String sqlQuery = "INSERT INTO coupon (Title, Start_Date, End_Date, " + 
+			"Amount, Category, Message, Price, Image, Owner_ID)" + "VALUES(?,?,?,?,?,?,?,?,?)";	
+			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
+			prep.setString(1, coupon.getTitle());
+			prep.setDate(2, Date.valueOf(coupon.getStartDate()));
+			prep.setDate(3, Date.valueOf(coupon.getEndDate()));
+			prep.setInt(4, coupon.getAmount());
+			prep.setString(5, coupon.getType().toString());
+			prep.setString(6, coupon.getMessage());
+			prep.setDouble(7, coupon.getPrice());
+			prep.setString(8, coupon.getImage());
+			prep.setLong(9, coupon.getOwnerID());
+			
+			prep.executeUpdate();
+			ResultSet rs = prep.getGeneratedKeys();
+			rs.next();
+			id = rs.getLong(1);
+			coupon.setId(id);
+			
+			
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DaoExeption("Error: Creating New Coupon - FAILED (something went wrong)");
+		}
+		return coupon;
+	}
 	
 } // Class

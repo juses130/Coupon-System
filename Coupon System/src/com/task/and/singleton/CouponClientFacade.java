@@ -1,8 +1,6 @@
 package com.task.and.singleton;
 
 
-import java.net.ConnectException;
-
 import com.exeptionerrors.ConnectorExeption;
 import com.exeptionerrors.DaoExeption;
 import com.exeptionerrors.LoginException;
