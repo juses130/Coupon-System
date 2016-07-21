@@ -17,9 +17,11 @@ import com.task.and.singleton.CouponSystem;
 
 public class AdminFacade implements CouponClientFacade{
 
+	// static final instances
 	private static final String adminUser = "admin";
 	private static final String adminPassword = "1234";
 	
+	// 3 dao instances (working by CouponSystem-Singelton)
 	private static CompanyDAO compDao = null;
 	private CustomerDAO custDao = null;
 	private CouponDAO coupDao = null;
@@ -31,25 +33,24 @@ public class AdminFacade implements CouponClientFacade{
 		custDao = CouponSystem.getInstance().getCustDao();
 		coupDao = CouponSystem.getInstance().getCouponDao();
 		
-	}
+	} // AdminFacade() - contructor
 
 	/*
 	 *  Company Access
 	 */
 	
 	public void createCompany(Company company) throws DaoExeption {
-
 		compDao.createCompany(company);
-		
-	} // createCompanyA - function
+	} // createCompany - function
 	
 	public void removeCompany(Company company) throws DaoExeption{
 		
 		Coupon coupon = new Coupon();
 		/* Iv'e added to the DataBase a new Column named - OwnerID.
 		 * When we looking in the Coupons list, we may want to know who is the owner of this coupon?
-		 * so insted of going to Company_Coupon Table and search for the specific coupon. We can see it
-		 * from the coupons list.
+		 * so insted of going to Company_Coupon Table and search for the specific coupon 
+		 * and only then you will find out who is the owner..
+		 * We can see it from the coupons list.
 		 */
 		coupon.setOwnerID(company.getId());
 		compDao.removeCompany(company);

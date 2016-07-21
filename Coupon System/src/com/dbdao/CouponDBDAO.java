@@ -5,7 +5,6 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.*;
 import com.added.functions.DBconnectorV3;
-import com.added.functions.SharingData;
 import com.dao.interfaces.CouponDAO;
 import com.exeptionerrors.DaoExeption;
 import com.exeptionerrors.FiledErrorException;
@@ -27,7 +26,7 @@ import sun.net.dns.ResolverConfigurationImpl;
  */
 
 public class CouponDBDAO implements CouponDAO{
-	
+	// TODO: TO add clientType for creating (admin no need, customer to customer_coupon and company to coupon + company_coupon)
 	@Override
 	public Coupon createCoupon(Coupon coupon) throws DaoExeption{
 
@@ -317,6 +316,51 @@ public class CouponDBDAO implements CouponDAO{
 		} // if - admin
 		else if (client == ClientType.COMPANY) {
 			
+			if(existOrNotByID(coupon) == true) {
+				String title, message, image;
+				Date stDate, enDate ;	
+				int amount;
+				CouponType type = null;
+				double price;
+				
+				try {
+					
+					String sqlSELCoupByCompany = "SELECT coup_id FROM Company_Coupon WHERE comp_id= ?" ;
+					PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlSELCoupByCompany);
+					prep.setLong(1, id);
+					ResultSet rs = prep.executeQuery();
+					rs.next();
+					long coupID = rs.getLong(1);
+					prep.clearBatch();
+					
+					String sqlSelCoupAfterCompnay = "SELECT * FROM coupon WHERE coup_id= ?" ;
+					prep = DBconnectorV3.getConnection().prepareStatement(sqlSelCoupAfterCompnay);
+					prep.setLong(1, coupID);
+					rs.next();
+
+					title = rs.getString("Title");
+					stDate = rs.getDate("start_date");
+					enDate = rs.getDate("end_date");
+					amount = rs.getInt("amount");
+					type = CouponType.valueOf(rs.getString("Category").toUpperCase());
+					message = rs.getString("Message");
+					price = rs.getDouble("Price");
+					image = rs.getString("image");
+
+					coupon = new Coupon(id, title, stDate.toLocalDate(), enDate.toLocalDate(), amount, type,  message, price, image);
+
+				}
+				catch (SQLException | FiledErrorException e) {
+					throw new DaoExeption("Error: Getting Coupon By ID - FAILED (something went wrong)");
+				}
+				return coupon;
+			} // if - exist
+			else {
+				throw new DaoExeption("Error: Getting Coupon By ID - FAILED (Coupon dosen't exist in the DataBase)");
+			} // else - exist
+		} // else - COMPANY
+		else if (client == ClientType.CUSTOMER) {
+			//TODO: make this part work and be secure!
 			if(existOrNotByID(coupon) == true) {
 				String title, message, image;
 				Date stDate, enDate ;	

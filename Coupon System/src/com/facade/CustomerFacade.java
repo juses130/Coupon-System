@@ -22,8 +22,10 @@ public class CustomerFacade implements CouponClientFacade {
 	}
 	
 	public Coupon purchaseCoupon(Coupon coupon) throws DaoExeption {
-		coupon = coupDao.createCoupon(coupon);
-		return coupon;
+		Coupon coup = new Coupon();
+		//TODO: add Some query that will get coupon from the couponTable and set it into customer_coupon
+		coup = coupDao.getCoupon(coupon.getId(), ClientType.CUSTOMER);
+		return coup;
 		
 	} // purchaseCoupon
 	

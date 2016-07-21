@@ -8,19 +8,15 @@ import java.util.Collection;
 import java.util.*;
 
 import com.added.functions.DBconnectorV3;
-import com.added.functions.SharingData;
 import com.dao.interfaces.*;
 import com.exeptionerrors.DaoExeption;
 import com.exeptionerrors.FiledErrorException;
-import com.exeptionerrors.LoginException;
 import com.facade.ClientType;
 import com.javabeans.*;
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 /**
- * This is Company Database DAO Class.
- * Just impelemnts the methods from CompanyDAO in 'com.dao.interfaces' package. 
- * 
+ * This is Company Database DAO Class. (DBDAO in short)</p>
+ * Just implement the methods from CompanyDAO interfaces. 
  * 
  * @author Raziel
  *
@@ -33,25 +29,25 @@ public class CompanyDBDAO implements CompanyDAO {
 	
 	@Override
 	public boolean login(String compName, String password) throws DaoExeption  {
-		ResultSet rs1 = null;
-		Statement stat1 = null;
 		
 		boolean hasRows = false;
         try {
-			String sqlName = "SELECT Comp_name, password FROM company WHERE "
+			String sqlLoginCompany = "SELECT Comp_name, password FROM company WHERE "
 					+ "Comp_name= '" + compName + "'" + " AND " + "password= '" 
 					+ password + "'";
-			stat1 = DBconnectorV3.getConnection().createStatement();
-		    rs1 = stat1.executeQuery(sqlName);
-		    rs1.next();
+			Statement stat = DBconnectorV3.getConnection().createStatement();
+			ResultSet rs = stat.executeQuery(sqlLoginCompany);
+		    rs.next();
 		    
-			if (rs1.getRow() != 0) {
+			if (rs.getRow() != 0) {
 				hasRows = true;
 			}
 
             } catch (SQLException | NullPointerException e) {
-            	// The throw exception here is in the companyFacade.
-    			throw new DaoExeption("Error: Company Login - FAILED");
+            	/* The throw exception here is an general error, mostly sql error.
+            	 * Login failed exception - because of incurrent user Or pasword will throw from the CompanyFacade.
+            	 */
+    			throw new DaoExeption("Error: Company Login - FAILED (something went wrong..)");
             } // catch
         
         if(hasRows == true) {
@@ -137,7 +133,6 @@ public class CompanyDBDAO implements CompanyDAO {
 	
 	@Override
 	public void removeCompany(Company company) throws DaoExeption{
-		// TODO: security brich = every connected company can get all the coupon from others..
 		// check if the company exist
 		if (existOrNotByCompID(company.getId()) == true) {
 			removeMethod(company.getId());
@@ -284,10 +279,11 @@ public class CompanyDBDAO implements CompanyDAO {
 
 	@Override
 	public Collection<Coupon> getCoupons(long compID) throws DaoExeption{
-		 		
+		// TODO: security brich = every connected company can get all the coupon from others..
+
 		Collection<Coupon> coupons = new HashSet<>();
 		CouponDBDAO  couponDB = new CouponDBDAO();
-
+		
 		coupons = couponDB.getAllCoupons(compID, ClientType.COMPANY);
 		return coupons;
 	}

@@ -4,23 +4,22 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import com.added.functions.DBconnectorV2;
 import com.added.functions.DBconnectorV3;
-import com.added.functions.SharingData;
 import com.dao.interfaces.*;
-import com.dbdao.CouponDBDAO;
 import com.exeptionerrors.ConnectorExeption;
 import com.exeptionerrors.DaoExeption;
 import com.exeptionerrors.FiledErrorException;
-import com.facade.ClientType;
 import com.facade.CompanyFacade;
-import com.facade.CustomerFacade;
 import com.javabeans.*;
+import com.sun.corba.se.spi.orbutil.fsm.State;
 
 /**
  * This is Version 2 of this Class.
@@ -46,7 +45,6 @@ public class DailyCouponExpirationTask implements Runnable {
 
 	@Override
 	public void run() {
-		Set<Coupon> coupons = new HashSet<>();
 		ResultSet rs = null;
 		
 		try {
@@ -54,53 +52,75 @@ public class DailyCouponExpirationTask implements Runnable {
 			 * Because when it will be in Internet Platforme and connected to Server.. it will use
 			 * the time of the server / sql Database and the user cannot manipulated that.
 			 */
-		String sqlSelectByEndDate = "SELECT * FROM coupon WHERE End_Date < CURDATE()";
-		PreparedStatement prep = null;
-		prep = DBconnectorV3.getConnection().prepareStatement(sqlSelectByEndDate, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
-		rs = prep.executeQuery(sqlSelectByEndDate);
-		
-		while(rs.next()) { 
 			
-			String title, message, image;
-			Date stDate, enDate ;	
-			int amount;
-			CouponType type = null;
-			double price;
-			long id;
-			
-			title = rs.getString("Title");
-			stDate = rs.getDate("start_date");
-			enDate = rs.getDate("end_date");
-			amount = rs.getInt("amount");
-			type = CouponType.valueOf(rs.getString("Category").toUpperCase());
-			message = rs.getString("Message");
-			price = rs.getDouble("Price");
-			image = rs.getString("image");
-			id = rs.getLong("coup_id");
+			// TODO: chagne the method of delete - I will delete this directly from SQL.
+			System.out.println("\n" + "Wait! - " +"[Deleting Expired Coupons]");
 
-			Coupon coupon = new Coupon(id, title, stDate.toLocalDate(), enDate.toLocalDate(), amount, type,  message, price, image);
-			coupons.add(coupon);
-		} // while
-	
+	while (running) {
+				//TODO: now I have a method that will delete the rows from all tables at ones! just added to here!
+//		String sqlSelectByEndDate = "SELECT * FROM coupon WHERE End_Date < CURDATE()";
+//		PreparedStatement prep = null;
+//		prep = DBconnectorV3.getConnection().prepareStatement(sqlSelectByEndDate, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+//		rs = prep.executeQuery(sqlSelectByEndDate);
+//		
+//		Set<Long> couponIDs = new HashSet<>();
+////		ArrayList<Long> couponIDs = new ArrayList<>();
+//		
+//		if(rs.next() != true) {
+//			running = false;
+//			System.out.println("Error: No expired Coupons was detected in the DataBase");
+//			break;
+//		}
+//		else {
+//			while(rs.next()) { 
+				/* save all the ids of the coupons by the expired date. 
+				 * I'm not using Object Coupon because it's will build all the instances + setting them.. each itaration (rs.next)! 
+				 * and in the Join tables, Iv'e only have ids.. so It is requested.
+				 * and here, after we saved the id to the Set<> it will delete by the ResultSet.
+				 */
+//				couponIDs.add(rs.getLong(1));
+//				rs.deleteRow();
+//				couponIDs.iterator().hasNext();
+//				if(couponIDs.isEmpty()) {
+//					running = false;
+//					break;
+//				}
+//				System.out.println(couponIDs.toString());
+			} //while - rs.next
+			
+//					prep.clearBatch();
+//					System.out.println("Coupon ID: " + couponIDs.size());
+//					int arraySize = couponIDs.size();
+//					int counter = arraySize - 1 ;
+//					prep.clearBatch();
+//					
+//					String sqlSelectFromCompanyCouTable = "DELETE FROM company_coupon WHERE coup_id=?" ;
+//					prep = DBconnectorV3.getConnection().prepareStatement(sqlSelectFromCompanyCouTable);
+//					prep.setLong(1, x);	
+//						
+//					long id = couponIDs.iterator().next().longValue();
+//					System.out.println("Coupon ID Delete: " + id);
+					
+						
+
+			
+//					break;
+				
+
+//		} // else - main
+
+//		} // while  - running
 		
-		Company company = new Company();
-		company.setCoupons(coupons);
-					while (running) {
-						System.out.println("\n" + "Wait! - " +"[Deleting Expired Coupons]");
-							for (Coupon coupon : company.getCoupons()) {
-								if (coupon.getEndDate().isBefore(LocalDate.now())) {
-									deleteCoupon(coupon);
-								} // if
-						} // for
-							break;
-					} // while
-					TimeUnit.HOURS.sleep(24);
-					} // try 
-					catch (InterruptedException | DaoExeption | SQLException | FiledErrorException e) {
-						System.out.println(e.getMessage());
-						Thread.currentThread().interrupt();
-						}
-				}
+
+				TimeUnit.HOURS.sleep(24);
+				} // try 
+				catch (InterruptedException e) {
+					System.out.println(e.getMessage());
+					e.printStackTrace();
+					Thread.currentThread().interrupt();
+				} // catch
+		
+	}
 	private void deleteCoupon(Coupon coupon) throws DaoExeption {
 		// Remove coupon from company  customer_coupon  company_coupon
 		CompanyFacade compF = null;

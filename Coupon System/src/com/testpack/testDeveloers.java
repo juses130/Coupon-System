@@ -3,6 +3,8 @@ package com.testpack;
 import java.sql.*;
 import java.time.*;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+
 import com.added.functions.DBconnectorV3;
 import com.added.functions.SharingData;
 import com.exeptionerrors.ConnectorExeption;
@@ -17,11 +19,11 @@ import com.task.and.singleton.CouponSystem;
 
 /**
  * 
- * Read the next Description before using this program.
+ * Read the next Description before using this program</p>
  * 
  * 
- * This is a Test Class for our Project. 
- * Attention! -> THIS IS NOT THE REQUESTED TEST IN THE PROJECT GUIDE INSTRUCTIONS - it's only for us, the Developers.
+ * This is a Test Class for our Project.</p> 
+ * Attention! -> THIS IS NOT THE REQUESTED TEST IN THE PROJECT GUIDE INSTRUCTIONS - it's only for us, the Developers.</p>
  *
  * This test was built during the construction methods and other 
  * requirements for the first phase of the project.
@@ -87,7 +89,7 @@ public class testDeveloers {
 
 	}
     /**
-     * Unused Function.
+     * Unused Function</p>
      * It was used for the first developer's version. 
      * Now We can test it By the Facade Section.
      * 
@@ -1846,14 +1848,13 @@ public class testDeveloers {
     	    	
     	// checks if we have some error
     	
-    	//TODO: THREAD!
     	
-//    	try {
-//			TimeUnit.SECONDS.sleep(5);
-//			System.out.println("[Expired Coupos Deleted!]");
-//		} catch (InterruptedException e) {
-//			System.out.println(e.getMessage());
-//		} // catch
+    	try {
+			TimeUnit.SECONDS.sleep(5);
+			System.out.println("[Expired Coupos Deleted!]" + "\n");
+		} catch (InterruptedException e) {
+			System.out.println(e.getMessage());
+		} // catch
     	System.out.println("*************************");
     	System.out.println("[System Loaded]");
     	System.out.println("*************************");

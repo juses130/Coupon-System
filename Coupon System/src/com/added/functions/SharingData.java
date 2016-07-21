@@ -6,13 +6,7 @@ import java.util.InputMismatchException;
  * 
  * This is a Helper Class - Sharing data.
  * The main object of this Class is to share data (Strings, longs, ints, booleans) 
- * between other classes and methods around the Project.
- * 
- * What's in it for us?
- * when we are writing a program or just a test, We need to create a lot of premitive types..
- * SharingData allows us to share String, int, long and more in the Static way WITHOUT creating new types..
- * The static way is allows us to share this instances-data in ANYPLACE around the project.
- * Just by calling the Class.
+ * between other classes and methods around the TESTS. and only for the tests.
  * 
  * @author Raziel
  */

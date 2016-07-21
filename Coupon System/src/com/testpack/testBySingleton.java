@@ -1,17 +1,12 @@
 package com.testpack;
 
-import java.time.LocalDate;
-
 import com.added.functions.DBconnectorV3;
 import com.exeptionerrors.ConnectorExeption;
 import com.exeptionerrors.DaoExeption;
-import com.exeptionerrors.FiledErrorException;
 import com.facade.AdminFacade;
 import com.facade.CompanyFacade;
 import com.facade.CustomerFacade;
 import com.javabeans.Company;
-import com.javabeans.Coupon;
-import com.javabeans.CouponType;
 
 public class testBySingleton { 
 	public static void main(String[] args) {

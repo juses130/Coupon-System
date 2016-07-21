@@ -2,9 +2,6 @@ package com.javabeans;
 import java.time.LocalDate;
 
 import com.exeptionerrors.FiledErrorException;
-import com.sun.corba.se.spi.orbutil.fsm.State;
-
-import sun.security.krb5.internal.PAData.SaltAndParams;
 
 
 
@@ -143,12 +140,12 @@ public class Coupon {
 
 	public void setEndDate(LocalDate endDate) throws FiledErrorException {
 		
-		if(endDate.isBefore(LocalDate.now())) { // if the STARTDate is before today, throw exception
-			throw new FiledErrorException("Error: The End-Date Of The Coupon Has To Be AFTER Today!");
-		}
-		else {
+//		if(endDate.isBefore(LocalDate.now())) { // if the STARTDate is before today, throw exception
+//			throw new FiledErrorException("Error: The End-Date Of The Coupon Has To Be AFTER Today!");
+//		}
+//		else {
 			this.endDate = endDate;
-		}
+//		}
 	}
 
 

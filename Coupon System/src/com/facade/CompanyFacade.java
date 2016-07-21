@@ -4,7 +4,6 @@ package com.facade;
 import java.util.*;
 
 
-import com.added.functions.SharingData;
 import com.dao.interfaces.CompanyDAO;
 import com.dao.interfaces.CouponDAO;
 import com.dao.interfaces.CustomerDAO;
@@ -77,7 +76,8 @@ public class CompanyFacade implements CouponClientFacade{
 	}
 	
 	public Set<Coupon> getCouponsByType(long custID, CouponType category) throws DaoExeption{
-		
+		//TODO: create this function - NOT WORKING FOR NOW
+
 		Set<Coupon> coupons = coupDao.getCouponByType("company_coupon", "comp_id" ,custID, category);
 
 		return coupons;
@@ -85,21 +85,21 @@ public class CompanyFacade implements CouponClientFacade{
 	}
 	
 	public Set<Coupon> getCouponsOfCompanyByPrice(double maxPrice) throws DaoExeption{
-		Set<Coupon> coupons = coupDao.getCouponByPrice("company_coupon" ,"comp_id", SharingData.getIdsShare() ,maxPrice);
+		//TODO: create this function - NOT WORKING FOR NOW
+		Set<Coupon> coupons = coupDao.getCouponByPrice("company_coupon" ,"comp_id", 0 ,maxPrice);
 		
 		return coupons;	
 	}
 	
     public CompanyFacade login(String compName, String password, ClientType type) throws LoginException ,DaoExeption {
-		CompanyDBDAO companyDBDAO = new CompanyDBDAO();
     	boolean loginSuccessful  = false;
     	
-			loginSuccessful = companyDBDAO.login(compName, password);
+			loginSuccessful = compDao.login(compName, password);
 			if(loginSuccessful == true) {
 	    		return this;
 	    	}
 			else {
-			throw new LoginException("Company Login Failed");
+			throw new LoginException("Company Login - FAILED (Unidentified user)");
 			}
 	} // login - function
 	

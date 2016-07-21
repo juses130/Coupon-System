@@ -13,20 +13,18 @@ import ExeptionErrors.DaoExeption;
 /**
  * 
  *
- * This Class is A Helper Class.
+ * <p>This Class is A Helper Class</p>
+ * 
+ * IT's USED ONLY FOR THE TETSING CLASSES!</p>
+ * 
  * is checks IF the ID | NAME | PASSWORD is exist in the DataBase of this program.
- * It's based on the SELECT syntax.
+ * It's based on the SELECT syntax and logic.
  * And this Class is running first and before any other class that connected to the DataBase.
  * It is giving us the option to check ANY USER INPUT and COMPARE IT 
  * before we try to change something in the DataBase.
  */
 
 public class IsExistDB {
-
-	/* This Class is A Helper Class. 
-	 * Is checking if the ID or NAME is Exist in the DB *before* we running
-	 * the DBDAO Methods. 
-	 */
 	
 	// Attributes
 	private static boolean answer = false;

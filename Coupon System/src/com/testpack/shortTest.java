@@ -9,21 +9,21 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import com.added.functions.DBconnector;
-import com.added.functions.DBconnectorV2;
-import com.added.functions.IsExistDB;
+import com.added.functions.DBconnectorV3;
 import com.added.functions.SharingData;
 import com.dbdao.CompanyDBDAO;
 import com.dbdao.CouponDBDAO;
 import com.dbdao.CustomerDBDAO;
+import com.exeptionerrors.ConnectorExeption;
 import com.exeptionerrors.DaoExeption;
+import com.exeptionerrors.FiledErrorException;
 import com.facade.AdminFacade;
 import com.facade.CompanyFacade;
+import com.facade.CustomerFacade;
 import com.javabeans.Company;
 import com.javabeans.Coupon;
 import com.javabeans.CouponType;
 import com.javabeans.Customer;
-import com.sun.org.apache.bcel.internal.generic.DADD;
 import com.task.and.singleton.CouponSystem;
 import com.task.and.singleton.DailyCouponExpirationTask;
 
@@ -108,55 +108,85 @@ public class shortTest {
 //		try {
 //			CouponSystem c = CouponSystem.getInstance();
 //			TimeUnit.SECONDS.sleep(6);
-//			c.stop();
+//			coup.stop();
 //		} catch (InterruptedException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
+//		CustomerDBDAO customerDBDAO = null;
+//		try {
+//			AdminFacade adminFacade = new AdminFacade();
+//			customerDBDAO = new CustomerDBDAO();
+//			Customer c = new Customer();
+//			CouponSystem.getInstance();
+//		} catch (ConnectorExeption e1) {
+//			// TODO Auto-generated catch block
+//			System.out.println(e1.getMessage());;
+//		}
 		
-		CouponSystem.getInstance();
 		
-		AdminFacade adminFacade = new AdminFacade();
-		CustomerDBDAO customerDBDAO = new CustomerDBDAO();
-		Customer c = new Customer();
 		
-//		c.setCustName("bizu");
-//		c.setPassword("1234");
-		
-		try {
-			System.out.println(customerDBDAO.getCustomer("bizu"));
+//		coup.setCustName("bizu");
+//		coup.setPassword("1234");
+//		
+//		try {
+//			System.out.println(customerDBDAO.getCustomer("bizu"));
 //			adminFacade.createCustomer(c);
 //			CustomerDBDAO customerDBDAO = new CustomerDBDAO();
-//			System.out.println(customerDBDAO.getCustomer(c.getCustName()).toString());;
-		} catch (DaoExeption e) {
+//			System.out.println(customerDBDAO.getCustomer(coup.getCustName()).toString());;
+//		} catch (DaoExeption | FiledErrorException e) {
 			// TODO Auto-generated catch block
-			System.out.println(e.getMessage());;
+//			System.out.println(e.getMessage());;
 //			e.printStackTrace();
+//		}
+//		System.out.println(coup.toString());
+		try {
+			addCouponsFor(7);
+		} catch (DaoExeption e1) {
+			e1.printStackTrace();
 		}
-//		System.out.println(c.toString());
-//		addCouponsFor(7);
 
-		CouponSystem.getInstance().stop();
+			try {
+				CouponSystem.getInstance().stop();
+			} catch (ConnectorExeption | SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	
 		
 	} // main
 	
 	public static void addCouponsFor(long id) throws DaoExeption {
-		CompanyFacade comF = new CompanyFacade();
-
-		for(int i = 0; i < 100; i++) {
-			Coupon c = new Coupon();
-			c.setAmount(i);
-			c.setMessage("check message");
-			c.setTitle("Check Title" + i);
-			c.setPrice(i + 50);
-			c.setStartDate(LocalDate.of(2010, 1, 1));
-			c.setType(CouponType.valueOf("TRAVEL"));
-			c.setEndDate(LocalDate.of(2016, 1, 1));
-			c.setOwnerID(id);
-			comF.createCoupon(c);
+		CompanyFacade comF;
+		CustomerFacade custF;
+		
+		try {
+			comF = new CompanyFacade();
+			custF = new CustomerFacade();
 			
-			System.out.println(c.toString());
-		} // for
+			for(int i = 0; i < 100; i++) {
+				Coupon coup = new Coupon();
+				Company comp = new Company();
+				Customer customer = new Customer();
+				coup.setAmount(i);
+				coup.setMessage("check message");
+				coup.setTitle("new Daily?" + i);
+				coup.setPrice(i + 50);
+				coup.setStartDate(LocalDate.of(2017, 1, 1));
+				coup.setType(CouponType.valueOf("TRAVEL"));
+				coup.setEndDate(LocalDate.of(2016, 1, 1));
+				coup.setOwnerID(id);
+				comp.setCompName("clickon");
+				comF.createCoupon(comp, coup);
+				custF.purchaseCoupon(coup);
+				System.out.println(coup.toString());
+			} // for
+		} catch (ConnectorExeption | FiledErrorException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());;
+		}
+
+		
 	}
 	
 	public static void deleteCheck() {
@@ -166,7 +196,7 @@ public class shortTest {
 		try {
 		
 		String sqlSelectByEndDate = "SELECT * FROM coupon WHERE End_Date < CURDATE()";
-		PreparedStatement prep1 = DBconnectorV2.getConnection().prepareStatement(sqlSelectByEndDate, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+		PreparedStatement prep1 = DBconnectorV3.getConnection().prepareStatement(sqlSelectByEndDate, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
 		rs1 = prep1.executeQuery(sqlSelectByEndDate);
 		
 		while(rs1.next()) { 
@@ -178,7 +208,7 @@ public class shortTest {
 		rs1.close();
 		
 		String sqlDeleteByID1 = "DELETE FROM company_coupon WHERE coup_id=?";
-		PreparedStatement prep2 = DBconnectorV2.getConnection().prepareStatement(sqlDeleteByID1);
+		PreparedStatement prep2 = DBconnectorV3.getConnection().prepareStatement(sqlDeleteByID1);
 		
 		for(Long i : ids) {
 			prep2.setLong(1 ,i.longValue());
@@ -187,7 +217,7 @@ public class shortTest {
 		prep2.close();
 		
 		String sqlDeleteByID2 = "DELETE FROM customer_coupon WHERE coup_id=?";
-		PreparedStatement prep3 = DBconnectorV2.getConnection().prepareStatement(sqlDeleteByID2);
+		PreparedStatement prep3 = DBconnectorV3.getConnection().prepareStatement(sqlDeleteByID2);
 		for(Long i : ids) {
 			prep3.setLong(1, i.longValue());
 			prep3.executeUpdate();
