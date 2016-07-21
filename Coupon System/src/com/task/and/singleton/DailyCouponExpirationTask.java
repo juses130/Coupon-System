@@ -45,7 +45,6 @@ public class DailyCouponExpirationTask implements Runnable {
 
 	@Override
 	public void run() {
-		ResultSet rs = null;
 		
 		try {
 			/* I think it's more good when the task will delete expired coupons BY THE SQL-COMMEND..
@@ -58,11 +57,12 @@ public class DailyCouponExpirationTask implements Runnable {
 
 	while (running) {
 				//TODO: now I have a method that will delete the rows from all tables at ones! just added to here!
-//		String sqlSelectByEndDate = "SELECT * FROM coupon WHERE End_Date < CURDATE()";
-//		PreparedStatement prep = null;
-//		prep = DBconnectorV3.getConnection().prepareStatement(sqlSelectByEndDate, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
-//		rs = prep.executeQuery(sqlSelectByEndDate);
-//		
+		String sqlSelectByEndDate = "DELETE coupon.*, company_coupon.*, customer_coupon.* FROM coupon LEFT JOIN company_coupon USING (coup_id) LEFT JOIN customer_coupon USING (coup_id) WHERE coupon.End_Date < CURDATE() AND coupon.coup_id IS NOT NULL;";
+		PreparedStatement prep = null;
+		prep = DBconnectorV3.getConnection().prepareStatement(sqlSelectByEndDate, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+//		prep.executeUpdate();
+		running = false;
+//		rs.next();
 //		Set<Long> couponIDs = new HashSet<>();
 ////		ArrayList<Long> couponIDs = new ArrayList<>();
 //		
@@ -86,7 +86,7 @@ public class DailyCouponExpirationTask implements Runnable {
 //					break;
 //				}
 //				System.out.println(couponIDs.toString());
-			} //while - rs.next
+			} //while - running
 			
 //					prep.clearBatch();
 //					System.out.println("Coupon ID: " + couponIDs.size());
@@ -112,12 +112,13 @@ public class DailyCouponExpirationTask implements Runnable {
 //		} // while  - running
 		
 
-				TimeUnit.HOURS.sleep(24);
+//				TimeUnit.HOURS.sleep(24);
+//				Thread.currentThread().interrupt();
 				} // try 
-				catch (InterruptedException e) {
+				catch (SQLException e) {
 					System.out.println(e.getMessage());
 					e.printStackTrace();
-					Thread.currentThread().interrupt();
+					
 				} // catch
 		
 	}

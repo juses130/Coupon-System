@@ -176,9 +176,10 @@ public class shortTest {
 				coup.setType(CouponType.valueOf("TRAVEL"));
 				coup.setEndDate(LocalDate.of(2016, 1, 1));
 				coup.setOwnerID(id);
-//				comp.setCompName("clickon");
-//				comF.createCoupon(comp, coup);
-				custF.purchaseCoupon(coup);
+				comp.setCompName("clickon");
+				
+				comF.createCoupon(coup);
+//				custF.purchaseCoupon(coup);
 				System.out.println(coup.toString());
 			} // for
 		} catch (ConnectorExeption | FiledErrorException e) {

@@ -111,34 +111,35 @@ public class CompanyDBDAO implements CompanyDAO {
 		if(existOrNotByCoupName(coupon) == false) {
 
 			// We need to Check if the Company ownes this coupon before.
-			if(bothExistInSameTable(coupon, company, SqlAction.CREATE_COUPON) == false) {
-				try{
-					/* creating the coupon in Coupon Table First. 
-					 * and if we don't get Exception it will move on to 
-					 * create the coupon in the Company_Coupon Table.
-					*/
-					CouponDBDAO coupDB = new CouponDBDAO();
-					coupDB.createCoupon(coupon, ClientType.COMPANY);
-					
-						String sqlCompanyCoupn = "INSERT INTO Company_coupon (Comp_id, Coup_id) VALUES (" + company.getId() + "," + coupon.getId() + ")";
-						PreparedStatement prep1 = DBconnectorV3.getConnection().prepareStatement(sqlCompanyCoupn);
-						prep1.executeUpdate();
-
-				} // try
-				catch (SQLException | NullPointerException e) {
-					
-					throw new DaoExeption("Error: Creating Coupon By Company- FAILED");			
-				} // catch
-				return coupon;
-			} // if - it's bought before
-			else {
-				throw new DaoExeption("Error: Creating Coupon By Company - FAILED (You can create only ONE coupon with the same name!)");
-			} // else - it's bought before
+//			if(bothExistInSameTable(coupon, SqlAction.CREATE_COUPON) == false) {
+//				try{
+//					/* creating the coupon in Coupon Table First. 
+//					 * and if we don't get Exception it will move on to 
+//					 * create the coupon in the Company_Coupon Table.
+//					*/
+//					CouponDBDAO coupDB = new CouponDBDAO();
+//					coupDB.createCoupon(coupon, ClientType.COMPANY);
+//					
+//						String sqlCompanyCoupn = "INSERT INTO Company_coupon (Comp_id, Coup_id) VALUES (" + company.getId() + "," + coupon.getId() + ")";
+//						PreparedStatement prep1 = DBconnectorV3.getConnection().prepareStatement(sqlCompanyCoupn);
+//						prep1.executeUpdate();
+//
+//				} // try
+//				catch (SQLException | NullPointerException e) {
+//					
+//					throw new DaoExeption("Error: Creating Coupon By Company- FAILED");			
+//				} // catch
+//				return coupon;
+//			} // if - it's bought before
+//			else {
+//				throw new DaoExeption("Error: Creating Coupon By Company - FAILED (You can create only ONE coupon with the same name!)");
+//			} // else - it's bought before
 
 		} // if - exist
 		else {
 			throw new DaoExeption("Error: Creating Coupon By Company - FAILED (Coupon already exist in the DataBase)");
 		}
+		return coupon;
 
 	} // createCoupon - function
 	
