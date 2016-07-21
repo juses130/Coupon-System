@@ -374,6 +374,7 @@ public class CompanyDBDAO implements CompanyDAO {
     	}
   
     private boolean bothExistInSameTable(Coupon coupon, Company company, SqlAction action) throws DaoExeption {
+    	//TODO: whats happing here? do I still need this function?
     	boolean answer = false;
 
     	if(action == SqlAction.CREATE_COUPON) {

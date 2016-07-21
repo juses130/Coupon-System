@@ -10,9 +10,27 @@ import com.task.and.singleton.CouponSystem;
 
 public class CustomerFacade implements CouponClientFacade {
 
-	private CompanyDAO compDao = null;
+//	private CompanyDAO compDao = null;
 	private CustomerDAO custDao = null;
 	private CouponDAO coupDao = null;
+	private Customer customer;
+	
+    public CustomerFacade login(String custName, String password, ClientType client) throws LoginException, DaoExeption {
+    	
+    	boolean loginSuccessful  = false;
+    	try {
+    		loginSuccessful  = custDao.login(custName, password);
+		} catch (Exception e) {
+			throw new LoginException("Customer Login Failed");
+		}
+    	
+    	if(loginSuccessful == true) {
+    		return this;
+    	}
+    	else {
+			throw new LoginException("Customer Login Failed.");
+		}
+	} // login - function
 	
 	public CustomerFacade() throws ConnectorExeption{
 		
@@ -48,21 +66,6 @@ public class CustomerFacade implements CouponClientFacade {
 //		return coupons;
 //	}
 	
-    public CustomerFacade login(String custName, String password, ClientType clientType) throws LoginException, DaoExeption {
-    	
-    	boolean loginSuccessful  = false;
-    	try {
-    		loginSuccessful  = custDao.login(custName, password);
-		} catch (Exception e) {
-			throw new LoginException("Customer Login Failed");
-		}
-    	
-    	if(loginSuccessful == true) {
-    		return this;
-    	}
-    	else {
-			throw new LoginException("Customer Login Failed.");
-		}
-	} // login - function
+
 	
 }
