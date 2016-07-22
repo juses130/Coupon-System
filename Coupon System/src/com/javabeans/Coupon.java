@@ -28,6 +28,19 @@ public class Coupon {
 	
 	public Coupon(String title, LocalDate startDate, LocalDate endDate, int amount, CouponType category, String message, double price, String image, long ownerID) throws FiledErrorException{
 		
+		/**
+		 * This part of the setters - is just for security. 
+		 * When the user create new coupon = the constructor will have to set the values to the setters 
+		 * before setting them to himself and actually create a new coupon.
+		 * 
+		 * And in the setters Iv'e added checking conditions. for example, in the setTitle() I want to make sure 
+		 * that the user puts some real value. so in the title is NULL or empty the coupon will not create and it
+		 * will send an Exception with message of "empty fileds". 
+		 * 
+		 * Same as Dates. we can't let the anyone to send us a coupon with EXPIRED DATES. 
+		 * we have the make sure it will not happend. not for the Title or Dates or any coupon's attribute.
+		 */
+		
 		setTitle(title);
 		setStartDate(startDate);
 		setEndDate(endDate);
@@ -48,42 +61,8 @@ public class Coupon {
 		this.image = image;
 		this.ownerID = ownerID;
 	}
-
-	public Coupon(long id, String title, LocalDate startDate, LocalDate endDate, int amount, CouponType category,  String message, double price, String image) throws FiledErrorException {
-		
-		/* I took down the all setters startData + endDate because 
-		 * when the DailyTask runs, he can't access the dates if they expired or null parameters.
-		 * Still we have the protection in the setters themselfs, but in this 
-		 * construcor we have a small security hole.
-		 */
-		
-		this.id = id;
-		this.title = title;
-		this.startDate = startDate;
-		this.amount = amount;
-		this.category = category;
-		this.endDate = endDate;
-		this.message = message;
-		this.price = price;
-		this.image = image;
-		
-	}
 	
 	//Getters && Setters
-
-	public Coupon(LocalDate endDate, int amount, String message, double price) throws FiledErrorException {
-		
-		setEndDate(endDate);
-		setMessage(message);
-		setAmount(amount);
-		setPrice(price);
-		
-		this.endDate = endDate;
-		this.message = message;
-		this.amount = amount;
-		this.price = price;
-
-	}
 
 	public long getId() {
 		return id;

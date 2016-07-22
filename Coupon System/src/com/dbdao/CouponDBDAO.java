@@ -352,7 +352,7 @@ public class CouponDBDAO implements CouponDAO{
 				
 				try {
 					
-					String sqlSELCoupByCompany = "SELECT coup_id FROM Company_Coupon WHERE coup_id= ?" ;
+					String sqlSELCoupByCompany = "SELECT coup_id FROM Coupon WHERE coup_id= ?" ;
 					PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlSELCoupByCompany);
 					prep.setLong(1, id);
 					ResultSet rs = prep.executeQuery();
@@ -487,6 +487,29 @@ public class CouponDBDAO implements CouponDAO{
 			prep.setDouble(7, coupon.getPrice());
 			prep.setString(8, coupon.getImage());
 			prep.setLong(9, coupon.getOwnerID());
+			
+			prep.executeUpdate();
+			ResultSet rs = prep.getGeneratedKeys();
+			rs.next();
+			id = rs.getLong(1);
+			coupon.setId(id);
+			
+			
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DaoExeption("Error: Creating New Coupon - FAILED (something went wrong)");
+		}
+		return coupon;
+	}
+	
+	private Coupon createCouponMethodByCUSTOMER(Coupon coupon) throws DaoExeption {
+		long id = -1;
+		try {
+
+			String sqlQuery = "INSERT INTO customer_coupon (coup_id, cust_id) VALUES(?,?)";	
+			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
+			prep.setLong(1, x);
 			
 			prep.executeUpdate();
 			ResultSet rs = prep.getGeneratedKeys();

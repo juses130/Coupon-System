@@ -177,7 +177,7 @@ public class shortTest {
 				coup.setEndDate(LocalDate.of(2016, 1, 1));
 				coup.setOwnerID(id);
 				comp.setCompName("clickon");
-				
+				custF.purchaseCoupon(coup);
 				comF.createCoupon(coup);
 //				custF.purchaseCoupon(coup);
 				System.out.println(coup.toString());

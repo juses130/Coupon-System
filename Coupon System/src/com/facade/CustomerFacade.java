@@ -44,6 +44,7 @@ public class CustomerFacade implements CouponClientFacade {
 		Coupon coup = new Coupon();
 		//TODO: add Some query that will get coupon from the couponTable and set it into customer_coupon
 		coup = coupDao.getCoupon(coupon.getId(), ClientType.CUSTOMER);
+		coupDao.createCoupon(coup, ClientType.CUSTOMER);
 		
 		return coup;
 		
