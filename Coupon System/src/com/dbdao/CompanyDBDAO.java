@@ -35,7 +35,6 @@ public class CompanyDBDAO implements CompanyDAO {
 	public boolean login(String compName, String password) throws DaoExeption  {
 		
 		boolean hasRows = false;
-//		Company company = new Company();
         try {
 			String sqlLoginCompany = "SELECT Comp_name, password FROM company WHERE "
 					+ "Comp_name= '" + compName + "'" + " AND " + "password= '" 
@@ -62,13 +61,7 @@ public class CompanyDBDAO implements CompanyDAO {
             	 */
     			throw new DaoExeption("Error: Company Login - FAILED (something went wrong..)");
             } // catch
-        
-//        if(company.getClass() == null) {
-//        	throw new DaoExeption("Error: Company Login - FAILD (one or more of the fields is incurrect or empty)");
-//        }
-//        else {
         	return hasRows;
-//        }
         
         	} // login	
 	
@@ -114,7 +107,6 @@ public class CompanyDBDAO implements CompanyDAO {
 					 * and if we don't get an Exception, it will move on to 
 					 * create the coupon in the Company_Coupon Table.
 					*/
-					
 					String sqlAddCoupon = "INSERT INTO coupon (Title, Start_Date, End_Date, " + 
 							"Amount, Category, Message, Price, Image, Owner_ID)" + "VALUES(?,?,?,?,?,?,?,?,?)";	
 					
@@ -145,7 +137,6 @@ public class CompanyDBDAO implements CompanyDAO {
 
 				} // try
 				catch (SQLException | NullPointerException | FiledErrorException e) {
-					e.printStackTrace();
 					throw new DaoExeption("Error: Creating Coupon By Company- FAILED (something went wrong..)");			
 				} // catch
 				return coupon;
@@ -269,10 +260,10 @@ public class CompanyDBDAO implements CompanyDAO {
 		
 	}
 
-	public Company viewCompany(long id, String password) throws DaoExeption {
+	public Company viewCompany(long id) throws DaoExeption {
 
 		Company company = getCompany(id);
-		if(company.getPassword().equals(password)) {
+		if(company.getId() == id) {
 			return company;
 		} // if
 		else {

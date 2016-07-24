@@ -6,16 +6,15 @@ import java.util.*;
 
 import com.dao.interfaces.CompanyDAO;
 import com.dao.interfaces.CouponDAO;
-import com.dao.interfaces.CustomerDAO;
-import com.dbdao.CompanyDBDAO;
 import com.exeptionerrors.*;
 import com.javabeans.*;
-import com.mysql.fabric.xmlrpc.Client;
 import com.task.and.singleton.CouponClientFacade;
 import com.task.and.singleton.CouponSystem;
 
 public class CompanyFacade implements CouponClientFacade{
 	
+	private long compID;
+//	private String compPassword;
 	private CompanyDAO compDao = null;
 	private CouponDAO coupDao = null;
 		
@@ -34,20 +33,22 @@ public class CompanyFacade implements CouponClientFacade{
 		 *  Even if the user puts some incurrect inputs.
 		 *  the CompanyFacade will bring the RIGHT parameters by the company Name.
 		 */
+		company.setId(this.compID);
 		compDao.addCoupon(coupon, company);
 		
 	} // createCouponF
 	
-	public Collection<Coupon> getAllCoupons(long compID) throws DaoExeption{
+	public Collection<Coupon> getAllCoupons() throws DaoExeption{
 
 		Collection<Coupon> coupons = new HashSet<>();
-		coupons = compDao.getCoupons(compID);
+		coupons = compDao.getCoupons(this.compID);
 		
 		return coupons;
 	}
 	
-	public void removeCoupon(Coupon coupon) throws DaoExeption{
-		coupDao.removeCoupon(coupon);
+	public void removeCoupon(Coupon coupon) throws DaoExeption, FiledErrorException{
+		coupon.setOwnerID(this.compID);
+		coupDao.removeCoupon(coupon, ClientType.COMPANY);
 	}
 	
 	public Coupon updateCoupon(Coupon coupon) throws DaoExeption{
@@ -56,13 +57,20 @@ public class CompanyFacade implements CouponClientFacade{
 		return coupon;
 	}
 	
-	public Company viewCompay(long id, String password) throws DaoExeption{
-		
-		Company company = compDao.viewCompany(id, password);
+	public Company viewCompay() throws DaoExeption{
+		System.out.println(compID);
+		Company company = compDao.viewCompany(this.compID);
 		return company;
 	}
 	
-	public Coupon getCoupon(Coupon coupon, Company company) throws DaoExeption{
+	public Coupon getCoupon(long id) throws DaoExeption, FiledErrorException{
+		
+		Company company = new Company();
+		Coupon coupon = new Coupon();
+		
+		coupon.setId(id);
+		company.setId(this.compID);
+		
 		coupon = compDao.getCoupon(coupon, company);
 		return coupon;
 	}
@@ -88,7 +96,12 @@ public class CompanyFacade implements CouponClientFacade{
     	boolean loginSuccessful  = false;
     	
 			loginSuccessful = compDao.login(compName, password);
+
 			if(loginSuccessful == true) {
+				// If the login was Successful, save it in the private instatces.
+				Company comp = compDao.getCompany(compName);
+				this.compID = comp.getId();
+//				this.compPassword = password;
 	    		return this;
 	    	}
 			else {

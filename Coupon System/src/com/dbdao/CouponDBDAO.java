@@ -37,10 +37,15 @@ public class CouponDBDAO implements CouponDAO{
 	} // createCoupon - function
 
 	@Override
-	public void removeCoupon(Coupon coupon) throws DaoExeption{
+	public void removeCoupon(Coupon coupon, ClientType client) throws DaoExeption{
 		// check if the coupon exist
 		if (existOrNotByID(coupon) == true) {
-			removeMethod(coupon);
+			if(client == ClientType.ADMIN) {
+				removeMethod(coupon, ClientType.ADMIN);
+			}
+			else if(client == ClientType.COMPANY) {
+				removeMethod(coupon, ClientType.COMPANY);
+			}
 		}
 		else {
 				throw new DaoExeption("Error: Removing Coupon - FAILED (Coupon is not exist in the DataBase)");
@@ -170,25 +175,57 @@ public class CouponDBDAO implements CouponDAO{
 		return coupons;
     }
     
-	private void removeMethod(Coupon coupon) throws DaoExeption{
+	private void removeMethod(Coupon coupon, ClientType client) throws DaoExeption{
 		
-		String sqlDELid1 = "DELETE FROM coupon WHERE Coup_ID =" + coupon.getId();
-		String sqlDELid2 = "DELETE FROM company_coupon WHERE Coup_ID =" + coupon.getId();
-		String sqlDELid3 = "DELETE FROM company_coupon WHERE Coup_ID =" + coupon.getId();
-
+	if(client == ClientType.ADMIN) {
+		/*
+		 * NOTE! Deleting coupon By the admin will delette the coupons from ALL Tables.
+		 */
+		String sqlDELid = "DELETE coupon.*, company_coupon.*, customer_coupon.* "
+				+ "FROM coupon "
+				+ "LEFT JOIN company_coupon USING (coup_id) "
+				+ "LEFT JOIN customer_coupon USING (coup_id) "
+				+ "WHERE coupon.coup_id=" + coupon.getId()
+				+ " AND coupon.coup_id IS NOT NULL";
+		
 		PreparedStatement prep;
 		try {
-			prep = DBconnectorV3.getConnection().prepareStatement(sqlDELid1);
+			prep = DBconnectorV3.getConnection().prepareStatement(sqlDELid);
 			prep.executeUpdate();
 			prep.clearBatch();
-			prep = DBconnectorV3.getConnection().prepareStatement(sqlDELid2);
-			prep.executeUpdate();
-			prep.clearBatch();
-			prep = DBconnectorV3.getConnection().prepareStatement(sqlDELid3);
-			prep.executeUpdate();
+
+			
 		} catch (SQLException e) {
 			throw new DaoExeption("Error: Removing Coupon - FAILED");
 		}
+		
+	}
+	else if(client == ClientType.COMPANY) {
+			
+			/*
+			 * NOTE! we are not deleting coupons from customer_coupon.
+			 * The business logic says that the Cusotmer will lose his coupon
+			 * ONLY when the coupon END-DATE will Expired.
+			 */
+			
+			String sqlDELid = "DELETE coupon.*, company_coupon.*  "
+					+ "FROM company_coupon "
+					+ "LEFT JOIN coupon USING (coup_id) "
+					+ "WHERE company_coupon.Comp_ID=" + coupon.getOwnerID()
+					+ " AND company_coupon.Comp_ID IS NOT NULL";
+			
+			PreparedStatement prep;
+			try {
+				prep = DBconnectorV3.getConnection().prepareStatement(sqlDELid);
+				prep.executeUpdate();
+				prep.clearBatch();
+
+				
+			} catch (SQLException e) {
+				throw new DaoExeption("Error: Removing Coupon - FAILED");
+			}
+		}
+		
 	} // removeMethod
 
     private boolean existOrNotByID(Coupon coupon) throws DaoExeption {

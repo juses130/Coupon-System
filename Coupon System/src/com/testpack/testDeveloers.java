@@ -16,6 +16,8 @@ import com.javabeans.*;
 import com.task.and.singleton.CouponClientFacade;
 import com.task.and.singleton.CouponSystem;
 
+import sun.misc.Cleaner;
+
 
 /**
  * 
@@ -42,6 +44,15 @@ public class testDeveloers {
 	
 	// This static short is helping to the function userInput
 	private static short counterWorngTimes = 0;
+//	private static String userName;
+//	private static String password;
+	
+	private static CouponClientFacade client;
+	private static CompanyFacade compF;
+	private static CustomerFacade cusF;
+	private static AdminFacade admF;
+
+	
     
 	/**
 	 ********     Section A: Main Class     *********
@@ -137,6 +148,7 @@ public class testDeveloers {
 				+ "\n" + "8. Update Customer"
 				+ "\n" + "9. Get Customer By ID."
 				+ "\n" + "10. Get All Customers."
+				+ "\n" + "11. Remove Coupon."
 				+ "\n" + "0. Quit."
 				+ "\n");
 		
@@ -314,7 +326,7 @@ public class testDeveloers {
 		
 		try {
 			short choice = scanner.nextShort();
-			if (choice < 11 && choice > -1) {
+			if (choice < 12 && choice > -1) {
 				return choice;
 			} // IF - choice
 			else {
@@ -403,7 +415,7 @@ public class testDeveloers {
 
 		// Choice is the User-choice of the main menu.
 		short choice = SharingData.getShortNum1();
-		CouponClientFacade client = null;
+//		CouponClientFacade client = null;
 		
 		// Admin choice
 		if (choice == 1) {
@@ -414,16 +426,15 @@ public class testDeveloers {
 	    	String password = userInputString();
 	    	
 	    	// In the admin, we're just need to check pass&user without to go to the DB.
-	    	AdminFacade admF = null;
-			try {
-				admF = new AdminFacade();
-			} catch (ConnectorExeption e1) {
-				System.out.println(e1.getMessage());
-			}
 	    	
-	
+	    	CouponClientFacade adminClient = null;
 			try {
+				AdminFacade ad = new AdminFacade();
 				client = CouponSystem.getInstance().login(userName, password, ClientType.ADMIN);
+				adminClient = client;
+				admF = ad.login(userName, password, ClientType.ADMIN);
+				
+				System.out.println(client.toString());
 			} catch (LoginException | ConnectorExeption e) {
 				// TODO Auto-generated catch block
 				System.out.println("\n" + e.getMessage());
@@ -438,8 +449,9 @@ public class testDeveloers {
 	    	 * The question is ONLY if 'client' is not Null && 'client'.class is equals to adminfacade.class then it's ok.
 	    	 */
 	    	
-	    	if(client != null && client.getClass().equals(admF.getClass())) {
+	    	if(client.equals(adminClient)) {
 	    		flag = true;
+	    	
 	        	return flag;
 	        	} // if
 	        	else {
@@ -449,12 +461,7 @@ public class testDeveloers {
 		// Company choice
 		else if (choice == 2) {
 			
-			CompanyFacade compF = null;
-			try {
-				compF = new CompanyFacade();
-			} catch (ConnectorExeption e1) {
-				System.out.println(e1.getMessage());
-			}
+//			CompanyFacade compF = null;
 //	    	CouponClientFacade client = null;
 	    	
 			System.out.println("\n" + "Please type your Company-ID and Password." + "\n");
@@ -464,8 +471,13 @@ public class testDeveloers {
 	    	String password = userInputString();
 	    	// share this with company create and checks.. we are login with NAME
 	    	SharingData.setVarchar4(userName);
+	    	CouponClientFacade companyClient = null;
+
 		    try {
+		    	CompanyFacade co = new CompanyFacade();
 				client = CouponSystem.getInstance().login(userName, password, ClientType.COMPANY);
+				companyClient = client;
+				compF = co.login(userName, password, ClientType.COMPANY);
 			} catch (LoginException | DaoExeption | ConnectorExeption e) {
 				// TODO Auto-generated catch block
 				System.out.println("\n" + e.getMessage());;
@@ -473,7 +485,7 @@ public class testDeveloers {
 	
 	    	boolean flag = false;
 	    	
-	    	if(client != null && client.getClass().equals(compF.getClass())) {
+	    	if(client.equals(companyClient)) {
 	    		flag = true;
 	        	return flag;
 	        	} // if
@@ -484,7 +496,6 @@ public class testDeveloers {
 		// Customer choice
 		else if (choice == 3) {
 			
-			CustomerFacade custF = null;
 			
 			System.out.println("\n" + "Please type your Customer-ID and Password." + "\n");
 	    	System.out.print("Type Your Customer Full Name: ");
@@ -492,14 +503,20 @@ public class testDeveloers {
 	    	System.out.print("Type Your Customer Password: ");
 	    	String password = userInputString();
 
+	    	CouponClientFacade customerClient = null;
+
+	    	
 	    	try {
-	    		custF = new CustomerFacade();
+				CustomerFacade cu = new CustomerFacade();
 	    		client = CouponSystem.getInstance().login(userName, password, ClientType.CUSTOMER);
+	    		customerClient = client;
+	    		cusF = cu.login(userName, password, ClientType.CUSTOMER);
+	    		
 			} catch (LoginException | ConnectorExeption | DaoExeption e) {
 				System.out.println("\n" + e.getMessage());
 		    } // catch
 	    	boolean flag = false;
-	    	if(client != null && client.getClass().equals(custF.getClass())) {
+	    	if(client.equals(customerClient)) {
 	    		flag = true;
 	        	return flag;
 	        	} // if
@@ -718,14 +735,13 @@ public class testDeveloers {
 			Company company = null;
 			try {
 			company = new Company();
-			AdminFacade admF = new AdminFacade();	
 			company.setCompName(name);
 			company.setEmail(email);
 			company.setPassword(password);
 //			CouponSystem.getInstance().getCompDao().createCompany(company);
 			
 				admF.createCompany(company);
-			} catch (DaoExeption | ConnectorExeption | FiledErrorException e) {
+			} catch (DaoExeption | FiledErrorException e) {
 				// TODO im here
 				System.out.println(e.getMessage());;
 			}
@@ -815,7 +831,6 @@ public class testDeveloers {
             c.setId(userInputLong());
     	    		
  	    		Company company = new Company();
-				AdminFacade admF = null;
 				try {
 					admF = new AdminFacade();
 				} catch (ConnectorExeption e1) {
@@ -867,13 +882,12 @@ public class testDeveloers {
         	
         	else {
         		try {
-					AdminFacade admF = new AdminFacade();
 					Company c = admF.getCompany(id);
 				
 					System.out.println(c.toString());
 					System.out.println("\n" + "------------ Company Function (getCompany) Was Run Successfully ----------" + "\n");
 
-			    } catch (DaoExeption | ConnectorExeption e) {
+			    } catch (DaoExeption e) {
 				// TODO Auto-generated catch block
 				System.out.println(e.getMessage());;
 			} // else
@@ -896,12 +910,11 @@ public class testDeveloers {
 
     	while(true) {
     		try {	
-    		AdminFacade admF = new AdminFacade();
     		System.out.println("Here is your Companeis List: " + "\n");
        			
     			
 			System.out.println(admF.getAllCompanies().toString());
-			} catch (DaoExeption | ConnectorExeption e) {
+			} catch (DaoExeption e) {
 					// TODO Auto-generated catch block
 					System.out.println(e.getMessage());;
 				}
@@ -935,9 +948,8 @@ public class testDeveloers {
     			c = new Customer();
         		c.setCustName(name);
         		c.setPassword(password);
-    			AdminFacade admF = new AdminFacade();
 				admF.createCustomer(c);
-			} catch (DaoExeption | ConnectorExeption | FiledErrorException e) {
+			} catch (DaoExeption | FiledErrorException e) {
 				System.out.println(e.getMessage());
 			}
     		
@@ -977,13 +989,6 @@ public class testDeveloers {
     	
     	
     	while(true) {
-    		
-    		AdminFacade admF = null;
-			try {
-				admF = new AdminFacade();
-			} catch (ConnectorExeption e1) {
-				System.out.println(e1.getMessage());
-			}
     		
     			System.out.print("Type Your Customer ID: ");
     			SharingData.setLongNum1(userInputLong());
@@ -1060,12 +1065,11 @@ public class testDeveloers {
      	    try {
      	    	c.setCustName(name);
           	    c.setPassword(password);
-     	    	AdminFacade admF = new AdminFacade();
 				admF.updateCustomer(c);
 				System.out.println("\n" + SharingData.getVarchar4());
 	     	    System.out.println("------------ Customer Updated Successfully ----------" + "\n");
 	     	    printGoingBackToUsage();
-			} catch (DaoExeption | ConnectorExeption | FiledErrorException e) {
+			} catch (DaoExeption | FiledErrorException e) {
 				// TODO Auto-generated catch block
 				System.out.println(e.getMessage());;
 			}
@@ -1089,16 +1093,13 @@ public class testDeveloers {
     private static void getAllCouponOfCompany_T() {
     	
     	System.out.println("Here is your Company Coupons List: ");
-    	CompanyFacade compF = null;
     	
     	Collection<Coupon> coupons;
 		try {
-			System.out.print("Enter Your ID: ");
-			long id = userInputLong();
-			compF = new CompanyFacade();
-			coupons = compF.getAllCoupons(id);
+
+			coupons = compF.getAllCoupons();
 			System.out.println(coupons.toString());
-		} catch (DaoExeption | ConnectorExeption e) {
+		} catch (DaoExeption e) {
 			System.out.println(e.getMessage());;
 		}
     	
@@ -1111,16 +1112,14 @@ public class testDeveloers {
     */
     private static void getAllCompanyCouponsByType_T() {
    	
-   	CompanyFacade compF = null;
    	
    	System.out.println("Search By Category :)");
    	System.out.print("Please insert your CATEGORY: ");
    	
    	try {
-   		compF = new CompanyFacade();
 		Set<Coupon> couponsByType = compF.getCouponsByType(SharingData.getIdsShare() , CouponType.valueOf(userInputString().toUpperCase()));
 	   	System.out.println(couponsByType.toString());
-	} catch (DaoExeption | ConnectorExeption e) {
+	} catch (DaoExeption e) {
 		System.out.println(e.getMessage());
 	}
    } // getAllCouponsByType_T
@@ -1133,12 +1132,10 @@ public class testDeveloers {
     	double maxPrice = sc.nextDouble();
 
     	
-    	CompanyFacade compF = null;
     	try {
-    		compF = new CompanyFacade();
 			Set<Coupon> coupons = compF.getCouponsOfCompanyByPrice(maxPrice);
 			System.out.println(coupons.toString());
-		} catch (DaoExeption | ConnectorExeption e) {
+		} catch (DaoExeption e) {
 			System.out.println(e.getMessage());
 		}
     	
@@ -1199,11 +1196,10 @@ public class testDeveloers {
         	long id = userInputLong();
         	
         		try {
-        			AdminFacade admF = new AdminFacade();
 					Customer c = admF.getCustomer(id);
 					System.out.println(c.toString());
 	    			System.out.println("\n" + "------------ Customer Function (getID) Was Run Successfully ----------" + "\n");
-				} catch (DaoExeption | ConnectorExeption | FiledErrorException e) {
+				} catch (DaoExeption | FiledErrorException e) {
 					System.out.println(e.getMessage());
 				}
         		
@@ -1219,10 +1215,9 @@ public class testDeveloers {
     		
     		
     		try {
-    			AdminFacade admF = new AdminFacade();
     			System.out.println("Here is your Customers List: " + "\n");
 				System.out.println("\n" + admF.getAllCustomers());
-			} catch (DaoExeption | ConnectorExeption e) {
+			} catch (DaoExeption e) {
 				System.out.println(e.getMessage());
 			}
     		
@@ -1435,7 +1430,6 @@ public class testDeveloers {
     private static void addCoupon_T() {
     	
     	Coupon coup = new Coupon();
-		CompanyFacade compF = null;
 	
 		try { 
 			
@@ -1482,15 +1476,14 @@ public class testDeveloers {
         String image = userInputString();
 		coup.setImage(image);
 		
-        String ownerName = SharingData.getVarchar4();
+//        String ownerName = SharingData.getVarchar4();
 		Company company = new Company();
 
 		// putting all the variables
 //        try {
-			AdminFacade admF = new AdminFacade();
-			compF = new CompanyFacade();
-			System.out.println(ownerName);
-			company = admF.getCompany(ownerName);
+//			AdminFacade admF = new AdminFacade();
+//			System.out.println(ownerName);
+//			company = admF.getCompany(ownerName);
 
 			compF.addCoupon(coup, company);
 			System.out.println(coup.toString());
@@ -1509,7 +1502,7 @@ public class testDeveloers {
 		}
 	
 	} // while loop
-		} catch (DaoExeption | FiledErrorException | ConnectorExeption e) {
+		} catch (DaoExeption | FiledErrorException e) {
 			System.out.println(e.getMessage());
 		}
 	
@@ -1519,7 +1512,6 @@ public class testDeveloers {
     	
     	while(true) { 
     		
-    		CompanyFacade comF = null;
     		
     		System.out.print("Type Your Coupon ID: ");
     		SharingData.setLongNum1(userInputLong());
@@ -1536,10 +1528,9 @@ public class testDeveloers {
 				}
 				
 				
-					comF = new CompanyFacade();
-					comF.removeCoupon(c);
+					compF.removeCoupon(c);
 					printCouponRemoved();
-				} catch (DaoExeption | ConnectorExeption | FiledErrorException e) {
+				} catch (DaoExeption | FiledErrorException e) {
 					System.out.println(e.getMessage());
 				}
 
@@ -1559,7 +1550,6 @@ public class testDeveloers {
         	
         	// DBDAO Coupon
         	try {
-        	CompanyFacade comF = null;
         	long id = SharingData.getIdsShare();
         	
 			System.out.print("NEW Coupon EndDate.. ");
@@ -1592,9 +1582,8 @@ public class testDeveloers {
 				coup.setMessage(message);
 				coup.setPrice(price);
 				
-				comF = new CompanyFacade();
-				comF.updateCoupon(coup);
-			} catch (DaoExeption | DateTimeException | ConnectorExeption | FiledErrorException e) {
+				compF.updateCoupon(coup);
+			} catch (DaoExeption | DateTimeException | FiledErrorException e) {
 				System.out.println(e.getMessage());;
 			}			
 			break;
@@ -1607,17 +1596,15 @@ public class testDeveloers {
     	while(true) {
         	System.out.print("Type The Coupon ID:");
         	SharingData.setIdsShare(userInputLong());
-        	System.out.print("Type Your Company ID: ");
-        	SharingData.setLongNum1(userInputLong());
-        	
-        		CompanyFacade comF = null;
+//        	System.out.print("Type Your Company ID: ");
+//        	SharingData.setLongNum1(userInputLong());
+//        	
         		Coupon coupon = new Coupon();
         		try {
-            		coupon.setId(SharingData.getIdsShare());
-        			comF = new CompanyFacade();
-        			Company company = new Company();
-        			company.setId(SharingData.getLongNum1());
-        			coupon = comF.getCoupon(coupon, company);
+            		 long id = SharingData.getIdsShare();
+//        			Company company = new Company();
+//        			company.setId(SharingData.getLongNum1());
+        			coupon = compF.getCoupon(id);
 	        		
         			//check isEmpty for priniting only..
 //        			if(!coupon.getTitle().isEmpty()) {
@@ -1625,7 +1612,7 @@ public class testDeveloers {
     		    		System.out.println("\n" + "------------ Coupon Function (getID) Was Run Successfully ----------" + "\n");
 //        			}
 
-				} catch (DaoExeption | ConnectorExeption | FiledErrorException e) {
+				} catch (DaoExeption | FiledErrorException e) {
 					System.out.println(e.getMessage());
 				}
         		break;        	
@@ -1731,6 +1718,22 @@ public class testDeveloers {
     			getAllCustomers_T();
     			break;
     		}
+    		case 11: {
+    			System.out.println("Remove specific Coupon.." + "\n");
+    			System.out.print("Enter Coupon ID: ");
+    			long id = userInputLong();
+    			
+    			try {
+    			Coupon coupon = new Coupon();
+    			
+					coupon.setId(id);
+	    			admF.removeCoupon(coupon);
+	    			System.out.println();
+
+				} catch (FiledErrorException | DaoExeption e) {
+					System.out.println(e.getMessage());;
+				}
+    		}
     		case 0: {
     			on = false;
     			break;
@@ -1772,18 +1775,10 @@ public class testDeveloers {
     			break;
     		}
     		case 4: {
-    			CompanyFacade comF = null;
-    			Company company = null;
     			try {
-    				comF = new CompanyFacade();
-    				System.out.print("Please enter your ID: ");
-    				long id = userInputLong();
-    				System.out.print("Please enter your Password: ");
-    				String password = userInputString();
-    				company = comF.viewCompay(id, password);
-    				System.out.println(company.toString());
+    				System.out.println(compF.viewCompay());
     				
-				} catch (DaoExeption | ConnectorExeption e) {
+				} catch (DaoExeption e) {
 					System.out.println(e.getMessage());;
 				}
     			break;
@@ -1916,6 +1911,16 @@ public class testDeveloers {
 
     	
     }
+
+
+	
+//    @Override
+//	public CouponClientFacade login(String userName, String password, ClientType type)
+//			throws LoginException, DaoExeption, ConnectorExeption {
+//    	
+//    	
+//		return this;
+//	}
 
 
     /*/***********************************************

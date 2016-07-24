@@ -148,16 +148,16 @@ public class shortTest {
 //		}
 //		System.out.println(coup.toString());
 		try {
-//			addCouponsByCompany(4);
+			addCouponsByCompany(5);
 			Coupon coupon = new Coupon();
-			Company company = new Company();
-			coupon.setTitle("ComputerA0");
-			company.setId(4);
-			coupon = comF.getCoupon(coupon, company);
-			System.out.println(coupon.toString());
+//			Company company = new Company();
+//			coupon.setTitle("ComputerA0");
+//			company.setId(4);
+//			coupon = comF.getCoupon(coupon, company);
+//			System.out.println(coupon.toString());
 
 				CouponSystem.getInstance().stop();
-			} catch (ConnectorExeption | SQLException | DaoExeption | FiledErrorException e) {
+			} catch (ConnectorExeption | SQLException | DaoExeption e) {
 
 				e.printStackTrace();
 				System.out.println(e.getMessage());
@@ -184,7 +184,7 @@ public class shortTest {
 				
 				coup.setAmount(i);
 				coup.setMessage("check message");
-				coup.setTitle("ComputerA" + i);
+				coup.setTitle("Compitt" + i);
 				coup.setPrice(i + 50);
 				coup.setStartDate(LocalDate.of(2018, 1, 1));
 				coup.setType(CouponType.valueOf("TRAVEL"));

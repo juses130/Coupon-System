@@ -14,12 +14,13 @@ public interface CompanyDAO {
 	public Coupon addCoupon(Coupon coupon, Company company) throws DaoExeption;
 	
 	public void updateCompany(Company company) throws DaoExeption;
+	
+	public Company viewCompany(long id) throws DaoExeption;
 
 	public Company getCompany(long id) throws DaoExeption;
 	
 	public Coupon getCoupon(Coupon coupon, Company company) throws DaoExeption;
 
-	public Company viewCompany(long id, String password) throws DaoExeption;
 
 	public Company getCompany(String compName) throws DaoExeption;
 

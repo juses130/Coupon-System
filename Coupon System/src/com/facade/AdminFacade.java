@@ -138,9 +138,13 @@ public class AdminFacade implements CouponClientFacade{
 			return this;
 		}
 		else {
-			throw new LoginException ("Admin Login - FAILED");
+			throw new LoginException ("Admin Login - FAILED (Unidentified user)");
 		}
 		
+	}
+	
+	public void removeCoupon(Coupon coupon) throws DaoExeption, FiledErrorException{
+		coupDao.removeCoupon(coupon, ClientType.COMPANY);
 	}
 
 	
