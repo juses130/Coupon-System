@@ -47,6 +47,13 @@ public class shortTest {
 		CouponDBDAO dbcoup = new CouponDBDAO();
 		CompanyDBDAO dbcomp = new CompanyDBDAO();
 		
+		CompanyFacade comF = null;
+		try {
+			comF = new CompanyFacade();
+		} catch (ConnectorExeption e2) {
+			System.out.println(e2.getMessage());
+		}
+		
 		Coupon c1 = new Coupon();
 		Coupon c2;
 		Coupon c3;
@@ -141,22 +148,25 @@ public class shortTest {
 //		}
 //		System.out.println(coup.toString());
 		try {
-			addCouponsFor(7);
-		} catch (DaoExeption e1) {
-			e1.printStackTrace();
-		}
+//			addCouponsByCompany(4);
+			Coupon coupon = new Coupon();
+			Company company = new Company();
+			coupon.setTitle("ComputerA0");
+			company.setId(4);
+			coupon = comF.getCoupon(coupon, company);
+			System.out.println(coupon.toString());
 
-			try {
 				CouponSystem.getInstance().stop();
-			} catch (ConnectorExeption | SQLException e) {
-				// TODO Auto-generated catch block
+			} catch (ConnectorExeption | SQLException | DaoExeption | FiledErrorException e) {
+
 				e.printStackTrace();
+				System.out.println(e.getMessage());
 			}
 	
 		
 	} // main
 	
-	public static void addCouponsFor(long id) throws DaoExeption {
+	public static void addCouponsByCompany(long id) throws DaoExeption {
 		CompanyFacade comF;
 		CustomerFacade custF;
 		
@@ -168,17 +178,23 @@ public class shortTest {
 				Coupon coup = new Coupon();
 				Company comp = new Company();
 //				Customer customer = new Customer();
+				
+//				comp.setCompName("acer");
+				comp.setId(id);
+				
 				coup.setAmount(i);
 				coup.setMessage("check message");
-				coup.setTitle("new Daily?" + i);
+				coup.setTitle("ComputerA" + i);
 				coup.setPrice(i + 50);
-				coup.setStartDate(LocalDate.of(2017, 1, 1));
+				coup.setStartDate(LocalDate.of(2018, 1, 1));
 				coup.setType(CouponType.valueOf("TRAVEL"));
-				coup.setEndDate(LocalDate.of(2016, 1, 1));
+				coup.setEndDate(LocalDate.of(2020, 1, 1));
+				coup.setImage("no image");
 				coup.setOwnerID(id);
-				comp.setCompName("clickon");
-				custF.purchaseCoupon(coup);
-				comF.createCoupon(coup);
+
+//				coup.setOwnerID(comF.viewCompay(8).getId());
+				
+				comF.addCoupon(coup, comp);
 //				custF.purchaseCoupon(coup);
 				System.out.println(coup.toString());
 			} // for
@@ -188,6 +204,29 @@ public class shortTest {
 		}
 
 		
+	}
+	
+	public static void addCouponsByCustomer(long id) throws DaoExeption {
+		CustomerFacade custF;
+		Customer cust = new Customer();
+		Coupon coup = new Coupon();
+		Company comp = new Company();
+		
+		try {
+			custF = new CustomerFacade();
+			
+			for(int i = 0; i < 50; i++) {
+				
+				
+				coup.setId(10);
+				custF.purchaseCoupon(coup, cust);
+//				custF.purchaseCoupon(coup);
+				System.out.println(coup.toString());
+			} // for
+		} catch (ConnectorExeption | FiledErrorException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+		}
 	}
 	
 	public static void deleteCheck() {

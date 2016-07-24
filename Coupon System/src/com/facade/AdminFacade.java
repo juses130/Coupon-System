@@ -45,14 +45,14 @@ public class AdminFacade implements CouponClientFacade{
 	
 	public void removeCompany(Company company) throws DaoExeption{
 		
-		Coupon coupon = new Coupon();
 		/* Iv'e added to the DataBase a new Column named - OwnerID.
-		 * When we looking in the Coupons list, we may want to know who is the owner of this coupon?
-		 * so insted of going to Company_Coupon Table and search for the specific coupon 
-		 * and only then you will find out who is the owner..
+		 * When we looking in the Coupons list, we may want to know 
+		 * who is the owner of this coupon?
+		 * so insted of going to Company_Coupon Table and search for 
+		 * the specific coupon and only then you will find out who is the owner..
 		 * We can see it from the coupons list.
 		 */
-		coupon.setOwnerID(company.getId());
+		
 		compDao.removeCompany(company);
 		
 	} // removeCompanyA - function
@@ -63,17 +63,17 @@ public class AdminFacade implements CouponClientFacade{
 	} // updateCompanyA - function
 
 	public Company getCompany(long id) throws DaoExeption{
-		Company c = new Company();
-		c = compDao.getCompany(id);
-		return c;
+		Company company = new Company();
+		company = compDao.getCompany(id);
+		return company;
 		
 		
 	} // getCompanyA - function
 	
 	public Company getCompany(String compName) throws DaoExeption{
-		Company c = new Company();
-		c = compDao.getCompany(compName);
-		return c;
+		Company company = new Company();
+		company = compDao.getCompany(compName);
+		return company;
 	}
 	
 	public Collection<Company> getAllCompanies() throws DaoExeption{

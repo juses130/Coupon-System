@@ -1,6 +1,7 @@
 package com.javabeans;
 import java.time.LocalDate;
 
+import com.exeptionerrors.DaoExeption;
 import com.exeptionerrors.FiledErrorException;
 
 
@@ -26,7 +27,7 @@ public class Coupon {
 	// Constructor
 	public Coupon(){}
 	
-	public Coupon(String title, LocalDate startDate, LocalDate endDate, int amount, CouponType category, String message, double price, String image, long ownerID) throws FiledErrorException{
+	public Coupon(long id, String title, LocalDate startDate, LocalDate endDate, int amount, CouponType category, String message, double price, String image, long ownerID) throws FiledErrorException{
 		
 		/**
 		 * This part of the setters - is just for security. 
@@ -34,13 +35,14 @@ public class Coupon {
 		 * before setting them to himself and actually create a new coupon.
 		 * 
 		 * And in the setters Iv'e added checking conditions. for example, in the setTitle() I want to make sure 
-		 * that the user puts some real value. so in the title is NULL or empty the coupon will not create and it
+		 * that the user puts some real value. so if the title is NULL or empty the coupon will not create and it
 		 * will send an Exception with message of "empty fileds". 
 		 * 
-		 * Same as Dates. we can't let the anyone to send us a coupon with EXPIRED DATES. 
+		 * Same as Dates. we can't let the anyone to create a coupon with an EXPIRED DATES. 
 		 * we have the make sure it will not happend. not for the Title or Dates or any coupon's attribute.
 		 */
 		
+		setId(id);
 		setTitle(title);
 		setStartDate(startDate);
 		setEndDate(endDate);
@@ -51,6 +53,7 @@ public class Coupon {
 		setImage(image);
 		setOwnerID(ownerID);
 		
+		this.id = id;
 		this.title = title;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -69,11 +72,10 @@ public class Coupon {
 	}
 
 
-	public void setId(long id) {
+	public void setId(long id) throws FiledErrorException {
 		
-		if(id < 0) { // if id is UNDER '0' then reset 'this.id' to 0.
-			id = 0;
-			this.id = id;
+		if(id < 0) { // if id is UNDER '0' then throw Exception.
+			throw new FiledErrorException("Error: Set ID - FAILED");
 		}
 		else {
 			this.id = id;
@@ -89,7 +91,7 @@ public class Coupon {
 	public void setTitle(String title) throws FiledErrorException {
 		
 		if(title.isEmpty()) {
-			throw new FiledErrorException("Error: Set Title - FAILED (empty field)");
+			throw new FiledErrorException("Error: Set Title - FAILED (empty field!)");
 		}
 		else {
 			this.title = title;
@@ -119,12 +121,12 @@ public class Coupon {
 
 	public void setEndDate(LocalDate endDate) throws FiledErrorException {
 		
-//		if(endDate.isBefore(LocalDate.now())) { // if the STARTDate is before today, throw exception
-//			throw new FiledErrorException("Error: The End-Date Of The Coupon Has To Be AFTER Today!");
-//		}
-//		else {
+		if(endDate.isBefore(LocalDate.now())) { // if the STARTDate is before today, throw exception
+			throw new FiledErrorException("Error: The End-Date Of The Coupon Has To Be AFTER Today!");
+		}
+		else {
 			this.endDate = endDate;
-//		}
+		}
 	}
 
 
@@ -206,11 +208,11 @@ public class Coupon {
 		return ownerID;
 	}
 
-	public void setOwnerID(long ownerID) {
+	public void setOwnerID(long ownerID) throws FiledErrorException {
 		
-		if(ownerID > 0) {// if id is UNDER '0' then reset 'this.id' to 0.
-			ownerID = 0;
-			this.ownerID = ownerID;
+		if(ownerID < 0) { // if id is UNDER '0' then throw Exception.
+			throw new FiledErrorException("Error: Setting Owner ID - FAILED (Field Empty or Under Zero!)");
+
 		}
 		else {
 			this.ownerID = ownerID;
@@ -222,6 +224,6 @@ public class Coupon {
 	@Override
 	public String toString() {
 		return "\n" + "Coupon [id=" + id + ", title=" + title + ", startDate=" + startDate + ", endDate=" + endDate
-				+ ", Category= " + category + ", amount=" + amount + ", message=" + message + ", price=" + price + "$ " + ", image=" + image + "Owner ID=" + ownerID + "]";
+				+ ", Category= " + category + ", amount=" + amount + ", message=" + message + ", price=" + price + "$ " + ", image=" + image + " Owner ID=" + ownerID + "]";
 	}
 }

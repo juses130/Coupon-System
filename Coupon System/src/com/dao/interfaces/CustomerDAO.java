@@ -29,6 +29,7 @@ public interface CustomerDAO {
 	public void createCustomer(Customer Customer) throws DaoExeption;
 	public void removeCustomer(Customer customer) throws DaoExeption, FiledErrorException;
 	public void updateCustomer(Customer updateCustomer) throws DaoExeption;
+	public Coupon addCoupon(Coupon coupon, Customer customer) throws DaoExeption;
 	public Customer getCustomer(long id) throws DaoExeption;
 	public Collection<Customer> getAllCustomers() throws DaoExeption;
 	public Set<Coupon> getCoupons(long custId) throws DaoExeption;

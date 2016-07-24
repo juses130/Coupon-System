@@ -40,15 +40,20 @@ public class CustomerFacade implements CouponClientFacade {
 		coupDao = CouponSystem.getInstance().getCouponDao();
 	}
 	
-	public Coupon purchaseCoupon(Coupon coupon) throws DaoExeption {
-		Coupon coup = new Coupon();
-		//TODO: add Some query that will get coupon from the couponTable and set it into customer_coupon
-		coup = coupDao.getCoupon(coupon.getId(), ClientType.CUSTOMER);
-		coupDao.createCoupon(coup, ClientType.CUSTOMER);
+	public Coupon purchaseCoupon(Coupon coupon, Customer customer) throws DaoExeption {
+
+		coupon = coupDao.getCoupon(coupon.getId(), ClientType.CUSTOMER);
+		custDao.addCoupon(coupon, customer);
 		
-		return coup;
+		return coupon;
 		
 	} // purchaseCoupon
+	
+	public Customer getCustomer(long id) throws DaoExeption {
+		Customer customer = new Customer();
+		customer = custDao.getCustomer(id);
+		return customer;
+	}
 	
 	public Set<Coupon> getAllPurchasedCoupons(long custID) throws DaoExeption {
 		
@@ -63,6 +68,7 @@ public class CustomerFacade implements CouponClientFacade {
 		return coupons;	
 	}
 	
+
 //	public Set<Coupon> getAllCouponsByType(long custID, CouponType category) {
 //		
 //		Set<Coupon> coupons = custDao.getCouponByType("customer_coupon", "cust_id" ,custID, category);

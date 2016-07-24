@@ -823,14 +823,14 @@ public class testDeveloers {
 				}
 				try {
 					company = admF.getCompany(c.getId());
-//					 printFoundInDB("Company"); 
-//	     	    		System.out.print("NEW Email: ");
-//	     	    		company.setEmail(userInputString());
-//	     	    		System.out.print("New Password: ");
-//	     	    		company.setPassword(userInputString());
-//	     	           
-//						admF.updateCompany(company);
-				} catch (DaoExeption e) {
+					 printFoundInDB("Company"); 
+	     	    		System.out.print("NEW Email: ");
+	     	    		company.setEmail(userInputString());
+	     	    		System.out.print("New Password: ");
+	     	    		company.setPassword(userInputString());
+	     	           
+						admF.updateCompany(company);
+				} catch (DaoExeption | FiledErrorException e) {
 					// TODO Auto-generated catch block
 					System.out.println(e.getMessage());
 //					break;
@@ -946,10 +946,12 @@ public class testDeveloers {
     			System.out.println("------------ Customer Added Successfully ----------" + "\n");
         		//printAdminFacadeMenu();
     		}
-    			
+    		else {
     			System.out.println("\n" + "****************************************************");
     			System.out.println("Error - No Changes Were Made :(");
     			System.out.println("\n" + "****************************************************");
+    		}
+    			
     		
     		
 			System.out.println("Whould you keep adding Customers? Type '1' for YES or any other Number for NO.");
@@ -1239,12 +1241,25 @@ public class testDeveloers {
     private static void purchaseCoupon_T() {
     	@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
+		CustomerFacade cusF;
 
     	while(true) {
 
-    	System.out.println("\n" + "Now you can purchase a coupon by is ID. " 
-    			+ "\n" + "But if you don't know the ID or which coupon do your want, "
-    			+ "please type '0' and go back to Customer Side Menu and check with Get's Options." + "\n");
+//    	System.out.println("\n" + "Now you can purchase a coupon by is ID. " 
+//    			+ "\n" + "But if you don't know the ID or which coupon do your want, "
+//    			+ "please type '0' and go back to Customer Side Menu and check with Get's Options." + "\n");
+//    	
+    		System.out.println("Before You will buy coupon, We have to be sure you're the customer.");
+    		System.out.print("Enter Your ID: ");
+    		long id = userInputLong();
+//    		System.out.print("Enter Your Password: ");
+//    		SharingData.setVarchar2(userInputString());
+    		try {
+    			
+				cusF = new CustomerFacade();
+				Customer customer = new Customer();
+				customer = cusF.getCustomer(id);
+				
     	
     	System.out.print("Type the Coupon ID (Or '0' for exit): ");
     	long coupID = sc.nextLong();
@@ -1252,14 +1267,14 @@ public class testDeveloers {
     		printGoingBackToUsage();
     		break;
     	}
-    		CustomerFacade cusF;
-			try {
-				cusF = new CustomerFacade();
 		    	Coupon coupon = new Coupon();
+
 		    	coupon.setId(coupID);
-		    	coupon = cusF.purchaseCoupon(coupon);
-		    	System.out.println(coupon.toString());
-			} catch (ConnectorExeption | DaoExeption e) {
+		    	coupon = cusF.purchaseCoupon(coupon, customer);
+		    	if(coupon.getTitle() != null) {
+			    	System.out.println(coupon.toString());
+		    	}
+			} catch (ConnectorExeption | DaoExeption | FiledErrorException e) {
 				System.out.println(e.getMessage());
 			}
 
@@ -1419,13 +1434,15 @@ public class testDeveloers {
    
     private static void addCoupon_T() {
     	
-	while (true){
-
-		Coupon coup = new Coupon();
-		CompanyFacade comF = null;
-		
+    	Coupon coup = new Coupon();
+		CompanyFacade compF = null;
+	
+		try { 
+			
+		while (true){
 		System.out.print("NEW Title: ");
         String title = userInputString();
+        coup.setTitle(title);
     	
     	System.out.print("NEW Coupon StartDate.. ");
 		LocalDate startDate = null;
@@ -1436,6 +1453,7 @@ public class testDeveloers {
 		System.out.print("Year: ");
 		int startYear = userInputInt();
 		startDate = LocalDate.of(startYear, startMonth, startDay);
+		coup.setStartDate(startDate);
 		
 		System.out.print("NEW Coupon EndDate.. ");
 		LocalDate endDate = null;
@@ -1446,56 +1464,38 @@ public class testDeveloers {
 		System.out.print("Year: ");
 		int endYear = userInputInt();
 		endDate = LocalDate.of(endYear, endMonth, endDay);
-    	
+    	coup.setEndDate(endDate);
 		System.out.print("NEW Amount: ");
         int amount = userInputInt();
-		
+		coup.setAmount(amount);
         System.out.print("In Category: ");
         String category = userInputString().toUpperCase();
-        
+        coup.setType(CouponType.valueOf(category));
         System.out.print("NEW Massage: ");
         String message = userInputString();
-        
+        coup.setMessage(message);
         System.out.print("NEW Price: ");
-        @SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
         double price = sc.nextDouble();
-        
-        //sc.close();
-        
+        coup.setPrice(price);
         System.out.print("NEW Imag link: ");
-        String imag = userInputString();
-        
+        String image = userInputString();
+		coup.setImage(image);
+		
         String ownerName = SharingData.getVarchar4();
 		Company company = new Company();
 
 		// putting all the variables
-        try {
+//        try {
 			AdminFacade admF = new AdminFacade();
-        	comF = new CompanyFacade();
-			
+			compF = new CompanyFacade();
+			System.out.println(ownerName);
 			company = admF.getCompany(ownerName);
-			coup = new Coupon(title, startDate, endDate, amount, CouponType.valueOf(category), message, price, imag, company.getId());
-		} catch (ConnectorExeption | FiledErrorException | DaoExeption e1) {
-			System.out.println(e1.getMessage());;
-		}
-        
-		// check if the user put's somthing empty...
-		if(title.isEmpty() || message.isEmpty() || category.isEmpty() || message.isEmpty() || imag.isEmpty() || price == 0) {
-			
-			System.out.println("\n" + "Error - the fields are empty!");
-			printGoingBackToUsage();
-			break;
-		}
-		
-		try {
-			comF.createCoupon(coup);
+
+			compF.addCoupon(coup, company);
 			System.out.println(coup.toString());
 			System.out.println("------------ Coupon Added Successfully ----------" + "\n");
 
-		} catch (DaoExeption e) {
-			System.out.println(e.getMessage());
-		}
 				
 		System.out.println("Whould you keep adding Coupons? Type '1' for YES or any other Number for NO.");
 		short choice1 = userInputShort();
@@ -1509,6 +1509,10 @@ public class testDeveloers {
 		}
 	
 	} // while loop
+		} catch (DaoExeption | FiledErrorException | ConnectorExeption e) {
+			System.out.println(e.getMessage());
+		}
+	
 } // addCompnay - Function
     
     private static void removeCoupon_T() {
@@ -1524,15 +1528,18 @@ public class testDeveloers {
     			printGoingBackToUsage();
     			break;
     		}
-    		
+    		try {
     			Coupon c = new Coupon();
 				c.setId(SharingData.getLongNum1());
-				System.out.println(c.toString());
-				try {
+				if(c.getTitle() != null) {
+					System.out.println(c.toString());
+				}
+				
+				
 					comF = new CompanyFacade();
 					comF.removeCoupon(c);
 					printCouponRemoved();
-				} catch (DaoExeption | ConnectorExeption e) {
+				} catch (DaoExeption | ConnectorExeption | FiledErrorException e) {
 					System.out.println(e.getMessage());
 				}
 
@@ -1551,7 +1558,7 @@ public class testDeveloers {
         	Coupon coup;
         	
         	// DBDAO Coupon
-
+        	try {
         	CompanyFacade comF = null;
         	long id = SharingData.getIdsShare();
         	
@@ -1577,12 +1584,17 @@ public class testDeveloers {
                         
 			// putting all the variables 
 
-			try {
-				coup = new Coupon(endDate, amount, message, price);
+			
+				coup = new Coupon();
 				coup.setId(id);
+				coup.setEndDate(endDate);
+				coup.setAmount(amount);
+				coup.setMessage(message);
+				coup.setPrice(price);
+				
 				comF = new CompanyFacade();
 				comF.updateCoupon(coup);
-			} catch (DaoExeption | ConnectorExeption | FiledErrorException e) {
+			} catch (DaoExeption | DateTimeException | ConnectorExeption | FiledErrorException e) {
 				System.out.println(e.getMessage());;
 			}			
 			break;
@@ -1593,19 +1605,25 @@ public class testDeveloers {
     private static void getCoupon_T() {
     	
     	while(true) {
-        	System.out.println("Type The Coupon ID:");
+        	System.out.print("Type The Coupon ID:");
+        	SharingData.setIdsShare(userInputLong());
+        	System.out.print("Type Your Company ID: ");
         	SharingData.setLongNum1(userInputLong());
-    
+        	
         		CompanyFacade comF = null;
         		Coupon coupon = new Coupon();
-        		coupon.setId(SharingData.getLongNum1());
         		try {
+            		coupon.setId(SharingData.getIdsShare());
         			comF = new CompanyFacade();
         			Company company = new Company();
-        			company.setCompName(SharingData.getVarchar4());
+        			company.setId(SharingData.getLongNum1());
         			coupon = comF.getCoupon(coupon, company);
-	        		System.out.println(coupon.toString());
-		    		System.out.println("\n" + "------------ Coupon Function (getID) Was Run Successfully ----------" + "\n");
+	        		
+        			//check isEmpty for priniting only..
+//        			if(!coupon.getTitle().isEmpty()) {
+        				System.out.println(coupon.toString());
+    		    		System.out.println("\n" + "------------ Coupon Function (getID) Was Run Successfully ----------" + "\n");
+//        			}
 
 				} catch (DaoExeption | ConnectorExeption | FiledErrorException e) {
 					System.out.println(e.getMessage());
@@ -1755,11 +1773,15 @@ public class testDeveloers {
     		}
     		case 4: {
     			CompanyFacade comF = null;
+    			Company company = null;
     			try {
     				comF = new CompanyFacade();
     				System.out.print("Please enter your ID: ");
     				long id = userInputLong();
-    				System.out.println(comF.viewCompay(id));
+    				System.out.print("Please enter your Password: ");
+    				String password = userInputString();
+    				company = comF.viewCompay(id, password);
+    				System.out.println(company.toString());
     				
 				} catch (DaoExeption | ConnectorExeption e) {
 					System.out.println(e.getMessage());;

@@ -24,18 +24,17 @@ public class CompanyFacade implements CouponClientFacade{
 		
 		compDao = CouponSystem.getInstance().getCompDao();
 		coupDao = CouponSystem.getInstance().getCouponDao();
-	}
+	} // CompanyFacade()- Constructor
 	
 	
-	public void createCoupon(Coupon coupon) throws DaoExeption{
+	public void addCoupon(Coupon coupon, Company company) throws DaoExeption{
+		
 		/*  Now he will make sure that the facede will get only the 
 		 *  RIGHT parameters of the Company object.
 		 *  Even if the user puts some incurrect inputs.
 		 *  the CompanyFacade will bring the RIGHT parameters by the company Name.
 		 */
-		
-		compDao.createCoupon(coupon);
-//		coupDao.createCoupon(coupon);
+		compDao.addCoupon(coupon, company);
 		
 	} // createCouponF
 	
@@ -57,19 +56,15 @@ public class CompanyFacade implements CouponClientFacade{
 		return coupon;
 	}
 	
-	public Company viewCompay(long id) throws DaoExeption{
+	public Company viewCompay(long id, String password) throws DaoExeption{
 		
-		Company company = new Company();
-		company = compDao.getCompany(id);
-		
+		Company company = compDao.viewCompany(id, password);
 		return company;
 	}
 	
 	public Coupon getCoupon(Coupon coupon, Company company) throws DaoExeption{
-		
-		Company comp = compDao.getCompanyByCoupon(coupon, company);
-		Coupon newCoupon = coupDao.getCoupon(comp.getId(), ClientType.COMPANY);
-		return newCoupon;
+		coupon = compDao.getCoupon(coupon, company);
+		return coupon;
 	}
 	
 	public Set<Coupon> getCouponsByType(long custID, CouponType category) throws DaoExeption{
@@ -97,7 +92,7 @@ public class CompanyFacade implements CouponClientFacade{
 	    		return this;
 	    	}
 			else {
-			throw new LoginException("Company Login - FAILED (Unidentified user)");
+			throw new LoginException("Error: Company Login - FAILED (Unidentified user)");
 			}
 	} // login - function
 	
