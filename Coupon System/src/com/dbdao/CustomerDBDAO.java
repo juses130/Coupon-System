@@ -1,5 +1,6 @@
 package com.dbdao;
 
+import java.security.acl.Owner;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,6 +14,7 @@ import com.added.functions.DBconnectorV3;
 import com.dao.interfaces.CustomerDAO;
 import com.exeptionerrors.DaoExeption;
 import com.exeptionerrors.FiledErrorException;
+import com.facade.ClientType;
 import com.facade.DetectionBy;
 import com.javabeans.Coupon;
 import com.javabeans.CouponType;
@@ -161,16 +163,15 @@ public class CustomerDBDAO implements CustomerDAO {
 		
 	}
 
-	
 	@Override
-	public Customer getCustomer(String custName) throws DaoExeption, FiledErrorException {
+	public Customer getCustomer(String custName) throws DaoExeption {
 		
 		Customer customer = new Customer();
 		
-		customer.setCustName(custName);
-		
-		if(existOrNotByName(customer) == true) {
-			try {
+		try {
+
+		if(existOrNotByName(custName) == true) {
+			
 			String password = null;
 			long id = 0;
 
@@ -185,13 +186,14 @@ public class CustomerDBDAO implements CustomerDAO {
 				
 				customer = new Customer(id, custName, password);
 				
-				} catch (SQLException | FiledErrorException e) {
-					throw new DaoExeption("Error: Getting Customer By Name - FAILED (Customer is not exist in the DataBase)");
-				} // catch
+				
 		}
 		else {
 			throw new DaoExeption("Error: Getting Customer By ID - FAILED");
 		} // else - exist
+		} catch (SQLException | FiledErrorException e) {
+			throw new DaoExeption("Error: Getting Customer By Name - FAILED (Customer is not exist in the DataBase)");
+		} // catch
 
 		return customer;
 	}
@@ -227,53 +229,6 @@ public class CustomerDBDAO implements CustomerDAO {
 		return customers;
 	} // getAllCompanies
 
-	@Override
-	public Set<Coupon> getCoupons(long custId) throws DaoExeption{
-
-		Set<Coupon> coupons = new HashSet<>();
-		
-		try {
-			
-			String sql = "SELECT COUP_ID FROM Customer_Coupon WHERE CUST_ID=?";
-			PreparedStatement stat = DBconnectorV3.getConnection().prepareStatement(sql);
-			stat.setLong(1, custId);
-			ResultSet rs = stat.executeQuery();
-
-			while (rs.next()) {
-				String title, message, image;
-				Date stDate, enDate ;	
-				int amount;
-				CouponType type = null;
-				double price;
-				long id;
-				
-				title = rs.getString("Title");
-				stDate = rs.getDate("start_date");
-				enDate = rs.getDate("end_date");
-				amount = rs.getInt("amount");
-				type = CouponType.valueOf(rs.getString("Category").toUpperCase());
-				message = rs.getString("Message");
-				price = rs.getDouble("Price");
-				image = rs.getString("image");
-				id = rs.getLong("coup_id");
-
-//				Coupon coupon = new Coupon(id, title, stDate.toLocalDate(), enDate.toLocalDate(), amount, type,  message, price, image);
-				Coupon coupon = new Coupon();
-				coupons.add(coupon);
-			}
-		} catch (SQLException e) {
-			throw new DaoExeption("Error: Getting Coupons Of Customer - FAILED (somthing went wrong..)");
-		}
-		 return coupons;
-	}
-
-	public Set<Coupon> getAllCouponsByPrice(long custID ,double maxPrice) throws DaoExeption{
-		CouponDBDAO coupDB = new CouponDBDAO();
-		Set<Coupon> coupons = coupDB.getCouponByPrice("customer_coupon" , "cust_id", custID, maxPrice);
-		
-		return coupons;
-	}
-	
 	/**
 	 * 
 	* <p>This is a Private remove method.</p>
@@ -440,7 +395,7 @@ public class CustomerDBDAO implements CustomerDAO {
 		return answer;
 	}
 	
-   private boolean existOrNotByName(Customer customer) throws DaoExeption {
+   private boolean existOrNotByName(String custName) throws DaoExeption {
 
 	   Statement stat = null;
 		ResultSet rs = null;
@@ -448,7 +403,7 @@ public class CustomerDBDAO implements CustomerDAO {
 		  
 		   try {
 				String sqlName = "SELECT Cust_name FROM customer WHERE "
-						+ "cust_name= '" + customer.getCustName() + "'";
+						+ "cust_name= '" + custName + "'";
 				stat = DBconnectorV3.getConnection().createStatement();
 				rs = stat.executeQuery(sqlName);
 				rs.next();
@@ -481,7 +436,7 @@ public class CustomerDBDAO implements CustomerDAO {
 			} // else - inner
 		} // if 
 		else if(customer.getCustName() != null) {
-			if(existOrNotByName(customer) == true) {
+			if(existOrNotByName(customer.getCustName()) == true) {
 				return DetectionBy.USERNAME;
 			} // if - inner
 			else {
@@ -492,22 +447,8 @@ public class CustomerDBDAO implements CustomerDAO {
 		return DetectionBy.NONE;
 	}
 
-	
-	@Override
-	public Set<Coupon> getCouponByPrice(String table, String colmun, long custID, double maxPrice) throws DaoExeption{
-		CouponDBDAO coupDB = new CouponDBDAO();
-		Set<Coupon> coupons = coupDB.getCouponByPrice(table, colmun, custID, maxPrice);
-		
-		return coupons;
-	}
 
-	@Override
-	public Set<Coupon> getCouponByType(String table, String colmun, long custID, CouponType category) throws DaoExeption{
-		CouponDBDAO coupDB = new CouponDBDAO();
-		Set<Coupon> coupons = coupDB.getCouponByType(table, colmun, custID, category);
-		
-		return coupons;
-	}
+
 
 
 

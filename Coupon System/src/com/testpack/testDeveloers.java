@@ -1,5 +1,6 @@
 package com.testpack;
 
+import java.io.IOException;
 import java.sql.*;
 import java.time.*;
 import java.util.*;
@@ -15,8 +16,6 @@ import com.facade.*;
 import com.javabeans.*;
 import com.task.and.singleton.CouponClientFacade;
 import com.task.and.singleton.CouponSystem;
-
-import sun.misc.Cleaner;
 
 
 /**
@@ -149,6 +148,8 @@ public class testDeveloers {
 				+ "\n" + "9. Get Customer By ID."
 				+ "\n" + "10. Get All Customers."
 				+ "\n" + "11. Remove Coupon."
+				+ "\n" + "12.  Get Coupons By Type (Category)."
+				+ "\n" + "13.  Get All Coupons in the DataBase."
 				+ "\n" + "0. Quit."
 				+ "\n");
 		
@@ -162,7 +163,7 @@ public class testDeveloers {
 		System.out.println("1. Create Coupon."
 				+ "\n" + "2. Remove Coupon."
 				+ "\n" + "3. Update Coupon"
-				+ "\n" + "4. Get Company Details."
+				+ "\n" + "4. Get Your Company Details."
 				+ "\n" + "5. Get Coupon By ID."
 				+ "\n" + "6. Get All Coupons of The Company."
 				+ "\n" + "7. Get Coupons By Type."
@@ -179,6 +180,7 @@ public class testDeveloers {
 				+ "\n" + "2. Get All Purchase Coupons."
 				+ "\n" + "3. Get All Purchase Coupons By Type."
 				+ "\n" + "4. Get All Purchase Coupons By Price."
+				+ "\n" + "5. Get Your Customer Details." 
 				+ "\n" + "0. To Quit" 
 				+ "\n");
 		
@@ -326,7 +328,7 @@ public class testDeveloers {
 		
 		try {
 			short choice = scanner.nextShort();
-			if (choice < 12 && choice > -1) {
+			if (choice < 14 && choice > -1) {
 				return choice;
 			} // IF - choice
 			else {
@@ -352,7 +354,6 @@ public class testDeveloers {
 		}// catch
 		
 	}
-	
 	private static long userInputLong() {
 		
 		
@@ -415,118 +416,128 @@ public class testDeveloers {
 
 		// Choice is the User-choice of the main menu.
 		short choice = SharingData.getShortNum1();
-//		CouponClientFacade client = null;
+		boolean running = false;
 		
-		// Admin choice
-		if (choice == 1) {
-			System.out.println("\n" + "Please type your Admin-User and Password." + "\n");
-	    	System.out.print("Type Your Admin User: ");
-	    	String userName = userInputString();
-	    	System.out.print("Type Your Admin Password: ");
-	    	String password = userInputString();
-	    	
-	    	// In the admin, we're just need to check pass&user without to go to the DB.
-	    	
-	    	CouponClientFacade adminClient = null;
-			try {
-				AdminFacade ad = new AdminFacade();
-				client = CouponSystem.getInstance().login(userName, password, ClientType.ADMIN);
-				adminClient = client;
-				admF = ad.login(userName, password, ClientType.ADMIN);
+		while(!running) {
+			
+			// Admin choice
+			if (choice == 1) {
+				System.out.println("\n" + "Please type your Admin-User and Password." + "\n");
+		    	System.out.print("Type Your Admin User: ");
+		    	String userName = userInputString();
+		    	System.out.print("Type Your Admin Password: ");
+		    	String password = userInputString();
+		    	
+		    	// In the admin, we're just need to check pass&user without to go to the DB.
+		    	
+		    	CouponClientFacade adminClient = null;
+				try {
+					AdminFacade ad = new AdminFacade();
+					client = CouponSystem.getInstance().login(userName, password, ClientType.ADMIN);
+					adminClient = client;
+					admF = ad.login(userName, password, ClientType.ADMIN);
+					
+				} catch (LoginException | ConnectorExeption e) {
+					// TODO Auto-generated catch block
+					System.out.println("\n" + e.getMessage());
+					break;
+				} catch (DaoExeption e) {
+					// TODO Auto-generated catch block
+					System.out.println("\n" + e.getMessage());
+					break;
+				}
+		    	boolean flag = false;
+		    	
+		    	/*
+		    	 * Explain of this IF condition:
+		    	 * The question is ONLY if 'client' is not Null && 'client'.class is equals to adminfacade.class then it's ok.
+		    	 */
+		    	
+		    	if(client.equals(adminClient)) {
+		    		flag = true;
+		    		running = false;
+		        	return flag;
+		        	} // if
+		        	else {
+		        		return false;
+		        	} // else
+			} // if - Admin
+			// Company choice
+			else if (choice == 2) {
 				
-				System.out.println(client.toString());
-			} catch (LoginException | ConnectorExeption e) {
-				// TODO Auto-generated catch block
-				System.out.println("\n" + e.getMessage());
-			} catch (DaoExeption e) {
-				// TODO Auto-generated catch block
-				System.out.println("\n" + e.getMessage());
-			}
-	    	boolean flag = false;
-	    	
-	    	/*
-	    	 * Explain of this IF condition:
-	    	 * The question is ONLY if 'client' is not Null && 'client'.class is equals to adminfacade.class then it's ok.
-	    	 */
-	    	
-	    	if(client.equals(adminClient)) {
-	    		flag = true;
-	    	
-	        	return flag;
-	        	} // if
-	        	else {
-	        		return false;
-	        	} // else
-		} // if - Admin
-		// Company choice
-		else if (choice == 2) {
-			
-//			CompanyFacade compF = null;
-//	    	CouponClientFacade client = null;
-	    	
-			System.out.println("\n" + "Please type your Company-ID and Password." + "\n");
-	    	System.out.print("Type Your Company Name: ");
-	    	String userName = userInputString();
-	    	System.out.print("Type Your Company Password: ");
-	    	String password = userInputString();
-	    	// share this with company create and checks.. we are login with NAME
-	    	SharingData.setVarchar4(userName);
-	    	CouponClientFacade companyClient = null;
+//				CompanyFacade compF = null;
+//		    	CouponClientFacade client = null;
+		    	
+				System.out.println("\n" + "Please type your Company-ID and Password." + "\n");
+		    	System.out.print("Type Your Company Name: ");
+		    	String userName = userInputString();
+		    	System.out.print("Type Your Company Password: ");
+		    	String password = userInputString();
+		    	// share this with company create and checks.. we are login with NAME
+		    	SharingData.setVarchar4(userName);
+		    	CouponClientFacade companyClient = null;
 
-		    try {
-		    	CompanyFacade co = new CompanyFacade();
-				client = CouponSystem.getInstance().login(userName, password, ClientType.COMPANY);
-				companyClient = client;
-				compF = co.login(userName, password, ClientType.COMPANY);
-			} catch (LoginException | DaoExeption | ConnectorExeption e) {
-				// TODO Auto-generated catch block
-				System.out.println("\n" + e.getMessage());;
-			}
-	
-	    	boolean flag = false;
-	    	
-	    	if(client.equals(companyClient)) {
-	    		flag = true;
-	        	return flag;
-	        	} // if
-	        	else {
-	        		return false;
-	        	} // else
-		} // else if - Company
-		// Customer choice
-		else if (choice == 3) {
-			
-			
-			System.out.println("\n" + "Please type your Customer-ID and Password." + "\n");
-	    	System.out.print("Type Your Customer Full Name: ");
-	    	String userName = userInputString();
-	    	System.out.print("Type Your Customer Password: ");
-	    	String password = userInputString();
+			    try {
+			    	CompanyFacade co = new CompanyFacade();
+					client = CouponSystem.getInstance().login(userName, password, ClientType.COMPANY);
+					companyClient = client;
+					compF = co.login(userName, password, ClientType.COMPANY);
+				} catch (LoginException | DaoExeption | ConnectorExeption e) {
+					System.out.println("\n" + e.getMessage());
+					break;
+				}
+		
+		    	boolean flag = false;
+		    	
+		    	if(client.equals(companyClient)) {
+		    		flag = true;
+		    		running = false;
+		        	return flag;
+		        	} // if
+		        	else {
+		        		return false;
+		        	} // else
+			} // else if - Company
+			// Customer choice
+			else if (choice == 3) {
+				
+				
+				System.out.println("\n" + "Please type your Customer-ID and Password." + "\n");
+		    	System.out.print("Type Your Customer Full Name: ");
+		    	String userName = userInputString();
+		    	System.out.print("Type Your Customer Password: ");
+		    	String password = userInputString();
 
-	    	CouponClientFacade customerClient = null;
+		    	CouponClientFacade customerClient = null;
 
-	    	
-	    	try {
-				CustomerFacade cu = new CustomerFacade();
-	    		client = CouponSystem.getInstance().login(userName, password, ClientType.CUSTOMER);
-	    		customerClient = client;
-	    		cusF = cu.login(userName, password, ClientType.CUSTOMER);
-	    		
-			} catch (LoginException | ConnectorExeption | DaoExeption e) {
-				System.out.println("\n" + e.getMessage());
-		    } // catch
-	    	boolean flag = false;
-	    	if(client.equals(customerClient)) {
-	    		flag = true;
-	        	return flag;
-	        	} // if
-	        	else {
-	        		return false;
-	        	} // else
-		}// else if - Customer
-		else {
-			return false;
-		}
+		    	
+		    	try {
+					CustomerFacade cu = new CustomerFacade();
+		    		client = CouponSystem.getInstance().login(userName, password, ClientType.CUSTOMER);
+		    		customerClient = client;
+		    		cusF = cu.login(userName, password, ClientType.CUSTOMER);
+		    		
+				} catch (LoginException | ConnectorExeption | DaoExeption e) {
+					System.out.println("\n" + e.getMessage());
+					break;
+			    } // catch
+		    	boolean flag = false;
+		    	if(client.equals(customerClient)) {
+		    		flag = true;
+		    		running = false;
+		        	return flag;
+		        	} // if
+		        	else {
+		        		return false;
+		        	} // else
+			}// else if - Customer
+			else {
+				return false;
+			} // else - NO ClientType.
+			
+		} // while - flag
+		return false;
+		
 		} // login_T
 
  
@@ -756,12 +767,12 @@ public class testDeveloers {
 			System.out.println("Whould you keep adding companies? Type '1' for YES or any other Number for NO.");
 			short choice1 = userInputShort();
 			
-			if (choice1 != 1) {
-				break;
+			if (choice1 == 1) {
+				continue;
 			} // if 
 			else {
 				printAdminFacadeMenu();
-				continue;
+				break;
 			}
 		} // while loop
 	} // addCompnay - Function
@@ -1112,12 +1123,12 @@ public class testDeveloers {
     */
     private static void getAllCompanyCouponsByType_T() {
    	
-   	
+   	//TODO: 21:30
    	System.out.println("Search By Category :)");
    	System.out.print("Please insert your CATEGORY: ");
    	
    	try {
-		Set<Coupon> couponsByType = compF.getCouponsByType(SharingData.getIdsShare() , CouponType.valueOf(userInputString().toUpperCase()));
+		Set<Coupon> couponsByType = compF.getCouponsByType(CouponType.valueOf(userInputString().toUpperCase()));
 	   	System.out.println(couponsByType.toString());
 	} catch (DaoExeption e) {
 		System.out.println(e.getMessage());
@@ -1236,24 +1247,22 @@ public class testDeveloers {
     private static void purchaseCoupon_T() {
     	@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
-		CustomerFacade cusF;
 
     	while(true) {
 
-//    	System.out.println("\n" + "Now you can purchase a coupon by is ID. " 
-//    			+ "\n" + "But if you don't know the ID or which coupon do your want, "
-//    			+ "please type '0' and go back to Customer Side Menu and check with Get's Options." + "\n");
+    	System.out.println("\n" + "Now you can purchase a coupon by is ID. " 
+    			+ "\n" + "But if you don't know the ID or which coupon do your want, "
+    			+ "please type '0' and go back to Customer Side Menu and check with Get's Options." + "\n");
 //    	
-    		System.out.println("Before You will buy coupon, We have to be sure you're the customer.");
-    		System.out.print("Enter Your ID: ");
-    		long id = userInputLong();
+//    		System.out.println("Before You will buy coupon, We have to be sure you're the customer.");
+//    		System.out.print("Enter Your ID: ");
+//    		long id = userInputLong();
 //    		System.out.print("Enter Your Password: ");
 //    		SharingData.setVarchar2(userInputString());
     		try {
     			
-				cusF = new CustomerFacade();
 				Customer customer = new Customer();
-				customer = cusF.getCustomer(id);
+				customer = cusF.getCustomer();
 				
     	
     	System.out.print("Type the Coupon ID (Or '0' for exit): ");
@@ -1269,11 +1278,11 @@ public class testDeveloers {
 		    	if(coupon.getTitle() != null) {
 			    	System.out.println(coupon.toString());
 		    	}
-			} catch (ConnectorExeption | DaoExeption | FiledErrorException e) {
+			} catch (DaoExeption | FiledErrorException e) {
 				System.out.println(e.getMessage());
 			}
 
-	    	
+	    	break;
     	} // while loop
     	
     } // purchaseCoupon_T
@@ -1287,20 +1296,18 @@ public class testDeveloers {
      */
     private static void getAllPurchasedCoupon_T() {
     	
-    	CustomerFacade cusF = null;
     	Set<Coupon> c = null;
 		try {
-			cusF = new CustomerFacade();
-			c = cusF.getAllPurchasedCoupons(SharingData.getIdsShare());
-		} catch (DaoExeption | ConnectorExeption e) {
+			c = cusF.getAllPurchasedCoupons();
+		} catch (DaoExeption e) {
 			System.out.println(e.getMessage());
 		}
     	if (c != null) {
     		System.out.println(c.toString());
     	}
-    	else {
-    		System.out.println("No coupons prchased");
-    	}
+//    	else {
+//    		System.out.println("No coupons prchased");
+//    	}
     }
 
     /**
@@ -1718,7 +1725,7 @@ public class testDeveloers {
     			getAllCustomers_T();
     			break;
     		}
-    		case 11: {
+    		case 11: { // Remove Coupon
     			System.out.println("Remove specific Coupon.." + "\n");
     			System.out.print("Enter Coupon ID: ");
     			long id = userInputLong();
@@ -1733,9 +1740,39 @@ public class testDeveloers {
 				} catch (FiledErrorException | DaoExeption e) {
 					System.out.println(e.getMessage());;
 				}
+    			break;
     		}
+    		case 12: { // Get Coupons By Category
+    			try {
+    				Set<Coupon> coupons = new HashSet<>();
+    				System.out.print("Type your Category: ");
+    				String category = userInputString();
+    				coupons = admF.getCouponByType(CouponType.valueOf(category.toUpperCase()));
+    				
+					System.out.println(coupons.toString());
+				} catch (DaoExeption | IllegalArgumentException e) {
+					System.out.println(e.getMessage());;
+				}
+    			printAdminFacadeMenu();
+    			break;
+    		} // case 12
+    		case 13: { // Get All Coupons
+    			try {
+    				System.out.println("List OF all Coupons: ");
+    				Set<Coupon> coupons = new HashSet<>();
+    				coupons = admF.getAllCoupons();
+    				
+					System.out.println(coupons.toString());
+				} catch (DaoExeption | IllegalArgumentException e) {
+					System.out.println(e.getMessage());;
+				}
+    			printAdminFacadeMenu();
+    			break;
+    	
+    		} // case 13
     		case 0: {
     			on = false;
+    			printAdminFacadeMenu();
     			break;
     		}
     		} // Switch
@@ -1844,9 +1881,13 @@ public class testDeveloers {
      			getAllCouponsByPrice_T();
      			break;
      		}
-     		case 8: {
-     			printGoingBackToUsage();
-     			printFacadeMenu();
+     		case 5: {
+     			System.out.println("Your Customer Details: ");
+     			try {
+					System.out.print(cusF.getCustomer());
+				} catch (DaoExeption e) {
+					System.out.println(e.getMessage());
+				}
      			break;
      		}
      		case 0: {
@@ -1867,7 +1908,24 @@ public class testDeveloers {
     	
     	
     	try {
-			TimeUnit.SECONDS.sleep(5);
+    		/* Loading Bar - just nice looking.
+    		 * but the real one should be conditional on the DailyTask. 
+    		 */
+    		for (long i = 0; i < 50; i++) {
+                System.out.print("=");
+
+                if (i % 20 == 100) {
+                    System.out.print("\r                   \r");
+                }
+                System.out.flush();
+        		Thread.sleep(100);
+
+            }
+
+    		// This letting the Daily Task 5 seconds untill we will done.
+    		System.out.println();
+
+
 			System.out.println("[Expired Coupos Deleted!]" + "\n");
 		} catch (InterruptedException e) {
 			System.out.println(e.getMessage());

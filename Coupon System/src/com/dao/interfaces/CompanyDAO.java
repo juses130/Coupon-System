@@ -26,8 +26,6 @@ public interface CompanyDAO {
 
 	public Collection<Company> getAllCompanies() throws DaoExeption;
 
-	public Collection<Coupon> getCoupons(long compID) throws DaoExeption;
-
 	public boolean login(String compName, String password) throws DaoExeption;
 
 

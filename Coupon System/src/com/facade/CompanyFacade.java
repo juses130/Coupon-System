@@ -33,6 +33,7 @@ public class CompanyFacade implements CouponClientFacade{
 		 *  Even if the user puts some incurrect inputs.
 		 *  the CompanyFacade will bring the RIGHT parameters by the company Name.
 		 */
+		this.compID = company.getId();
 		company.setId(this.compID);
 		compDao.addCoupon(coupon, company);
 		
@@ -41,10 +42,10 @@ public class CompanyFacade implements CouponClientFacade{
 	public Collection<Coupon> getAllCoupons() throws DaoExeption{
 
 		Collection<Coupon> coupons = new HashSet<>();
-		coupons = compDao.getCoupons(this.compID);
+		coupons = coupDao.getCoupons(compID, ClientType.COMPANY);
 		
 		return coupons;
-	}
+	} 
 	
 	public void removeCoupon(Coupon coupon) throws DaoExeption, FiledErrorException{
 		coupon.setOwnerID(this.compID);
@@ -75,10 +76,9 @@ public class CompanyFacade implements CouponClientFacade{
 		return coupon;
 	}
 	
-	public Set<Coupon> getCouponsByType(long custID, CouponType category) throws DaoExeption{
-		//TODO: create this function - NOT WORKING FOR NOW
+	public Set<Coupon> getCouponsByType(CouponType category) throws DaoExeption{
 
-		Set<Coupon> coupons = coupDao.getCouponByType("company_coupon", "comp_id" ,custID, category);
+		Set<Coupon> coupons = coupDao.getCouponByType(this.compID, category, ClientType.COMPANY);
 
 		return coupons;
 
@@ -86,8 +86,8 @@ public class CompanyFacade implements CouponClientFacade{
 	
 	public Set<Coupon> getCouponsOfCompanyByPrice(double maxPrice) throws DaoExeption{
 		//TODO: create this function - NOT WORKING FOR NOW
-		Set<Coupon> coupons = coupDao.getCouponByPrice("company_coupon" ,"comp_id", 0 ,maxPrice);
-		
+		Set<Coupon> coupons = null;
+//		
 		return coupons;	
 	}
 	

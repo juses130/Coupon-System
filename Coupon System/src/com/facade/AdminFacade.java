@@ -1,6 +1,8 @@
 package com.facade;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.dao.interfaces.CompanyDAO;
 import com.dao.interfaces.CouponDAO;
@@ -98,6 +100,10 @@ public class AdminFacade implements CouponClientFacade{
 			custDao.removeCustomer(customer);
 	}
 	
+	public void removeCoupon(Coupon coupon) throws DaoExeption, FiledErrorException{
+		coupDao.removeCoupon(coupon, ClientType.COMPANY);
+	}
+	
 	public void updateCustomer(Customer customer) throws DaoExeption{
 		custDao.updateCustomer(customer);
 	} // createCustomerA - function
@@ -109,7 +115,7 @@ public class AdminFacade implements CouponClientFacade{
 		
 		if(customer != null) {
 		// set the Collection of the Coupons.
-		customer.setCoupons(custDao.getCoupons(id));
+		customer.setCoupons(coupDao.getCoupons(customer.getId(), ClientType.CUSTOMER));
 		}
 		return customer;
 	}
@@ -122,7 +128,7 @@ public class AdminFacade implements CouponClientFacade{
 		
 		if(customer != null) {
 		// set the Collection of the Coupons.
-		customer.setCoupons(custDao.getCoupons(customer.getId()));
+		customer.setCoupons(coupDao.getCoupons(customer.getId(), ClientType.CUSTOMER));
 		}
 		return customer;
 	}
@@ -131,6 +137,27 @@ public class AdminFacade implements CouponClientFacade{
 		return custDao.getAllCustomers();
 	} // getAllCompaniesA - function
 
+	public Set<Coupon> getCouponByPrice(long id, long price, ClientType client) throws DaoExeption {
+		return coupDao.getCouponByPrice(id, price, client);
+	}
+	
+	public Set<Coupon> getCouponByType(CouponType category) throws DaoExeption {
+		/* we don't need an ID for the admin.. 
+		 * But we want to use this function from all the Facades, so
+		 * we need id for the two other facades.
+		 * 
+		 */
+		long id = 0;
+		return coupDao.getCouponByType(id, category ,ClientType.ADMIN);
+	}
+
+	public Set<Coupon> getAllCoupons() throws DaoExeption {
+		
+		Set<Coupon> coupons = coupDao.getCoupons(0, ClientType.ADMIN);
+		return coupons;
+		
+	}
+	
 	@Override
 	public AdminFacade login(String adminName, String password, ClientType client) throws LoginException , DaoExeption {
 		if(adminName.toLowerCase().equals(adminUser) && String.valueOf(password).equals(adminPassword) 
@@ -143,9 +170,6 @@ public class AdminFacade implements CouponClientFacade{
 		
 	}
 	
-	public void removeCoupon(Coupon coupon) throws DaoExeption, FiledErrorException{
-		coupDao.removeCoupon(coupon, ClientType.COMPANY);
-	}
-
+	
 	
 }

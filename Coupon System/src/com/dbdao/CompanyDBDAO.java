@@ -2,7 +2,6 @@ package com.dbdao;
 
 import java.sql.*;
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.Collection;
 
 
@@ -10,13 +9,9 @@ import java.util.*;
 
 import com.added.functions.DBconnectorV3;
 import com.dao.interfaces.*;
-import com.exeptionerrors.DaoExeption;
-import com.exeptionerrors.FiledErrorException;
-import com.exeptionerrors.LoginException;
+import com.exeptionerrors.*;
 import com.facade.ClientType;
 import com.javabeans.*;
-import com.sun.xml.internal.bind.v2.model.core.ID;
-import com.sun.xml.internal.fastinfoset.DecoderStateTables;
 
 /**
  * This is Company Database DAO Class. (DBDAO in short)</p>
@@ -137,7 +132,7 @@ public class CompanyDBDAO implements CompanyDAO {
 
 				} // try
 				catch (SQLException | NullPointerException | FiledErrorException e) {
-					throw new DaoExeption("Error: Creating Coupon By Company- FAILED (something went wrong..)");			
+					throw new DaoExeption("Error: Creating Coupon By Company- FAILED (something went wrong..)");
 				} // catch
 				return coupon;
 			} // if - it's bought before
@@ -309,17 +304,6 @@ public class CompanyDBDAO implements CompanyDAO {
 		return companies;
 	} // getAllCompanies
 
-	@Override
-	public Collection<Coupon> getCoupons(long compID) throws DaoExeption{
-		// TODO: security brich = every connected company can get all the coupon from others..
-
-		Collection<Coupon> coupons = new HashSet<>();
-		CouponDBDAO  couponDB = new CouponDBDAO();
-		
-		coupons = couponDB.getAllCoupons(compID, ClientType.COMPANY);
-		return coupons;
-	}
-	
 	/* Here it's 3 pirvate methods. my add on to this class.
 	*  the Two last methods 'exist' - can be in some public class.
 	*  but all the work, like connection to database, and checks, and exception.. 

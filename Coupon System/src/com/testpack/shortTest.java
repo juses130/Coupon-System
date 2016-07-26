@@ -148,8 +148,8 @@ public class shortTest {
 //		}
 //		System.out.println(coup.toString());
 		try {
-			addCouponsByCompany(5);
-			Coupon coupon = new Coupon();
+			addCouponsByCompany(8);
+//			Coupon coupon = new Coupon();
 //			Company company = new Company();
 //			coupon.setTitle("ComputerA0");
 //			company.setId(4);
@@ -174,7 +174,7 @@ public class shortTest {
 			comF = new CompanyFacade();
 			custF = new CustomerFacade();
 			
-			for(int i = 0; i < 100; i++) {
+			for(int i = 1; i < 100; i++) {
 				Coupon coup = new Coupon();
 				Company comp = new Company();
 //				Customer customer = new Customer();
@@ -184,10 +184,10 @@ public class shortTest {
 				
 				coup.setAmount(i);
 				coup.setMessage("check message");
-				coup.setTitle("Compitt" + i);
+				coup.setTitle("iphone" + i );
 				coup.setPrice(i + 50);
 				coup.setStartDate(LocalDate.of(2018, 1, 1));
-				coup.setType(CouponType.valueOf("TRAVEL"));
+				coup.setType(CouponType.valueOf("ELECTRONICS"));
 				coup.setEndDate(LocalDate.of(2020, 1, 1));
 				coup.setImage("no image");
 				coup.setOwnerID(id);

@@ -2,8 +2,8 @@
 <classpath>
 	<classpathentry excluding="com/checkpackage/|com/unusedclasses/|checkingpack/|com/added/functions/IsExistDB.java|com/added/functions/DataRowGetter.java" kind="src" path="src"/>
 	<classpathentry kind="lib" path="C:/Users/Kill130/Google Drive/java/סיכומים/3. Java Basic/3. Basic Java Programming/ארכיון סיכומים/29.5.16/mysql-connector-java-5.1.39/mysql-connector-java-5.1.39-bin.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="D:/תוכנות/Java Lab/c3p0-0.9.5.2.jar"/>
 	<classpathentry kind="lib" path="D:/תוכנות/Java Lab/mchange-commons-java-0.2.11.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

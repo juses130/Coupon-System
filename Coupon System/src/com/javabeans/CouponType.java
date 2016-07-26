@@ -9,6 +9,8 @@ public enum CouponType {
 	HEALTH,
 	SPORT, 
 	CAMPING, 
-	TRAVEL
+	TRAVEL,
+	MUSIC,
+	GAMING
 	
 }

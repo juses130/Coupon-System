@@ -1,5 +1,6 @@
 package com.facade;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import com.dao.interfaces.*;
@@ -10,6 +11,7 @@ import com.task.and.singleton.CouponSystem;
 
 public class CustomerFacade implements CouponClientFacade {
 
+	private long custID;
 //	private CompanyDAO compDao = null;
 	private CustomerDAO custDao = null;
 	private CouponDAO coupDao = null;
@@ -25,7 +27,8 @@ public class CustomerFacade implements CouponClientFacade {
 		}
     	
     	if(loginSuccessful == true) {
-    		
+    		Customer customer = custDao.getCustomer(custName);
+    		this.custID = customer.getId();
     		return this;
     	}
     	else {
@@ -49,21 +52,20 @@ public class CustomerFacade implements CouponClientFacade {
 		
 	} // purchaseCoupon
 	
-	public Customer getCustomer(long id) throws DaoExeption {
+	public Customer getCustomer() throws DaoExeption {
 		Customer customer = new Customer();
-		customer = custDao.getCustomer(id);
+		customer = custDao.getCustomer(this.custID);
 		return customer;
 	}
 	
-	public Set<Coupon> getAllPurchasedCoupons(long custID) throws DaoExeption {
-		
-		Set<Coupon> coupons = custDao.getCoupons(custID);
+	public Set<Coupon> getAllPurchasedCoupons() throws DaoExeption {
+		Set<Coupon> coupons = coupDao.getAllCoupons(custID, ClientType.CUSTOMER);
 		return coupons;
 		
 	} // getAllCoupons
 	
 	public Set<Coupon> getAllCouponsByPrice(long custID ,double maxPrice) throws DaoExeption {
-		Set<Coupon> coupons = custDao.getCouponByPrice("customer_coupon", "Cust_id", custID, maxPrice);
+		Set<Coupon> coupons = new HashSet<>();
 		
 		return coupons;	
 	}

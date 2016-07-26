@@ -1,25 +1,13 @@
 package com.task.and.singleton;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import com.added.functions.DBconnectorV3;
 import com.dao.interfaces.*;
-import com.exeptionerrors.ConnectorExeption;
 import com.exeptionerrors.DaoExeption;
-import com.exeptionerrors.FiledErrorException;
-import com.facade.CompanyFacade;
-import com.javabeans.*;
-import com.sun.corba.se.spi.orbutil.fsm.State;
 
 /**
  * This is Version 2 of this Class.
@@ -54,7 +42,7 @@ public class DailyCouponExpirationTask implements Runnable {
 			while (running) {
 			System.out.println("\n" + "Wait! - " +"[Deleting Expired Coupons]");
 			deleteCoupon();
-			
+
 			running = false;
 
 		} //while - running
