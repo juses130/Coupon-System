@@ -43,10 +43,10 @@ public class CustomerFacade implements CouponClientFacade {
 		coupDao = CouponSystem.getInstance().getCouponDao();
 	}
 	
-	public Coupon purchaseCoupon(Coupon coupon, Customer customer) throws DaoExeption {
+	public Coupon purchaseCoupon(Coupon coupon) throws DaoExeption {
 
 		coupon = coupDao.getCoupon(coupon.getId(), ClientType.CUSTOMER);
-		custDao.addCoupon(coupon, customer);
+		custDao.addCoupon(coupon, custID);
 		
 		return coupon;
 		
@@ -59,7 +59,7 @@ public class CustomerFacade implements CouponClientFacade {
 	}
 	
 	public Set<Coupon> getAllPurchasedCoupons() throws DaoExeption {
-		Set<Coupon> coupons = coupDao.getAllCoupons(custID, ClientType.CUSTOMER);
+		Set<Coupon> coupons = coupDao.getCoupons(custID, ClientType.CUSTOMER);
 		return coupons;
 		
 	} // getAllCoupons

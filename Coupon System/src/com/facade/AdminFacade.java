@@ -137,8 +137,8 @@ public class AdminFacade implements CouponClientFacade{
 		return custDao.getAllCustomers();
 	} // getAllCompaniesA - function
 
-	public Set<Coupon> getCouponByPrice(long id, long price, ClientType client) throws DaoExeption {
-		return coupDao.getCouponByPrice(id, price, client);
+	public Set<Coupon> getCouponByPrice(double maxPrice) throws DaoExeption {
+		return coupDao.getCouponByPrice(0, maxPrice, ClientType.ADMIN);
 	}
 	
 	public Set<Coupon> getCouponByType(CouponType category) throws DaoExeption {

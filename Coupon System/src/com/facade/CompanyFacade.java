@@ -85,8 +85,7 @@ public class CompanyFacade implements CouponClientFacade{
 	}
 	
 	public Set<Coupon> getCouponsOfCompanyByPrice(double maxPrice) throws DaoExeption{
-		//TODO: create this function - NOT WORKING FOR NOW
-		Set<Coupon> coupons = null;
+		Set<Coupon> coupons = coupDao.getCouponByPrice(compID, maxPrice, ClientType.COMPANY);
 //		
 		return coupons;	
 	}

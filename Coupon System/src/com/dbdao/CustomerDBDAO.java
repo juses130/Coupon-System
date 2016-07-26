@@ -1,23 +1,17 @@
 package com.dbdao;
 
-import java.security.acl.Owner;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
-
 import com.added.functions.DBconnectorV3;
 import com.dao.interfaces.CustomerDAO;
 import com.exeptionerrors.DaoExeption;
 import com.exeptionerrors.FiledErrorException;
-import com.facade.ClientType;
 import com.facade.DetectionBy;
 import com.javabeans.Coupon;
-import com.javabeans.CouponType;
 import com.javabeans.Customer;
 
 /**
@@ -85,9 +79,16 @@ public class CustomerDBDAO implements CustomerDAO {
 			} // createCompany - Function
 
 	@Override
-	public Coupon addCoupon(Coupon coupon, Customer customer) throws DaoExeption {
-		coupon = addCouponMethod(coupon, customer);
-		return coupon;
+	public Coupon addCoupon(Coupon coupon, long custID) throws DaoExeption {
+		
+		if(purchasedBefore(coupon.getId(), custID) == false) {
+			coupon = addCouponMethod(coupon, custID);
+			return coupon;	
+		}
+		else {
+			throw new DaoExeption("Error: Purchase Coupon - FAILED (The coupon has been purchased before)");			
+		}
+		
 	}
 	
 	
@@ -343,7 +344,7 @@ public class CustomerDBDAO implements CustomerDAO {
 	*/
 	
 
-	private Coupon addCouponMethod(Coupon coupon, Customer customer) throws DaoExeption {
+	private Coupon addCouponMethod(Coupon coupon, long custID) throws DaoExeption {
 //		if(existInCustomer?(coupon, company, CheckCouponBy.BY_NAME) == false ) {
 		
 			try{
@@ -352,7 +353,7 @@ public class CustomerDBDAO implements CustomerDAO {
 				 * create the coupon in the Company_Coupon Table.
 				*/
 				String sqlAddCoupon = "INSERT INTO customer_coupon (cust_id, coup_id)" 
-				+ "VALUES(" + customer.getId() + "," + coupon.getId() + ")";	
+				+ "VALUES(" + custID + "," + coupon.getId() + ")";	
 				
 				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlAddCoupon);
 				prep.executeUpdate();
@@ -366,11 +367,33 @@ public class CustomerDBDAO implements CustomerDAO {
 			} // catch
 			return coupon;
 		} // if - it's bought before
-//		else {
-//			throw new DaoExeption("Error: Creating Coupon By Company - FAILED (You can create only ONE coupon with the same name!)");
-//		} // else - it's bought before
 
 
+	private boolean purchasedBefore(long coupID, long custID) throws DaoExeption {
+		boolean isExist = false;
+		
+		String sqlQuery = "SELECT coupon.* "
+				+ "FROM customer_coupon "
+				+ "LEFT JOIN coupon USING (coup_id) "
+				+ "WHERE customer_coupon.cust_id =" + custID + " "
+				+ "AND customer_coupon.Coup_ID=" + coupID;
+		
+		PreparedStatement prep;
+		try {
+			
+			prep = DBconnectorV3.getConnection().prepareStatement(sqlQuery);
+			ResultSet rs = prep.executeQuery();
+			rs.next();
+			if(rs.getRow() != 0) {
+				isExist = true;
+			} // if - getRow
+			
+		} catch (SQLException e) {
+			throw new DaoExeption("Error: Checking You're Purchase History - FAILED (something went wrong..)");			
+		}
+		
+		return isExist;
+	}
 	
    private boolean existOrNotByID(Customer customer) throws DaoExeption {
 		

@@ -134,22 +134,26 @@ public class testDeveloers {
 	public static void printAdminFacadeMenu() {
 		System.out.println( "\n" + 
 				 "***** Admin Facade Usage ***** " + "\n");
-		System.out.println("Company Part:");
+		System.out.println("Company Part: ");
 		System.out.println("1. Create Company."
 				+ "\n" + "2. Remove Company."
 				+ "\n" + "3. Update Company"
 				+ "\n" + "4. Get Company By ID."
 				+ "\n" + "5. Get All Companies."
 				+ "\n");
-		System.out.println("Customer Part:");
+		System.out.println("Customer Part: ");
 		System.out.println("6. Create Customer."
 				+ "\n" + "7. Remove Customer."
 				+ "\n" + "8. Update Customer"
 				+ "\n" + "9. Get Customer By ID."
 				+ "\n" + "10. Get All Customers."
-				+ "\n" + "11. Remove Coupon."
-				+ "\n" + "12.  Get Coupons By Type (Category)."
-				+ "\n" + "13.  Get All Coupons in the DataBase."
+				+ "\n");
+		System.out.print("Extra Part: ");
+		System.out.print(
+				  "\n" + "11. Remove Coupon."
+				+ "\n" + "12. Get Coupons By Type (Category)."
+				+ "\n" + "13. Get All The Coupons Up to Maxium-Price."
+				+ "\n" + "14. Get All Coupons in the DataBase."
 				+ "\n" + "0. Quit."
 				+ "\n");
 		
@@ -328,7 +332,7 @@ public class testDeveloers {
 		
 		try {
 			short choice = scanner.nextShort();
-			if (choice < 14 && choice > -1) {
+			if (choice <= 14 && choice > -1) {
 				return choice;
 			} // IF - choice
 			else {
@@ -379,6 +383,16 @@ public class testDeveloers {
 		Scanner scanner = new Scanner(System.in);
 		//scanner.close();
 		return scanner.nextLine();
+		
+
+	} // userInputString
+	
+	private static Double userInputDouble(){
+		System.out.print("->> ");
+		//@SuppressWarnings("resource")
+		Scanner scanner = new Scanner(System.in);
+		//scanner.close();
+		return scanner.nextDouble();
 		
 
 	} // userInputString
@@ -1138,14 +1152,14 @@ public class testDeveloers {
     private static void getAllCouponsOfCompanyByPrice_T() {
     	System.out.println("Here is your Company Coupons List: ");
     	
-    	Scanner sc = new Scanner(System.in);
     	System.out.print("Type your Maximum Price: ");
-    	double maxPrice = sc.nextDouble();
+    	double maxPrice = userInputDouble();
 
     	
     	try {
 			Set<Coupon> coupons = compF.getCouponsOfCompanyByPrice(maxPrice);
-			System.out.println(coupons.toString());
+			System.out.println(coupons.toString() + "\n");
+			System.out.println("Results: [" + coupons.size() + "] Coupons");
 		} catch (DaoExeption e) {
 			System.out.println(e.getMessage());
 		}
@@ -1260,10 +1274,7 @@ public class testDeveloers {
 //    		System.out.print("Enter Your Password: ");
 //    		SharingData.setVarchar2(userInputString());
     		try {
-    			
-				Customer customer = new Customer();
-				customer = cusF.getCustomer();
-				
+    							
     	
     	System.out.print("Type the Coupon ID (Or '0' for exit): ");
     	long coupID = sc.nextLong();
@@ -1274,7 +1285,7 @@ public class testDeveloers {
 		    	Coupon coupon = new Coupon();
 
 		    	coupon.setId(coupID);
-		    	coupon = cusF.purchaseCoupon(coupon, customer);
+		    	coupon = cusF.purchaseCoupon(coupon);
 		    	if(coupon.getTitle() != null) {
 			    	System.out.println(coupon.toString());
 		    	}
@@ -1660,17 +1671,7 @@ public class testDeveloers {
     	
     	// Note: AdminFacade Usage Print is in the login Option.
     	boolean existOrNot = login_T();
-    	
-    	
-//    	CouponClientFacade ad = null;
-//    	AdminFacade adm = new AdminFacade();
-////    	ad = null;
-//    	ad = CouponSystem.getInstance().login("admin", "1234", ClientType.ADMIN);
-//    	System.out.println(ad);
-//    	System.out.println(adm);
-//    	if(existOrNot == true) {
-//			
-//		}
+ 
     	if(existOrNot != true) {
     		printNoExistOrCurrect();
     		printGoingBackToUsage();
@@ -1749,27 +1750,48 @@ public class testDeveloers {
     				String category = userInputString();
     				coupons = admF.getCouponByType(CouponType.valueOf(category.toUpperCase()));
     				
-					System.out.println(coupons.toString());
+					System.out.println(coupons.toString() + "\n");
+					System.out.println("Results: [" + coupons.size() + "] Coupons");
 				} catch (DaoExeption | IllegalArgumentException e) {
 					System.out.println(e.getMessage());;
 				}
     			printAdminFacadeMenu();
     			break;
     		} // case 12
-    		case 13: { // Get All Coupons
+    		case 13: { // Get All coupon Up to price
+    			try {
+    				System.out.print("Type Your Maximum Price: ");
+    				double price = userInputDouble();
+    				System.out.println("Max Price: [" + price + "]");
+    				System.out.println("List OF all Coupons By Maximum Price: ");
+    				Set<Coupon> coupons = new HashSet<>();
+    				coupons = admF.getCouponByPrice(price);
+    				
+					System.out.println(coupons.toString() + "\n");
+					System.out.println("Results: [" + coupons.size() + "] Coupons");
+
+				} catch (DaoExeption | IllegalArgumentException e) {
+					System.out.println(e.getMessage());;
+				}
+    			printAdminFacadeMenu();
+    			break;
+    		}
+    		case 14: { // Get All Coupons
     			try {
     				System.out.println("List OF all Coupons: ");
     				Set<Coupon> coupons = new HashSet<>();
     				coupons = admF.getAllCoupons();
     				
-					System.out.println(coupons.toString());
+					System.out.println(coupons.toString() + "\n");
+					System.out.println("Results: [" + coupons.size() + "] Coupons");
+
 				} catch (DaoExeption | IllegalArgumentException e) {
 					System.out.println(e.getMessage());;
 				}
     			printAdminFacadeMenu();
     			break;
     	
-    		} // case 13
+    		} // case 14
     		case 0: {
     			on = false;
     			printAdminFacadeMenu();
@@ -1971,26 +1993,4 @@ public class testDeveloers {
     }
 
 
-	
-//    @Override
-//	public CouponClientFacade login(String userName, String password, ClientType type)
-//			throws LoginException, DaoExeption, ConnectorExeption {
-//    	
-//    	
-//		return this;
-//	}
-
-
-    /*/***********************************************
-	 *****      Miscellaneous Section            ****
-	 ************************************************
-	 *
-	 * All the methods and the functions in this section are not requested by
-	 * the project guide.
-	 * They are only for help and maintenance.
-	 *
-	 * @author Raziel
-     */ 
-
-    
 } // Class	
