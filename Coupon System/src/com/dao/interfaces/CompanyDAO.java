@@ -7,6 +7,8 @@ import com.javabeans.*;
 
 public interface CompanyDAO {
 
+	public boolean login(String compName, String password) throws DaoExeption;
+
 	public void createCompany(Company company) throws DaoExeption;
 	
 	public void removeCompany(Company company) throws DaoExeption;
@@ -19,14 +21,9 @@ public interface CompanyDAO {
 
 	public Company getCompany(long id) throws DaoExeption;
 	
-	public Coupon getCoupon(Coupon coupon, Company company) throws DaoExeption;
-
-
 	public Company getCompany(String compName) throws DaoExeption;
 
 	public Collection<Company> getAllCompanies() throws DaoExeption;
-
-	public boolean login(String compName, String password) throws DaoExeption;
 
 
 

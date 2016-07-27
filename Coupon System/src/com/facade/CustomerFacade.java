@@ -11,7 +11,7 @@ import com.task.and.singleton.CouponSystem;
 
 public class CustomerFacade implements CouponClientFacade {
 
-	private long custID;
+	private Customer customer;
 //	private CompanyDAO compDao = null;
 	private CustomerDAO custDao = null;
 	private CouponDAO coupDao = null;
@@ -27,8 +27,7 @@ public class CustomerFacade implements CouponClientFacade {
 		}
     	
     	if(loginSuccessful == true) {
-    		Customer customer = custDao.getCustomer(custName);
-    		this.custID = customer.getId();
+    		this.customer = custDao.getCustomer(custName);
     		return this;
     	}
     	else {
@@ -46,7 +45,7 @@ public class CustomerFacade implements CouponClientFacade {
 	public Coupon purchaseCoupon(Coupon coupon) throws DaoExeption {
 
 		coupon = coupDao.getCoupon(coupon.getId(), ClientType.CUSTOMER);
-		custDao.addCoupon(coupon, custID);
+		custDao.addCoupon(coupon, customer.getId());
 		
 		return coupon;
 		
@@ -54,12 +53,12 @@ public class CustomerFacade implements CouponClientFacade {
 	
 	public Customer getCustomer() throws DaoExeption {
 		Customer customer = new Customer();
-		customer = custDao.getCustomer(this.custID);
+		customer = custDao.getCustomer(this.customer.getId());
 		return customer;
 	}
 	
 	public Set<Coupon> getAllPurchasedCoupons() throws DaoExeption {
-		Set<Coupon> coupons = coupDao.getCoupons(custID, ClientType.CUSTOMER);
+		Set<Coupon> coupons = coupDao.getCoupons(customer.getId(), ClientType.CUSTOMER);
 		return coupons;
 		
 	} // getAllCoupons

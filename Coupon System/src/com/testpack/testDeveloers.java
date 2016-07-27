@@ -1503,7 +1503,7 @@ public class testDeveloers {
 //			System.out.println(ownerName);
 //			company = admF.getCompany(ownerName);
 
-			compF.addCoupon(coup, company);
+			compF.addCoupon(coup);
 			System.out.println(coup.toString());
 			System.out.println("------------ Coupon Added Successfully ----------" + "\n");
 

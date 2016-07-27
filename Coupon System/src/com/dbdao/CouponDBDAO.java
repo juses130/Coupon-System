@@ -8,6 +8,7 @@ import com.dao.interfaces.CouponDAO;
 import com.exeptionerrors.DaoExeption;
 import com.exeptionerrors.FiledErrorException;
 import com.facade.ClientType;
+import com.javabeans.Company;
 import com.javabeans.Coupon;
 import com.javabeans.CouponType;
 
@@ -24,8 +25,44 @@ public class CouponDBDAO implements CouponDAO{
 	
 	@Override
 	public Coupon createCoupon(Coupon coupon) throws DaoExeption{
-		//TODO: what to do here?
-		return coupon;
+
+		// We need to Check if the Company ownes this coupon before.
+		if(isExistInJoinTables(coupon, CheckCouponBy.BY_ID) == true || isExistInJoinTables(coupon, CheckCouponBy.BY_NAME) == true) {
+			throw new DaoExeption("Error: Creating Coupon By Company - FAILED (You can create only ONE coupon with the same name!)");
+		}
+		else {
+
+			try{
+				
+				String sqlAddCoupon = "INSERT INTO coupon (Title, Start_Date, End_Date, " + 
+						"Amount, Category, Message, Price, Image, Owner_ID)" + "VALUES(?,?,?,?,?,?,?,?,?)";	
+				
+				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlAddCoupon, Statement.RETURN_GENERATED_KEYS);
+				prep.setString(1, coupon.getTitle());
+				prep.setDate(2, Date.valueOf(coupon.getStartDate()));
+				prep.setDate(3, Date.valueOf(coupon.getEndDate()));
+				prep.setInt(4, coupon.getAmount());
+				prep.setString(5, coupon.getType().toString());
+				prep.setString(6, coupon.getMessage());
+				prep.setDouble(7, coupon.getPrice());
+				prep.setString(8, coupon.getImage());
+				prep.setLong(9, coupon.getOwnerID());
+				
+				prep.executeUpdate();
+				ResultSet rs = prep.getGeneratedKeys();
+				rs.next();
+				long id = rs.getLong(1);
+				coupon.setId(id);
+				
+				prep.clearBatch();
+
+			} // try
+			catch (SQLException | NullPointerException | FiledErrorException e) {
+				throw new DaoExeption("Error: Creating Coupon By Company- FAILED (something went wrong..)");
+			} // catch
+			return coupon;
+		} // else - isExistInJoinTables
+		
 	} // createCoupon - function
 
 	@Override
@@ -405,6 +442,77 @@ public class CouponDBDAO implements CouponDAO{
  		  return answer;
  	}
 
+    private boolean isExistInJoinTables(Coupon coupon, CheckCouponBy coupOption) throws DaoExeption {
+    	
+    	boolean answer = false;
+
+    	if(coupOption == CheckCouponBy.BY_ID) {
+    		
+    		try {
+        		
+        		String sqlName = "SELECT coupon.Coup_id, company_coupon.Coup_ID, company_coupon.comp_ID "
+        				+ "FROM company_coupon, coupon "
+        				+ "WHERE company_coupon.Coup_ID =" + coupon.getId()
+        				+ " AND coupon.Coup_id=" + coupon.getId()
+        				+ " AND company_coupon.comp_ID=" + coupon.getOwnerID();
+        		
+        		Statement stat = DBconnectorV3.getConnection().createStatement();
+        		ResultSet rs = stat.executeQuery(sqlName);
+    			rs.next();
+    					   
+    			if (rs.getRow() != 0) {
+    				answer = true;
+    			} // if
+    		} catch (SQLException e) {
+    			throw new DaoExeption("Error: cannot make sure if the coupon is in the DataBase");
+    		}
+    		return answer;
+    	}
+    	else if(coupOption == CheckCouponBy.BY_NAME) { 
+    		
+    		/* Here, the function will check and compare if the company has this coupon WITHOUT KNOWING 
+    		 * the coupon ID in first place. based on his String Name (title).
+    		 * 2 Reasons I did it.
+    		 * 1. I've added this option because I'm not sure if we will allow to have Duplicated Coupons name. 
+    		 * why? 
+    		 * For example, Samsung USA and Samsung Israel sign in to my DataBase. 
+    		 * and now, samsung Israel selling a Galaxy 5, AND samsung USA ALL SO wants to sell Galaxy 5. 
+    		 * it's the same name, with the same attributes. 
+    		 * This is a tapically situtation that CAN happend.
+    		 * 
+    		 * 2. When a company created a NEW coupon, the SQL DataBase gives it an ID number. 
+    		 * The user cannot choose ID. so the user send here a coupon - without ID number.. 
+    		 * And there is the main issue: We can't compare it. the ID is Zero (default).
+    		 * 
+    		 * That's why we can also comparing it with Names (String - Coupon Title).
+    		 * 
+    		 */
+        try {
+        		String sqlName = "SELECT coupon.* "
+        				+ "FROM company_coupon, coupon "
+        				+ "WHERE coupon.title='" + coupon.getTitle() + "' "
+        				+ "AND company_coupon.comp_ID=" + coupon.getOwnerID() 
+        				+ " AND company_coupon.Coup_ID = coupon.Coup_id";
+        		
+        		Statement stat = DBconnectorV3.getConnection().createStatement();
+        		ResultSet rs = stat.executeQuery(sqlName);
+    			rs.next();
+    					   
+    			if (rs.getRow() != 0) {
+    				answer = true;
+    			} // if
+    		} catch (SQLException e) {
+    			throw new DaoExeption("Error: cannot make sure if the coupon is in the DataBase");
+    		}
+    		return answer;
+    	}
+    	else {
+    		throw new DaoExeption("Error: Access Denied! (something wrong with the Coupon Parameters..)");
+    		
+    	} // else
+
+    }// bothExistInSameTable
+    
     private Coupon getCouponMethod(long id, ClientType client) throws DaoExeption {
 		Coupon coupon = new Coupon();
 		/* We set the ID for the existOrNot check method.
@@ -506,7 +614,6 @@ public class CouponDBDAO implements CouponDAO{
 			try {
 				coupon.setId(id);
 			if(existOrNotByID(coupon) == true) {
-				if(isCouponInStock(coupon) == true) {
 					
 					String title, message, image;
 					Date stDate, enDate ;	
@@ -537,10 +644,6 @@ public class CouponDBDAO implements CouponDAO{
 
 					
 					return coupon;
-				} // if - isCouponInStock
-				else {
-					throw new DaoExeption("Error: Purchase Coupon - FAILD (The coupon out of stock)");
-				}
 				
 			} // if - exist
 			else {
@@ -555,36 +658,6 @@ public class CouponDBDAO implements CouponDAO{
 			throw new DaoExeption("Error: Getting Coupon - FAILED (Unidentified user)");
 		}
 		
-    }
-    
-    private boolean isCouponInStock(Coupon coupon) throws DaoExeption {
-    	
-    	boolean inStock = false;
-    	
-    	
-    	
-		try {
-			String sqlQuery = "SELECT coupon.* "
-	    			+ "FROM coupon "
-	    			+ "WHERE coupon.Coup_id =" + coupon.getId() + " "
-	    			+ "AND coupon.Amount > 0";
-	    	
-			PreparedStatement prep;
-			prep = DBconnectorV3.getConnection().prepareStatement(sqlQuery);
-			ResultSet rs = prep.executeQuery();
-			rs.next();
-			if(rs.getRow() != 0) {
-				inStock = true;
-			} // if - hasrow
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new DaoExeption("Error: Checking If Coupon In Stock - FAILED (something went wrong)");
-			
-		} // catch
-    	
-    	return inStock;
-    	
     }
 
 	/**
@@ -694,5 +767,6 @@ public class CouponDBDAO implements CouponDAO{
 		}
 		return coupons;
 	}
+
 	
 } // Class

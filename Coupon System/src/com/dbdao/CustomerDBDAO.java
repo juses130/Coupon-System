@@ -50,8 +50,8 @@ public class CustomerDBDAO implements CustomerDAO {
 	@Override
 	public void createCustomer(Customer customer) throws DaoExeption{
 		
-		// check if the cost not exist && if the instances are not empty
-		if (existOrNotByID(customer) == false) {
+		// check if the cost not exist (Name and ID)
+		if (existOrNotByID(customer) == false && existOrNotByName(customer.getCustName()) == false) {
 			try {
 				
 				String sqlQuery = "INSERT INTO customer (CUST_NAME, PASSWORD) VALUES(?,?)";
@@ -229,31 +229,6 @@ public class CustomerDBDAO implements CustomerDAO {
 		
 		return customers;
 	} // getAllCompanies
-
-	/**
-	 * 
-	* <p>This is a Private remove method.</p>
-	 * It is an add on. from here the function will delete the customer from the tabels.
-	 * 
-	 * @param long id
-	 * @param String table
-	 * 
-	 * @author Raziel
-	 */
-	
-	private void removeMethodPart1(long id) throws DaoExeption{
-		
-		try {			
-			String sqlDELid = "DELETE FROM customer WHERE Cust_ID=" + id;
-			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlDELid);
-			prep.executeUpdate();
-			
-		}
-		catch (SQLException e) {
-			throw new DaoExeption("Error: Removing Customer - FAILED");
-		}
-		
-	} // removeMethodPart1
 	
 	/**
 	 * 
@@ -345,29 +320,52 @@ public class CustomerDBDAO implements CustomerDAO {
 	
 
 	private Coupon addCouponMethod(Coupon coupon, long custID) throws DaoExeption {
-//		if(existInCustomer?(coupon, company, CheckCouponBy.BY_NAME) == false ) {
-		
+					
 			try{
-				/* creating the coupon in Coupon Table First. 
-				 * and if we don't get Exception it will move on to 
-				 * create the coupon in the Company_Coupon Table.
-				*/
-				String sqlAddCoupon = "INSERT INTO customer_coupon (cust_id, coup_id)" 
-				+ "VALUES(" + custID + "," + coupon.getId() + ")";	
-				
-				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlAddCoupon);
-				prep.executeUpdate();
+				// check if we have the coupon in stock
+				String sqlCheckAmount = "SELECT coupon.*"
+						+ "FROM coupon "
+						+ "WHERE coupon.Coup_id=" + coupon.getId() + " " 
+						+ "AND coupon.Amount > 0";
+				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlCheckAmount);
+				ResultSet rs = prep.executeQuery();
+				rs.next();
+				int currentAmount = 0;
+				if(rs.getRow() != 0) {
+					currentAmount = rs.getInt("amount");
+					currentAmount = currentAmount - 1;
+				}
+				else {
+					throw new DaoExeption("Error: Purchase Coupon - FAILD (The coupon out of stock)");
+				}
+				// clearing the statement.
 				prep.clearBatch();
 				
+				// Updating the amount
+				String sqlUpdateAmount = "UPDATE `coupon`.`coupon` "
+						+ "SET `Amount`='" + currentAmount + "' "
+						+ "WHERE `Coup_id`='" + coupon.getId() +"'";
+				prep = DBconnectorV3.getConnection().prepareStatement(sqlUpdateAmount);
+				prep.executeUpdate();
+				
+				// Clearing the statement
+				prep.clearBatch();
+
+				// Adding the coupon to customer_coupon
+				String sqlAddCoupon = "INSERT INTO customer_coupon (cust_id, coup_id)" 
+				+ "VALUES(" + custID + "," + coupon.getId() + ")";	
+				prep = DBconnectorV3.getConnection().prepareStatement(sqlAddCoupon);
+				prep.executeUpdate();
+				prep.clearBatch();
+//	
 
 			} // try
 			catch (SQLException | NullPointerException e) {
-				e.printStackTrace();
 				throw new DaoExeption("Error: Creating Coupon By Customer- FAILED (something went wrong..)");			
 			} // catch
 			return coupon;
-		} // if - it's bought before
 
+	}
 
 	private boolean purchasedBefore(long coupID, long custID) throws DaoExeption {
 		boolean isExist = false;
@@ -469,10 +467,5 @@ public class CustomerDBDAO implements CustomerDAO {
 		
 		return DetectionBy.NONE;
 	}
-
-
-
-
-
 
 }

@@ -1,0 +1,44 @@
+body {
+	direction: rtl;
+	text-align: center;
+	font-family: 'Noto Sans Hebrew', sans-serif;
+}
+main {
+	max-width: 600px;
+	margin: 0 auto;
+	background-color: #EEE;
+}
+h4{
+	color: #14A9C7
+}
+
+img {
+	max-width:600px;
+}
+
+p {
+	font-size: 15px
+}
+section.logo_top {
+	text-align: center;
+	width: 100%;
+	background-color: #001E3A;
+	
+}
+
+ul {
+	padding: 0;
+}
+
+ul li {
+	list-style-type: none;
+	display: inline-block;
+}
+
+a.more_info {
+	padding: 3px 20px;
+	background-color: #46B4CB;
+	text-decoration: none;
+	color: #fff;
+	border: 1px solid #2F839D;
+}

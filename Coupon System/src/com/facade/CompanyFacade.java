@@ -13,7 +13,7 @@ import com.task.and.singleton.CouponSystem;
 
 public class CompanyFacade implements CouponClientFacade{
 	
-	private long compID;
+	private Company company;
 //	private String compPassword;
 	private CompanyDAO compDao = null;
 	private CouponDAO coupDao = null;
@@ -26,15 +26,27 @@ public class CompanyFacade implements CouponClientFacade{
 	} // CompanyFacade()- Constructor
 	
 	
-	public void addCoupon(Coupon coupon, Company company) throws DaoExeption{
+	@Override
+	public CompanyFacade login(String compName, String password, ClientType type) throws LoginException ,DaoExeption {
+    	boolean loginSuccessful  = false;
+    	
+			loginSuccessful = compDao.login(compName, password);
+
+			if(loginSuccessful == true) {
+				// If the login was Successful, save it in the private Company instance.
+				this.company = compDao.getCompany(compName);
+	    		return this;
+	    	}
+			else {
+			throw new LoginException("Error: Company Login - FAILED (Unidentified user)");
+			}
+	} // login - function
+	
+	public void addCoupon(Coupon coupon) throws DaoExeption, FiledErrorException{
 		
-		/*  Now he will make sure that the facede will get only the 
-		 *  RIGHT parameters of the Company object.
-		 *  Even if the user puts some incurrect inputs.
-		 *  the CompanyFacade will bring the RIGHT parameters by the company Name.
-		 */
-		this.compID = company.getId();
-		company.setId(this.compID);
+		coupon.setOwnerID(company.getId());
+		
+		coupon =  coupDao.createCoupon(coupon);
 		compDao.addCoupon(coupon, company);
 		
 	} // createCouponF
@@ -42,13 +54,13 @@ public class CompanyFacade implements CouponClientFacade{
 	public Collection<Coupon> getAllCoupons() throws DaoExeption{
 
 		Collection<Coupon> coupons = new HashSet<>();
-		coupons = coupDao.getCoupons(compID, ClientType.COMPANY);
+		coupons = coupDao.getCoupons(company.getId(), ClientType.COMPANY);
 		
 		return coupons;
 	} 
 	
 	public void removeCoupon(Coupon coupon) throws DaoExeption, FiledErrorException{
-		coupon.setOwnerID(this.compID);
+		coupon.setOwnerID(company.getId());
 		coupDao.removeCoupon(coupon, ClientType.COMPANY);
 	}
 	
@@ -59,54 +71,35 @@ public class CompanyFacade implements CouponClientFacade{
 	}
 	
 	public Company viewCompay() throws DaoExeption{
-		System.out.println(compID);
-		Company company = compDao.viewCompany(this.compID);
+		Company company = compDao.viewCompany(this.company.getId());
 		return company;
 	}
 	
 	public Coupon getCoupon(long id) throws DaoExeption, FiledErrorException{
 		
-		Company company = new Company();
+//		Company company = new Company();
 		Coupon coupon = new Coupon();
-		
-		coupon.setId(id);
-		company.setId(this.compID);
-		
-		coupon = compDao.getCoupon(coupon, company);
+//		
+//		coupon.setId(id);
+//		company.setId(company.getId());
+//		
+//		coupon = compDao.getCoupon(coupon, company);
+		coupon = coupDao.getCoupon(id, ClientType.COMPANY);
 		return coupon;
 	}
 	
 	public Set<Coupon> getCouponsByType(CouponType category) throws DaoExeption{
 
-		Set<Coupon> coupons = coupDao.getCouponByType(this.compID, category, ClientType.COMPANY);
+		Set<Coupon> coupons = coupDao.getCouponByType(company.getId(), category, ClientType.COMPANY);
 
 		return coupons;
 
 	}
 	
 	public Set<Coupon> getCouponsOfCompanyByPrice(double maxPrice) throws DaoExeption{
-		Set<Coupon> coupons = coupDao.getCouponByPrice(compID, maxPrice, ClientType.COMPANY);
+		Set<Coupon> coupons = coupDao.getCouponByPrice(company.getId(), maxPrice, ClientType.COMPANY);
 //		
 		return coupons;	
 	}
-	
-	@Override
-	public CompanyFacade login(String compName, String password, ClientType type) throws LoginException ,DaoExeption {
-    	boolean loginSuccessful  = false;
-    	
-			loginSuccessful = compDao.login(compName, password);
 
-			if(loginSuccessful == true) {
-				// If the login was Successful, save it in the private instatces.
-				Company comp = compDao.getCompany(compName);
-				this.compID = comp.getId();
-//				this.compPassword = password;
-	    		return this;
-	    	}
-			else {
-			throw new LoginException("Error: Company Login - FAILED (Unidentified user)");
-			}
-	} // login - function
-	
-	
 }

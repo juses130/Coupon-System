@@ -94,54 +94,18 @@ public class CompanyDBDAO implements CompanyDAO {
 	@Override
 	public Coupon addCoupon(Coupon coupon, Company company) throws DaoExeption{
 		
-			// We need to Check if the Company ownes this coupon before.
-			if(isExistInJoinTables(coupon, company, CheckCouponBy.BY_NAME) == false ) {
-				
 				try{
-					/* creating the coupon in Coupon Table First. 
-					 * and if we don't get an Exception, it will move on to 
-					 * create the coupon in the Company_Coupon Table.
-					*/
-					String sqlAddCoupon = "INSERT INTO coupon (Title, Start_Date, End_Date, " + 
-							"Amount, Category, Message, Price, Image, Owner_ID)" + "VALUES(?,?,?,?,?,?,?,?,?)";	
-					
-					PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlAddCoupon, Statement.RETURN_GENERATED_KEYS);
-					prep.setString(1, coupon.getTitle());
-					prep.setDate(2, Date.valueOf(coupon.getStartDate()));
-					prep.setDate(3, Date.valueOf(coupon.getEndDate()));
-					prep.setInt(4, coupon.getAmount());
-					prep.setString(5, coupon.getType().toString());
-					prep.setString(6, coupon.getMessage());
-					prep.setDouble(7, coupon.getPrice());
-					prep.setString(8, coupon.getImage());
-					prep.setLong(9, company.getId());
-					
-					prep.executeUpdate();
-					ResultSet rs = prep.getGeneratedKeys();
-					rs.next();
-					long id = rs.getLong(1);
-					coupon.setId(id);
-					
-					prep.clearBatch();
-					
 					// Now insert the coupon to the Join Tables.
 					String sqlAddCompanyCoupn = "INSERT INTO Company_coupon (Comp_id, Coup_id) VALUES (" + company.getId() + "," + coupon.getId() + ");";
-					prep = DBconnectorV3.getConnection().prepareStatement(sqlAddCompanyCoupn);
+					PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlAddCompanyCoupn);
 					prep.executeUpdate();
 					
 
 				} // try
-				catch (SQLException | NullPointerException | FiledErrorException e) {
+				catch (SQLException | NullPointerException e) {
 					throw new DaoExeption("Error: Creating Coupon By Company- FAILED (something went wrong..)");
 				} // catch
 				return coupon;
-			} // if - it's bought before
-			else {
-				throw new DaoExeption("Error: Creating Coupon By Company - FAILED (You can create only ONE coupon with the same name!)");
-			} // else - it's bought before
-
-
-//		return coupon;
 
 	} // createCoupon - function
 	
@@ -149,7 +113,7 @@ public class CompanyDBDAO implements CompanyDAO {
 	public void removeCompany(Company company) throws DaoExeption{
 		// check if the company exist
 		if (compnayExistByID(company.getId()) == true) {
-			removeMethod(company.getId());
+			removeCompanyMethod(company.getId());
 		} // if - Exist
 		else {
 			throw new DaoExeption("Error: Removing Company - FAILED (Company is not exist in the DataBase)");
@@ -267,14 +231,6 @@ public class CompanyDBDAO implements CompanyDAO {
 	} // viewCompany
 
 	@Override
-	public Coupon getCoupon(Coupon coupon, Company company) throws DaoExeption {
-		coupon = getCouponMethod(coupon, company);
-
-		return coupon;
-	}
-	
-
-	@Override
 	public Collection<Company> getAllCompanies() throws DaoExeption{
 		
 		String sql = "SELECT * FROM company";
@@ -304,96 +260,7 @@ public class CompanyDBDAO implements CompanyDAO {
 		return companies;
 	} // getAllCompanies
 
-	/* Here it's 3 pirvate methods. my add on to this class.
-	*  the Two last methods 'exist' - can be in some public class.
-	*  but all the work, like connection to database, and checks, and exception.. 
-	*  all goes from here. from the DBDAO.
-	*  so consequently I decieded to put this 3 methods here as private. in all the DBDAO (3 classes)
-	*  and adjust this methods to the currently DBDAO class.  
-	*/
-
-	
-	private Coupon getCouponMethod(Coupon coupon, Company company) throws DaoExeption {
-		
-		if(isExistInJoinTables(coupon, company, CheckCouponBy.BY_ID) == true) {
-			
-			Date stDate, enDate ;	
-
-			try {
-
-				String sqlSELCoupByCompany = "SELECT coupon.* "
-						+ "from coupon "
-						+ "LEFT JOIN company_coupon USING (coup_id)"
-						+ "WHERE coupon.Coup_id =" + coupon.getId()
-						+ " AND company_coupon.Coup_ID =" + coupon.getId()
-						+ " AND company_coupon.comp_ID=" + company.getId();
-				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlSELCoupByCompany);
-				ResultSet rs = prep.executeQuery();
-
-				while(rs.next()) { 
-					
-					coupon.setId(rs.getLong("coup_id"));
-					coupon.setTitle(rs.getString("title"));
-					stDate = rs.getDate("start_date");
-					coupon.setStartDate(stDate.toLocalDate());
-					enDate = rs.getDate("end_date");
-					coupon.setEndDate(enDate.toLocalDate());
-					coupon.setAmount(rs.getInt("amount"));
-					coupon.setType(CouponType.valueOf(rs.getString("Category").toUpperCase()));
-					coupon.setMessage("message");
-					coupon.setPrice(rs.getDouble("Price"));
-					coupon.setMessage(rs.getString("image"));
-					coupon.setOwnerID(rs.getLong("Owner_ID"));
-					
-				} // while - rs.next
-			} // try
-			catch (SQLException | FiledErrorException e) {
-				throw new DaoExeption("Error: Getting Coupon By ID - FAILED (something went wrong)");
-			} // catch
-			return coupon;
-		} // if - exist
-		else if (isExistInJoinTables(coupon, company, CheckCouponBy.BY_NAME) == true) {
-			Date stDate, enDate ;	
-
-			try {
-
-				String sqlSELCoupByCompany = "SELECT coupon.* "
-        				+ "FROM company_coupon, coupon "
-        				+ "WHERE coupon.title='" + coupon.getTitle() + "' "
-        				+ "AND company_coupon.comp_ID=" + company.getId() 
-        				+ " AND company_coupon.Coup_ID = coupon.Coup_id";
-				
-				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlSELCoupByCompany);
-				ResultSet rs = prep.executeQuery();
-
-				while(rs.next()) { 
-					
-					coupon.setId(rs.getLong("coup_id"));
-					coupon.setTitle(rs.getString("title"));
-					stDate = rs.getDate("start_date");
-					coupon.setStartDate(stDate.toLocalDate());
-					enDate = rs.getDate("end_date");
-					coupon.setEndDate(enDate.toLocalDate());
-					coupon.setAmount(rs.getInt("amount"));
-					coupon.setType(CouponType.valueOf(rs.getString("Category").toUpperCase()));
-					coupon.setMessage("message");
-					coupon.setPrice(rs.getDouble("Price"));
-					coupon.setMessage(rs.getString("image"));
-					coupon.setOwnerID(rs.getLong("Owner_ID"));
-					
-				} // while - rs.next
-			} // try
-			catch (SQLException | FiledErrorException e) {
-				throw new DaoExeption("Error: Getting Coupon By ID - FAILED (something went wrong)");
-			} // catch
-			return coupon;
-		}
-		else{
-			throw new DaoExeption("Error: Getting Coupon By ID - FAILED (Coupon dosen't exist in the DataBase)");
-		} // else - exist
-	} // getCouponMethod
-
-	private void removeMethod(long id) throws DaoExeption{
+	private void removeCompanyMethod(long id) throws DaoExeption{
 		
 		/*
 		 * Explain - here is the game plan:
@@ -500,77 +367,7 @@ public class CompanyDBDAO implements CompanyDAO {
  		  return answer;
  	}
 
-    private boolean isExistInJoinTables(Coupon coupon, Company company, CheckCouponBy coupOption) throws DaoExeption {
-    	
-    	boolean answer = false;
 
-    	if(coupOption == CheckCouponBy.BY_ID) {
-    		
-    		try {
-        		
-        		String sqlName = "SELECT coupon.Coup_id, company_coupon.Coup_ID, company_coupon.comp_ID "
-        				+ "FROM company_coupon, coupon "
-        				+ "WHERE company_coupon.Coup_ID =" + coupon.getId()
-        				+ " AND coupon.Coup_id=" + coupon.getId()
-        				+ " AND company_coupon.comp_ID=" + company.getId();
-        		
-        		Statement stat = DBconnectorV3.getConnection().createStatement();
-        		ResultSet rs = stat.executeQuery(sqlName);
-    			rs.next();
-    					   
-    			if (rs.getRow() != 0) {
-    				answer = true;
-    			} // if
-    		} catch (SQLException e) {
-    			throw new DaoExeption("Error: cannot make sure if the company is in the DataBase");
-    		}
-    		return answer;
-    	}
-    	else if(coupOption == CheckCouponBy.BY_NAME) { 
-    		
-    		/* Here, the function will check and compare if the company has this coupon WITHOUT KNOWING 
-    		 * the coupon ID in first place. based on his String Name (title).
-    		 * 2 Reasons I did it.
-    		 * 1. I've added this option because I'm not sure if we will allow to have Duplicated Coupons name. 
-    		 * why? 
-    		 * For example, Samsung USA and Samsung Israel sign in to my DataBase. 
-    		 * and now, samsung Israel selling a Galaxy 5, AND samsung USA ALL SO wants to sell Galaxy 5. 
-    		 * it's the same name, with the same attributes. 
-    		 * This is a tapically situtation that CAN happend.
-    		 * 
-    		 * 2. When a company created a NEW coupon, the SQL DataBase gives it an ID number. 
-    		 * The user cannot choose ID. so the user send here a coupon - without ID number.. 
-    		 * And there is the main issue: We can't compare it. the ID is Zero (default).
-    		 * 
-    		 * That's why we can also comparing it with Names (String - Coupon Title).
-    		 * 
-    		 */
-        try {
-        		String sqlName = "SELECT coupon.* "
-        				+ "FROM company_coupon, coupon "
-        				+ "WHERE coupon.title='" + coupon.getTitle() + "' "
-        				+ "AND company_coupon.comp_ID=" + company.getId() 
-        				+ " AND company_coupon.Coup_ID = coupon.Coup_id";
-        		
-        		Statement stat = DBconnectorV3.getConnection().createStatement();
-        		ResultSet rs = stat.executeQuery(sqlName);
-    			rs.next();
-    					   
-    			if (rs.getRow() != 0) {
-    				answer = true;
-    			} // if
-    		} catch (SQLException e) {
-    			throw new DaoExeption("Error: cannot make sure if the company is in the DataBase");
-    		}
-    		return answer;
-    	}
-    	else {
-    		throw new DaoExeption("Error: Access Denied! (something wrong with the Coupon or Company Parameters..)");
-    		
-    	} // else
-    				
-        		
-    		}// bothExistInSameTable
 
 	
 
