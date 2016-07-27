@@ -47,7 +47,7 @@ public class Coupon {
 		setStartDate(startDate);
 		setEndDate(endDate);
 		setAmount(amount);
-		setType(category);
+		setCategory(category);
 		setMessage(message);
 		setPrice(price);
 		setImage(image);
@@ -196,12 +196,18 @@ public class Coupon {
 		}
 	}
 
-	public CouponType getType() {
+	public CouponType getCategory() {
 		return category;
 	}
 
-	public void setType(CouponType category) {
-		this.category = category;
+	public void setCategory(CouponType category) throws FiledErrorException {
+		//TODO: create a check for the enums.. it's returns a technical error.
+		if(category.toString() == "") {
+			throw new FiledErrorException("Error: Set Category - FAILED (empty field!)");
+		}
+		else {
+			this.category = category;		}
+		
 	}
 
 	public long getOwnerID() {

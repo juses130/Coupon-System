@@ -42,7 +42,7 @@ public class CouponDBDAO implements CouponDAO{
 				prep.setDate(2, Date.valueOf(coupon.getStartDate()));
 				prep.setDate(3, Date.valueOf(coupon.getEndDate()));
 				prep.setInt(4, coupon.getAmount());
-				prep.setString(5, coupon.getType().toString());
+				prep.setString(5, coupon.getCategory().toString());
 				prep.setString(6, coupon.getMessage());
 				prep.setDouble(7, coupon.getPrice());
 				prep.setString(8, coupon.getImage());
@@ -173,7 +173,7 @@ public class CouponDBDAO implements CouponDAO{
 					coupon.setAmount(rs.getInt("amount"));
 					coupon.setMessage(rs.getString("Message"));
 					coupon.setPrice(rs.getDouble("Price"));
-					coupon.setType(CouponType.valueOf(rs.getString("Category").toUpperCase()));
+					coupon.setCategory(CouponType.valueOf(rs.getString("Category").toUpperCase()));
 					coupon.setImage(rs.getString("image"));
 					coupon.setOwnerID(rs.getLong("owner_ID"));
 					
@@ -209,7 +209,7 @@ public class CouponDBDAO implements CouponDAO{
 					coupon.setAmount(rs.getInt("amount"));
 					coupon.setMessage(rs.getString("Message"));
 					coupon.setPrice(rs.getDouble("Price"));
-					coupon.setType(CouponType.valueOf(rs.getString("Category").toUpperCase()));
+					coupon.setCategory(CouponType.valueOf(rs.getString("Category").toUpperCase()));
 					coupon.setImage(rs.getString("image"));
 					coupon.setOwnerID(rs.getLong("owner_ID"));
 					
@@ -246,7 +246,7 @@ public class CouponDBDAO implements CouponDAO{
 					coupon.setAmount(rs.getInt("amount"));
 					coupon.setMessage(rs.getString("Message"));
 					coupon.setPrice(rs.getDouble("Price"));
-					coupon.setType(CouponType.valueOf(rs.getString("Category").toUpperCase()));
+					coupon.setCategory(CouponType.valueOf(rs.getString("Category").toUpperCase()));
 					coupon.setImage(rs.getString("image"));
 					coupon.setOwnerID(rs.getLong("owner_ID"));
 					
@@ -286,7 +286,7 @@ public class CouponDBDAO implements CouponDAO{
 					coupon.setAmount(rs.getInt("amount"));
 					coupon.setMessage(rs.getString("Message"));
 					coupon.setPrice(rs.getDouble("Price"));
-					coupon.setType(CouponType.valueOf(rs.getString("Category").toUpperCase()));
+					coupon.setCategory(CouponType.valueOf(rs.getString("Category").toUpperCase()));
 					coupon.setImage(rs.getString("image"));
 					coupon.setOwnerID(rs.getLong("owner_ID"));
 					
@@ -321,7 +321,7 @@ public class CouponDBDAO implements CouponDAO{
 					coupon.setAmount(rs.getInt("amount"));
 					coupon.setMessage(rs.getString("Message"));
 					coupon.setPrice(rs.getDouble("Price"));
-					coupon.setType(CouponType.valueOf(rs.getString("Category").toUpperCase()));
+					coupon.setCategory(CouponType.valueOf(rs.getString("Category").toUpperCase()));
 					coupon.setImage(rs.getString("image"));
 					coupon.setOwnerID(rs.getLong("owner_ID"));
 					
@@ -686,7 +686,7 @@ public class CouponDBDAO implements CouponDAO{
 				coupon.setStartDate(rs.getDate("start_date").toLocalDate());
 				coupon.setEndDate(rs.getDate("end_date").toLocalDate());
 				coupon.setAmount(rs.getInt("amount"));
-				coupon.setType(CouponType.valueOf(rs.getString("Category").toUpperCase()));
+				coupon.setCategory(CouponType.valueOf(rs.getString("Category").toUpperCase()));
 				coupon.setMessage(rs.getString("Message"));
 				coupon.setPrice(rs.getDouble("Price"));
 				coupon.setImage(rs.getString("image"));
@@ -721,7 +721,7 @@ public class CouponDBDAO implements CouponDAO{
 				coupon.setStartDate(rs.getDate("start_date").toLocalDate());
 				coupon.setEndDate(rs.getDate("end_date").toLocalDate());
 				coupon.setAmount(rs.getInt("amount"));
-				coupon.setType(CouponType.valueOf(rs.getString("Category").toUpperCase()));
+				coupon.setCategory(CouponType.valueOf(rs.getString("Category").toUpperCase()));
 				coupon.setMessage(rs.getString("Message"));
 				coupon.setPrice(rs.getDouble("Price"));
 				coupon.setImage(rs.getString("image"));
@@ -753,7 +753,7 @@ public class CouponDBDAO implements CouponDAO{
 				coupon.setStartDate(rs.getDate("start_date").toLocalDate());
 				coupon.setEndDate(rs.getDate("end_date").toLocalDate());
 				coupon.setAmount(rs.getInt("amount"));
-				coupon.setType(CouponType.valueOf(rs.getString("Category").toUpperCase()));
+				coupon.setCategory(CouponType.valueOf(rs.getString("Category").toUpperCase()));
 				coupon.setMessage(rs.getString("Message"));
 				coupon.setPrice(rs.getDouble("Price"));
 				coupon.setImage(rs.getString("image"));

@@ -1482,7 +1482,7 @@ public class testDeveloers {
 		coup.setAmount(amount);
         System.out.print("In Category: ");
         String category = userInputString().toUpperCase();
-        coup.setType(CouponType.valueOf(category));
+        coup.setCategory(CouponType.valueOf(category));
         System.out.print("NEW Massage: ");
         String message = userInputString();
         coup.setMessage(message);
