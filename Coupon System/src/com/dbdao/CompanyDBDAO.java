@@ -9,9 +9,10 @@ import java.util.*;
 
 import com.added.functions.DBconnectorV3;
 import com.dao.interfaces.*;
-import com.exeptionerrors.*;
-import com.facade.ClientType;
+import com.exceptionerrors.DaoException;
+import com.exceptionerrors.FiledErrorException;
 import com.javabeans.*;
+
 
 /**
  * This is Company Database DAO Class. (DBDAO in short)</p>
@@ -27,7 +28,7 @@ public class CompanyDBDAO implements CompanyDAO {
 	public CompanyDBDAO() {}
 	
 	@Override
-	public boolean login(String compName, String password) throws DaoExeption  {
+	public boolean login(String compName, String password) throws DaoException  {
 		
 		boolean hasRows = false;
         try {
@@ -45,7 +46,7 @@ public class CompanyDBDAO implements CompanyDAO {
 			
 			rs.next();
 			if(rs.getRow() == 0) {
-	        	throw new DaoExeption("Error: Company Login - FAILD (one or more of the fields is incurrect or empty)");
+	        	throw new DaoException("Error: Company Login - FAILD (one or more of the fields is incurrect or empty)");
 		    }
 			else {
 				hasRows = true;
@@ -54,14 +55,14 @@ public class CompanyDBDAO implements CompanyDAO {
             	/* The throw exception here is an general error, mostly sql error.
             	 * Login failed exception - because of incurrent user Or pasword will throw from the CompanyFacade.
             	 */
-    			throw new DaoExeption("Error: Company Login - FAILED (something went wrong..)");
+    			throw new DaoException("Error: Company Login - FAILED (something went wrong..)");
             } // catch
         	return hasRows;
         
         	} // login	
 	
 	@Override
-	public void createCompany(Company company) throws DaoExeption{
+	public void createCompany(Company company) throws DaoException{
 		
 		// check if the company not exist (is checking also if the fields are empty in the 'Company' javaBeans)
 		if (compnayExistByName(company.getCompName()) == false) {
@@ -81,18 +82,18 @@ public class CompanyDBDAO implements CompanyDAO {
 					} // while
 				} // try 
 				catch (SQLException e) {
-					throw new DaoExeption("Error: Creating New Company - FAILED (something went wrong)");
+					throw new DaoException("Error: Creating New Company - FAILED (something went wrong)");
 				} // catch
 		} // if - existOrNotByName
 		else {
-			throw new DaoExeption("Error: Creating Company - FAILED (Company is already exist in the DataBase)");
+			throw new DaoException("Error: Creating Company - FAILED (Company is already exist in the DataBase)");
 		} // else
 				
 		
 	} // createCompany - Function
 	
 	@Override
-	public Coupon addCoupon(Coupon coupon, Company company) throws DaoExeption{
+	public Coupon addCoupon(Coupon coupon, Company company) throws DaoException{
 		
 				try{
 					// Now insert the coupon to the Join Tables.
@@ -103,26 +104,26 @@ public class CompanyDBDAO implements CompanyDAO {
 
 				} // try
 				catch (SQLException | NullPointerException e) {
-					throw new DaoExeption("Error: Creating Coupon By Company- FAILED (something went wrong..)");
+					throw new DaoException("Error: Creating Coupon By Company- FAILED (something went wrong..)");
 				} // catch
 				return coupon;
 
 	} // createCoupon - function
 	
 	@Override
-	public void removeCompany(Company company) throws DaoExeption{
+	public void removeCompany(Company company) throws DaoException{
 		// check if the company exist
 		if (compnayExistByID(company.getId()) == true) {
 			removeCompanyMethod(company.getId());
 		} // if - Exist
 		else {
-			throw new DaoExeption("Error: Removing Company - FAILED (Company is not exist in the DataBase)");
+			throw new DaoException("Error: Removing Company - FAILED (Company is not exist in the DataBase)");
 		} // else - Exist
 
 	} // removeCompany - By ID - Function
 	
 	@Override
-	public void updateCompany(Company company) throws DaoExeption{
+	public void updateCompany(Company company) throws DaoException{
 		
 		// check if the company exist
 		if (compnayExistByID(company.getId()) == true) {
@@ -137,17 +138,28 @@ public class CompanyDBDAO implements CompanyDAO {
 				prep.executeUpdate();
 			    
 				} catch (SQLException e) {
-					throw new DaoExeption("Error: Updating Company - FAILED");
+					throw new DaoException("Error: Updating Company - FAILED");
 				}
 		}
 		else {
-			throw new DaoExeption("Error: Updating Company - FAILED (Company is not exist in the DataBase)");
+			throw new DaoException("Error: Updating Company - FAILED (Company is not exist in the DataBase)");
 		} // else
 	
 	} // updateCompany - Function
 	
+	public Company viewCompany(long id) throws DaoException {
+
+		Company company = getCompany(id);
+		if(company.getId() == id) {
+			return company;
+		} // if
+		else {
+			throw new DaoException("Error: Getting Company - FAILED (Company dosen't exist in the DataBase)");
+		} // else
+	} // viewCompany
+	
 	@Override
-	public Company getCompany(long id) throws DaoExeption{
+	public Company getCompany(long id) throws DaoException{
 		
 		// check if the company exist
 		if (compnayExistByID(id) == true) {
@@ -170,13 +182,13 @@ public class CompanyDBDAO implements CompanyDAO {
 				company = new Company(id, compName, password, email);
 			}
 			catch (SQLException | FiledErrorException e) {
-				throw new DaoExeption("Error: Getting Company By ID - FAILED");
+				throw new DaoException("Error: Getting Company By ID - FAILED");
 			}
 			return company;
 			
 		}
 		else {
-			throw new DaoExeption("Error: Getting Company - FAILED (Company dosen't exist in the DataBase)");
+			throw new DaoException("Error: Getting Company - FAILED (Company dosen't exist in the DataBase)");
 		} // else
 		
 		
@@ -184,7 +196,7 @@ public class CompanyDBDAO implements CompanyDAO {
 	} // getCompany - Function
 
 	@Override
-    public Company getCompany(String compName) throws DaoExeption{
+    public Company getCompany(String compName) throws DaoException{
 		
 		Company company = new Company();
 		
@@ -207,11 +219,11 @@ public class CompanyDBDAO implements CompanyDAO {
 				company = new Company(id, compName, password, email);
 				}
 				else {
-					throw new DaoExeption("Error: Getting Company - FAILED (Company is not exist in the DataBase)");
+					throw new DaoException("Error: Getting Company - FAILED (Company is not exist in the DataBase)");
 				} // else
 			}
 			catch (SQLException | FiledErrorException e) {
-				throw new DaoExeption("Error: Getting Company By ID - FAILED");
+				throw new DaoException("Error: Getting Company By ID - FAILED");
 			}
 			return company;
 		
@@ -219,19 +231,8 @@ public class CompanyDBDAO implements CompanyDAO {
 		
 	}
 
-	public Company viewCompany(long id) throws DaoExeption {
-
-		Company company = getCompany(id);
-		if(company.getId() == id) {
-			return company;
-		} // if
-		else {
-			throw new DaoExeption("Error: Getting Company - FAILED (Company dosen't exist in the DataBase)");
-		} // else
-	} // viewCompany
-
 	@Override
-	public Collection<Company> getAllCompanies() throws DaoExeption{
+	public Collection<Company> getAllCompanies() throws DaoException{
 		
 		String sql = "SELECT * FROM company";
 		Collection<Company> companies = new HashSet<>();
@@ -254,32 +255,35 @@ public class CompanyDBDAO implements CompanyDAO {
 			} // while loop
 
 		} catch (SQLException | FiledErrorException e) {
-			throw new DaoExeption("Error: Getting all Companies - FAILED");
+			throw new DaoException("Error: Getting all Companies - FAILED");
 		} // catch
 
 		return companies;
 	} // getAllCompanies
 
-	private void removeCompanyMethod(long id) throws DaoExeption{
-		
-		/*
-		 * Explain - here is the game plan:
-		 * First, when the function will execute 'sqlCheckExist'.
-		 * we are checking that the Company has (or not) 
-		 * coupons in 'company_coupon Table.
-		 * If Yes - we execute 'sqlDeleteALL' and delete it from 
-		 * the TABLES:
-		 * Company, Company_Coupon, Coupon. 
-		 * 
-		 * If No - (Company DOSEN'T have coupons..) We will delete it only from
-		 * the company Table (execute the 'sqlOnlyFromCompany' command).
-		 */
+	/**
+	 * This is my Private add-on for this class.</p>
+	 * Explain - Remove Method </p> 
+	 * here is the game plan:
+	 * First, when the function will execute 'sqlCheckExist'.
+	 * we are checking that the Company has (or not) 
+	 * coupons in 'company_coupon Table.
+	 * If Yes - we execute 'sqlDeleteALL' and delete it from 
+	 * the TABLES:
+	 * Company, Company_Coupon, Coupon. 
+	 * 
+	 * If No - (Company DOSEN'T have coupons..) We will delete it only from
+	 * the company Table (execute the 'sqlOnlyFromCompany' command).
+	 * 
+	 * @param compID {@code long} Company ID.
+	 */
+	private void removeCompanyMethod(long compID) throws DaoException{
 		
 		boolean hasRow = false;
 		PreparedStatement prep = null;
 		ResultSet rs = null;
 		// Check if the company has coupons BEFORE Deleting the company.
-		String sqlCheckExist = "SELECT * FROM company_coupon WHERE Comp_ID=" + id;
+		String sqlCheckExist = "SELECT * FROM company_coupon WHERE Comp_ID=" + compID;
 		try {
     		prep = DBconnectorV3.getConnection().prepareStatement(sqlCheckExist);
     		rs = prep.executeQuery();
@@ -296,7 +300,7 @@ public class CompanyDBDAO implements CompanyDAO {
 						+ " FROM company_coupon"
 						+ " LEFT JOIN coupon USING (coup_id)"
 						+ " LEFT JOIN company USING (comp_id)"
-						+ " WHERE company_coupon.Comp_ID=" + id
+						+ " WHERE company_coupon.Comp_ID=" + compID
 						+ " AND company_coupon.Comp_ID IS NOT NULL";
 				prep = DBconnectorV3.getConnection().prepareStatement(sqlDeleteALL);
 				prep.executeUpdate();
@@ -305,7 +309,7 @@ public class CompanyDBDAO implements CompanyDAO {
     		} // if - hasRow		
 			else {
 
-				String sqlOnlyFromCompany = "DELETE FROM company WHERE Comp_ID=" + id;
+				String sqlOnlyFromCompany = "DELETE FROM company WHERE Comp_ID=" + compID;
 				PreparedStatement prep2 = DBconnectorV3.getConnection().prepareStatement(sqlOnlyFromCompany);
 				prep2.executeUpdate();
 				prep2.clearBatch();
@@ -313,12 +317,18 @@ public class CompanyDBDAO implements CompanyDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new DaoExeption("Error: Removing Company - FAILED (something went wrong..)");
+			throw new DaoException("Error: Removing Company - FAILED (something went wrong..)");
 		} // catch
 		
 	} // removeMethod
 	
-    private boolean compnayExistByID(long compID) throws DaoExeption {
+	/**
+	 * This is a my add-on: CompanyDBDAO. This method checks if the Company {@code ID} exist in the Database.
+	 * @param compID a {@code long} Company {@code ID}.
+	 * @return {@code true} if the Company {@code ID} exist in Database, otherwise {@code false}
+	 * @throws DaoException
+	 */
+    private boolean compnayExistByID(long compID) throws DaoException {
     	
     	boolean answer = false;
     	if(compID > 0) {
@@ -338,14 +348,20 @@ public class CompanyDBDAO implements CompanyDAO {
     			stat.clearBatch();
     			
     		} catch (SQLException e) {
-    			throw new DaoExeption("Error: cannot make sure if the company is in the DataBase");
+    			throw new DaoException("Error: cannot make sure if the company is in the DataBase");
     		} // catch
     		return answer;
-    	} // if - compnay
-    	throw new DaoExeption("Error: Confirming CompanyID - FAILED (ID cannot contain Zero!)");
+    	} // if - compID
+    	throw new DaoException("Error: Confirming CompanyID - FAILED (ID cannot contain Zero!)");
     	} // compnayExistByID
     
-    private boolean compnayExistByName(String compName) throws DaoExeption {
+    /**
+	 * This is a my add-on: CompanyDBDAO. This method checks if the Company compName exist in the Database.
+	 * @param compName a {@code String} Company {@code compName}.
+	 * @return {@code true} if the Company {@code compName} exist in Database, otherwise {@code false}
+	 * @throws DAOException
+	 */
+    private boolean compnayExistByName(String compName) throws DaoException {
 		
  	    Statement stat = null;
  		ResultSet rs = null;
@@ -362,7 +378,7 @@ public class CompanyDBDAO implements CompanyDAO {
  					answer = true;
  				} // if
  	            } catch (SQLException e) {
- 	 	   			throw new DaoExeption("Error: cannot make sure if the company is in the DataBase");
+ 	 	   			throw new DaoException("Error: cannot make sure if the company is in the DataBase");
  	            } // catch
  		  return answer;
  	}

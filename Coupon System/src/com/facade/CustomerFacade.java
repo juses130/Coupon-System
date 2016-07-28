@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.dao.interfaces.*;
-import com.exeptionerrors.*;
+import com.exceptionerrors.*;
 import com.javabeans.*;
 import com.task.and.singleton.CouponClientFacade;
 import com.task.and.singleton.CouponSystem;
@@ -17,7 +17,7 @@ public class CustomerFacade implements CouponClientFacade {
 	private CouponDAO coupDao = null;
 	
 	
-    public CustomerFacade login(String custName, String password, ClientType client) throws LoginException, DaoExeption {
+    public CustomerFacade login(String custName, String password, ClientType client) throws LoginException, DaoException {
     	
     	boolean loginSuccessful  = false;
     	try {
@@ -35,14 +35,14 @@ public class CustomerFacade implements CouponClientFacade {
 		}
 	} // login - function
 	
-	public CustomerFacade() throws ConnectorExeption{
+	public CustomerFacade() throws ConnectorException{
 		
 //		compDao = CouponSystem.getInstance().getCompDao();
 		custDao = CouponSystem.getInstance().getCustDao();
 		coupDao = CouponSystem.getInstance().getCouponDao();
 	}
 	
-	public Coupon purchaseCoupon(Coupon coupon) throws DaoExeption {
+	public Coupon purchaseCoupon(Coupon coupon) throws DaoException {
 
 		coupon = coupDao.getCoupon(coupon.getId(), ClientType.CUSTOMER);
 		custDao.addCoupon(coupon, customer.getId());
@@ -51,24 +51,24 @@ public class CustomerFacade implements CouponClientFacade {
 		
 	} // purchaseCoupon
 	
-	public Customer getCustomer() throws DaoExeption {
+	public Customer getCustomer() throws DaoException {
 		Customer customer = new Customer();
 		customer = custDao.getCustomer(this.customer.getId());
 		return customer;
 	}
 	
-	public Set<Coupon> getAllPurchasedCoupons() throws DaoExeption {
+	public Set<Coupon> getAllPurchasedCoupons() throws DaoException {
 		Set<Coupon> coupons = coupDao.getCoupons(customer.getId(), ClientType.CUSTOMER);
 		return coupons;
 		
 	} // getAllCoupons
 	
-	public Set<Coupon> getAllCouponsByPrice(double maxPrice) throws DaoExeption {
+	public Set<Coupon> getAllCouponsByPrice(double maxPrice) throws DaoException {
 		Set<Coupon> coupons = new HashSet<>();
 		coupons = coupDao.getCouponByPrice(customer.getId(), maxPrice, ClientType.CUSTOMER);
 		return coupons;	
 	}
-	public Set<Coupon> getAllCouponsByType(String category) throws DaoExeption, FiledErrorException {
+	public Set<Coupon> getAllCouponsByType(String category) throws DaoException, FiledErrorException {
 		Set<Coupon> coupons = new HashSet<>();
 		
 		Coupon coupon = new Coupon();

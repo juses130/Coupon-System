@@ -3,9 +3,9 @@ package com.dao.interfaces;
 import java.util.Collection;
 import java.util.Set;
 
-import com.exeptionerrors.DaoExeption;
-import com.exeptionerrors.FiledErrorException;
-import com.exeptionerrors.LoginException;
+import com.exceptionerrors.DaoException;
+import com.exceptionerrors.FiledErrorException;
+import com.exceptionerrors.LoginException;
 import com.javabeans.*;
 
 /**
@@ -22,18 +22,18 @@ public interface CustomerDAO {
 	 * 
 	 * @param Customer {@code Customer} object
 	 * @return a positive {@code Customer} object value if the it was run successfully.
-	 * @throws DaoExeption
+	 * @throws DaoException
 	 * @author Raziel
 	 */
 	
-	public void createCustomer(Customer Customer) throws DaoExeption;
-	public void removeCustomer(Customer customer) throws DaoExeption, FiledErrorException;
-	public void updateCustomer(Customer updateCustomer) throws DaoExeption;
-	public Coupon addCoupon(Coupon coupon, long custID) throws DaoExeption;
-	public Customer getCustomer(long id) throws DaoExeption;
-	public Collection<Customer> getAllCustomers() throws DaoExeption;
-	public boolean login(String custName, String password) throws DaoExeption;
-	public Customer getCustomer(String custName) throws DaoExeption;
+	public void createCustomer(Customer Customer) throws DaoException;
+	public void removeCustomer(Customer customer) throws DaoException, FiledErrorException;
+	public void updateCustomer(Customer updateCustomer) throws DaoException;
+	public Coupon addCoupon(Coupon coupon, long custID) throws DaoException;
+	public Customer getCustomer(long id) throws DaoException;
+	public Collection<Customer> getAllCustomers() throws DaoException;
+	public boolean login(String custName, String password) throws DaoException;
+	public Customer getCustomer(String custName) throws DaoException;
 
 	
 }

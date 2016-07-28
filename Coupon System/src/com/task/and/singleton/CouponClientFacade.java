@@ -1,9 +1,7 @@
 package com.task.and.singleton;
 
 
-import com.exeptionerrors.ConnectorExeption;
-import com.exeptionerrors.DaoExeption;
-import com.exeptionerrors.LoginException;
+import com.exceptionerrors.*;
 import com.facade.ClientType;
 
 /**
@@ -15,6 +13,6 @@ import com.facade.ClientType;
  */
 
 public interface CouponClientFacade {
-	public CouponClientFacade login(String userName, String password, ClientType type) throws LoginException, DaoExeption, ConnectorExeption ;
+	public CouponClientFacade login(String userName, String password, ClientType type) throws LoginException, DaoException, ConnectorException ;
 	
 }

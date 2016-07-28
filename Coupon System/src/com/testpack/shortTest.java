@@ -14,9 +14,9 @@ import com.added.functions.SharingData;
 import com.dbdao.CompanyDBDAO;
 import com.dbdao.CouponDBDAO;
 import com.dbdao.CustomerDBDAO;
-import com.exeptionerrors.ConnectorExeption;
-import com.exeptionerrors.DaoExeption;
-import com.exeptionerrors.FiledErrorException;
+import com.exceptionerrors.ConnectorException;
+import com.exceptionerrors.DaoException;
+import com.exceptionerrors.FiledErrorException;
 import com.facade.AdminFacade;
 import com.facade.CompanyFacade;
 import com.facade.CustomerFacade;
@@ -50,7 +50,7 @@ public class shortTest {
 		CompanyFacade comF = null;
 		try {
 			comF = new CompanyFacade();
-		} catch (ConnectorExeption e2) {
+		} catch (ConnectorException e2) {
 			System.out.println(e2.getMessage());
 		}
 		
@@ -126,7 +126,7 @@ public class shortTest {
 //			customerDBDAO = new CustomerDBDAO();
 //			Customer c = new Customer();
 //			CouponSystem.getInstance();
-//		} catch (ConnectorExeption e1) {
+//		} catch (ConnectorException e1) {
 //			
 //			System.out.println(e1.getMessage());;
 //		}
@@ -141,7 +141,7 @@ public class shortTest {
 //			adminFacade.createCustomer(c);
 //			CustomerDBDAO customerDBDAO = new CustomerDBDAO();
 //			System.out.println(customerDBDAO.getCustomer(coup.getCustName()).toString());;
-//		} catch (DaoExeption | FiledErrorException e) {
+//		} catch (DaoException | FiledErrorException e) {
 			
 //			System.out.println(e.getMessage());;
 //			e.printStackTrace();
@@ -157,7 +157,7 @@ public class shortTest {
 //			System.out.println(coupon.toString());
 
 				CouponSystem.getInstance().stop();
-			} catch (ConnectorExeption | SQLException | DaoExeption e) {
+			} catch (ConnectorException | SQLException | DaoException e) {
 
 				e.printStackTrace();
 				System.out.println(e.getMessage());
@@ -166,7 +166,7 @@ public class shortTest {
 		
 	} // main
 	
-	public static void addCouponsByCompany(long id) throws DaoExeption {
+	public static void addCouponsByCompany(long id) throws DaoException {
 		CompanyFacade comF;
 		CustomerFacade custF;
 		
@@ -187,18 +187,18 @@ public class shortTest {
 				coup.setTitle("iphone" + i );
 				coup.setPrice(i + 50);
 				coup.setStartDate(LocalDate.of(2018, 1, 1));
-				coup.setType(CouponType.valueOf("ELECTRONICS"));
+				coup.setCategory("ELECTRONICS");
 				coup.setEndDate(LocalDate.of(2020, 1, 1));
 				coup.setImage("no image");
 				coup.setOwnerID(id);
 
 //				coup.setOwnerID(comF.viewCompay(8).getId());
 				
-				comF.addCoupon(coup, comp);
+				comF.addCoupon(coup);
 //				custF.purchaseCoupon(coup);
 				System.out.println(coup.toString());
 			} // for
-		} catch (ConnectorExeption | FiledErrorException e) {
+		} catch (ConnectorException | FiledErrorException e) {
 			
 			System.out.println(e.getMessage());;
 		}
@@ -206,7 +206,7 @@ public class shortTest {
 		
 	}
 	
-	public static void addCouponsByCustomer(long id) throws DaoExeption {
+	public static void addCouponsByCustomer(long id) throws DaoException {
 		CustomerFacade custF;
 		Customer cust = new Customer();
 		Coupon coup = new Coupon();
@@ -219,11 +219,11 @@ public class shortTest {
 				
 				
 				coup.setId(10);
-				custF.purchaseCoupon(coup, cust);
+				custF.purchaseCoupon(coup);
 //				custF.purchaseCoupon(coup);
 				System.out.println(coup.toString());
 			} // for
-		} catch (ConnectorExeption | FiledErrorException e) {
+		} catch (ConnectorException | FiledErrorException e) {
 			
 			System.out.println(e.getMessage());
 		}
@@ -268,7 +268,7 @@ public class shortTest {
 		
 		} //try
 		catch (SQLException e){
-			SharingData.setExeptionMessage(e.getMessage());
+			SharingData.setExceptionMessage(e.getMessage());
 		}
 	}
 

@@ -2,8 +2,8 @@ package com.added.functions;
 
 import java.sql.*;
 
-import com.exeptionerrors.ConnectorExeption;
-import com.exeptionerrors.DaoExeption;
+import com.exceptionerrors.ConnectorException;
+
 
 /**
  * This is Version 3 of DataBase Connector.
@@ -27,7 +27,7 @@ public class DBconnectorV3 {
 	// private constructor
 		private DBconnectorV3(){}
 
-		public static void startPool() throws ConnectorExeption{
+		public static void startPool() throws ConnectorException{
 			
 
 //			con = con = DriverManager.getConnection(url, userDBname, passowrdDB);
@@ -35,13 +35,13 @@ public class DBconnectorV3 {
 				try {
 					con = DriverManager.getConnection(url, userDBname, passowrdDB);
 				} catch (NullPointerException | SQLException e) {
-					throw new ConnectorExeption("Error: Connection to the Database - FAILED (Check Your Connection To The Internet " 
+					throw new ConnectorException("Error: Connection to the Database - FAILED (Check Your Connection To The Internet " 
 							+ "OR Check User and Password of the Database)");
 				}
 				try {
 					Class.forName(driverClass);
 				} catch (ClassNotFoundException e) {
-					throw new ConnectorExeption("Error: Connection to the Driver - FAILED (check the location of your driver)");
+					throw new ConnectorException("Error: Connection to the Driver - FAILED (check the location of your driver)");
 				}
 
 			

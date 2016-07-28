@@ -1,17 +1,14 @@
 package com.testpack;
 
-import java.io.IOException;
 import java.sql.*;
 import java.time.*;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
-
 import com.added.functions.DBconnectorV3;
 import com.added.functions.SharingData;
-import com.exeptionerrors.ConnectorExeption;
-import com.exeptionerrors.DaoExeption;
-import com.exeptionerrors.FiledErrorException;
-import com.exeptionerrors.LoginException;
+import com.exceptionerrors.*;
+import com.exceptionerrors.DaoException;
+import com.exceptionerrors.FiledErrorException;
+import com.exceptionerrors.LoginException;
 import com.facade.*;
 import com.javabeans.*;
 import com.task.and.singleton.CouponClientFacade;
@@ -75,7 +72,7 @@ public class testDeveloers {
 		// When we finished - close the connection + Daily Task Thread.
 		try {
 			CouponSystem.getInstance().stop();
-		} catch (ConnectorExeption e) {	
+		} catch (ConnectorException e) {	
 			System.out.println(e.getMessage());
 		}
 
@@ -263,9 +260,9 @@ public class testDeveloers {
 		System.out.println("Please insert another NAME.");
 	}
 
-	public static void printExeptionAsMessages() {
+	public static void printExceptionAsMessages() {
 		System.out.println("\n" + "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-		System.out.println("Error: " + SharingData.getExeptionMessage());
+		System.out.println("Error: " + SharingData.getExceptionMessage());
 		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"+ "\n");
 
 	}
@@ -451,10 +448,10 @@ public class testDeveloers {
 					adminClient = client;
 					admF = ad.login(userName, password, ClientType.ADMIN);
 					
-				} catch (LoginException | ConnectorExeption e) {
+				} catch (LoginException | ConnectorException e) {
 					System.out.println("\n" + e.getMessage());
 					break;
-				} catch (DaoExeption e) {
+				} catch (DaoException e) {
 					
 					System.out.println("\n" + e.getMessage());
 					break;
@@ -495,7 +492,7 @@ public class testDeveloers {
 					client = CouponSystem.getInstance().login(userName, password, ClientType.COMPANY);
 					companyClient = client;
 					compF = co.login(userName, password, ClientType.COMPANY);
-				} catch (LoginException | DaoExeption | ConnectorExeption e) {
+				} catch (LoginException | DaoException | ConnectorException e) {
 					System.out.println("\n" + e.getMessage());
 					break;
 				}
@@ -530,7 +527,7 @@ public class testDeveloers {
 		    		customerClient = client;
 		    		cusF = cu.login(userName, password, ClientType.CUSTOMER);
 		    		
-				} catch (LoginException | ConnectorExeption | DaoExeption e) {
+				} catch (LoginException | ConnectorException | DaoException e) {
 					System.out.println("\n" + e.getMessage());
 					break;
 			    } // catch
@@ -560,7 +557,7 @@ public class testDeveloers {
 
 		try {
 			CouponSystem.getInstance();
-		} catch (ConnectorExeption e) {
+		} catch (ConnectorException e) {
 			System.out.println(e.getMessage());
 		}
 		
@@ -571,8 +568,8 @@ public class testDeveloers {
 				}
 			} catch (NullPointerException | SQLException e) {
 				try {
-					throw new ConnectorExeption("Error: Connection to the Data Base - FAILED");
-				} catch (ConnectorExeption e1) {
+					throw new ConnectorException("Error: Connection to the Data Base - FAILED");
+				} catch (ConnectorException e1) {
 					System.out.println(e1.getMessage());;
 				}
 			}
@@ -765,7 +762,7 @@ public class testDeveloers {
 //			CouponSystem.getInstance().getCompDao().createCompany(company);
 			
 				admF.createCompany(company);
-			} catch (DaoExeption | FiledErrorException e) {
+			} catch (DaoException | FiledErrorException e) {
 				
 				System.out.println(e.getMessage());;
 			}
@@ -857,7 +854,7 @@ public class testDeveloers {
  	    		Company company = new Company();
 				try {
 					admF = new AdminFacade();
-				} catch (ConnectorExeption e1) {
+				} catch (ConnectorException e1) {
 					System.out.println(e1.getMessage());
 				}
 				try {
@@ -869,7 +866,7 @@ public class testDeveloers {
 	     	    		company.setPassword(userInputString());
 	     	           
 						admF.updateCompany(company);
-				} catch (DaoExeption | FiledErrorException e) {
+				} catch (DaoException | FiledErrorException e) {
 					
 					System.out.println(e.getMessage());
 //					break;
@@ -911,7 +908,7 @@ public class testDeveloers {
 					System.out.println(c.toString());
 					System.out.println("\n" + "------------ Company Function (getCompany) Was Run Successfully ----------" + "\n");
 
-			    } catch (DaoExeption e) {
+			    } catch (DaoException e) {
 				
 				System.out.println(e.getMessage());;
 			} // else
@@ -938,7 +935,8 @@ public class testDeveloers {
        			
     			
 			System.out.println(admF.getAllCompanies().toString());
-			} catch (DaoExeption e) {
+			System.out.println("\n" + "Results: [" + admF.getAllCompanies().size() + "] Companies");
+			} catch (DaoException e) {
 					
 					System.out.println(e.getMessage());;
 				}
@@ -973,7 +971,7 @@ public class testDeveloers {
         		c.setCustName(name);
         		c.setPassword(password);
 				admF.createCustomer(c);
-			} catch (DaoExeption | FiledErrorException e) {
+			} catch (DaoException | FiledErrorException e) {
 				System.out.println(e.getMessage());
 			}
     		
@@ -1032,7 +1030,7 @@ public class testDeveloers {
     			      try {
 						admF.removeCustomer(cus);
 						printCustomerRemoved();
-					} catch (DaoExeption | FiledErrorException e) {
+					} catch (DaoException | FiledErrorException e) {
 						System.out.println(e.getMessage());
 					} // catch
 
@@ -1093,7 +1091,7 @@ public class testDeveloers {
 				System.out.println("\n" + SharingData.getVarchar4());
 	     	    System.out.println("------------ Customer Updated Successfully ----------" + "\n");
 	     	    printGoingBackToUsage();
-			} catch (DaoExeption | FiledErrorException e) {
+			} catch (DaoException | FiledErrorException e) {
 				
 				System.out.println(e.getMessage());;
 			}
@@ -1123,7 +1121,7 @@ public class testDeveloers {
 
 			coupons = compF.getAllCoupons();
 			System.out.println(coupons.toString());
-		} catch (DaoExeption e) {
+		} catch (DaoException e) {
 			System.out.println(e.getMessage());;
 		}
     	
@@ -1142,7 +1140,7 @@ public class testDeveloers {
    	try {
 		Set<Coupon> couponsByType = compF.getCouponsByType(userInputString());
 	   	System.out.println(couponsByType.toString());
-	} catch (DaoExeption | FiledErrorException e) {
+	} catch (DaoException | FiledErrorException e) {
 		System.out.println(e.getMessage());
 	}
    } // getAllCouponsByType_T
@@ -1158,13 +1156,13 @@ public class testDeveloers {
 			Set<Coupon> coupons = compF.getCouponsOfCompanyByPrice(maxPrice);
 			System.out.println(coupons.toString() + "\n");
 			System.out.println("Results: [" + coupons.size() + "] Coupons");
-		} catch (DaoExeption e) {
+		} catch (DaoException e) {
 			System.out.println(e.getMessage());
 		}
     	
     	
-    	if(SharingData.getExeptionMessage() != null) {
-        	System.out.println(SharingData.getExeptionMessage());
+    	if(SharingData.getExceptionMessage() != null) {
+        	System.out.println(SharingData.getExceptionMessage());
         	}
     }
     
@@ -1222,7 +1220,7 @@ public class testDeveloers {
 					Customer c = admF.getCustomer(id);
 					System.out.println(c.toString());
 	    			System.out.println("\n" + "------------ Customer Function (getID) Was Run Successfully ----------" + "\n");
-				} catch (DaoExeption | FiledErrorException e) {
+				} catch (DaoException | FiledErrorException e) {
 					System.out.println(e.getMessage());
 				}
         		
@@ -1240,7 +1238,7 @@ public class testDeveloers {
     		try {
     			System.out.println("Here is your Customers List: " + "\n");
 				System.out.println("\n" + admF.getAllCustomers());
-			} catch (DaoExeption e) {
+			} catch (DaoException e) {
 				System.out.println(e.getMessage());
 			}
     		
@@ -1287,7 +1285,7 @@ public class testDeveloers {
 		    	if(coupon.getTitle() != null) {
 			    	System.out.println(coupon.toString());
 		    	}
-			} catch (DaoExeption | FiledErrorException e) {
+			} catch (DaoException | FiledErrorException e) {
 				System.out.println(e.getMessage());
 			}
 
@@ -1308,7 +1306,7 @@ public class testDeveloers {
     	Set<Coupon> c = null;
 		try {
 			c = cusF.getAllPurchasedCoupons();
-		} catch (DaoExeption e) {
+		} catch (DaoException e) {
 			System.out.println(e.getMessage());
 		}
     	if (c != null) {
@@ -1337,7 +1335,7 @@ public class testDeveloers {
     		couponsByType = cusF.getAllCouponsByType(type);
         	System.out.println(couponsByType.toString());
     	}
-    	catch (IllegalArgumentException | NullPointerException | DaoExeption | FiledErrorException e) {
+    	catch (IllegalArgumentException | NullPointerException | DaoException | FiledErrorException e) {
     		System.out.println(e.getMessage());;
     	}
     } // getAllCouponsByType_T
@@ -1358,7 +1356,7 @@ public class testDeveloers {
     	Set<Coupon> coupons = new HashSet<>();
 		try {
 			coupons = cusF.getAllCouponsByPrice(maxPrice);
-		} catch (DaoExeption e) {
+		} catch (DaoException e) {
 			
 			System.out.println(e.getMessage());
 			}
@@ -1537,7 +1535,7 @@ public class testDeveloers {
 		}
 	
 	} // while loop
-		} catch (DaoExeption | FiledErrorException | InputMismatchException e) {
+		} catch (DaoException | FiledErrorException | InputMismatchException e) {
 			System.out.println(e.getMessage());
 		}
 	
@@ -1565,7 +1563,7 @@ public class testDeveloers {
 				
 					compF.removeCoupon(c);
 					printCouponRemoved();
-				} catch (DaoExeption | FiledErrorException e) {
+				} catch (DaoException | FiledErrorException e) {
 					System.out.println(e.getMessage());
 				}
 
@@ -1618,7 +1616,7 @@ public class testDeveloers {
 				coup.setPrice(price);
 				
 				compF.updateCoupon(coup);
-			} catch (DaoExeption | DateTimeException | FiledErrorException e) {
+			} catch (DaoException | DateTimeException | FiledErrorException e) {
 				System.out.println(e.getMessage());;
 			}			
 			break;
@@ -1647,7 +1645,7 @@ public class testDeveloers {
     		    		System.out.println("\n" + "------------ Coupon Function (getID) Was Run Successfully ----------" + "\n");
 //        			}
 
-				} catch (DaoExeption | FiledErrorException e) {
+				} catch (DaoException | FiledErrorException e) {
 					System.out.println(e.getMessage());
 				}
         		break;        	
@@ -1755,7 +1753,7 @@ public class testDeveloers {
 	    			admF.removeCoupon(coupon);
 	    			System.out.println();
 
-				} catch (FiledErrorException | DaoExeption e) {
+				} catch (FiledErrorException | DaoException e) {
 					System.out.println(e.getMessage());;
 				}
     			break;
@@ -1769,7 +1767,7 @@ public class testDeveloers {
     				
 					System.out.println(coupons.toString() + "\n");
 					System.out.println("Results: [" + coupons.size() + "] Coupons");
-				} catch (DaoExeption | IllegalArgumentException | FiledErrorException e) {
+				} catch (DaoException | IllegalArgumentException | FiledErrorException e) {
 					System.out.println(e.getMessage());;
 				}
     			printAdminFacadeMenu();
@@ -1787,7 +1785,7 @@ public class testDeveloers {
 					System.out.println(coupons.toString() + "\n");
 					System.out.println("Results: [" + coupons.size() + "] Coupons");
 
-				} catch (DaoExeption | IllegalArgumentException e) {
+				} catch (DaoException | IllegalArgumentException e) {
 					System.out.println(e.getMessage());;
 				}
     			printAdminFacadeMenu();
@@ -1802,7 +1800,7 @@ public class testDeveloers {
 					System.out.println(coupons.toString() + "\n");
 					System.out.println("Results: [" + coupons.size() + "] Coupons");
 
-				} catch (DaoExeption | IllegalArgumentException e) {
+				} catch (DaoException | IllegalArgumentException e) {
 					System.out.println(e.getMessage());;
 				}
     			printAdminFacadeMenu();
@@ -1854,7 +1852,7 @@ public class testDeveloers {
     			try {
     				System.out.println(compF.viewCompay());
     				
-				} catch (DaoExeption e) {
+				} catch (DaoException e) {
 					System.out.println(e.getMessage());;
 				}
     			break;
@@ -1924,7 +1922,7 @@ public class testDeveloers {
      			System.out.println("Your Customer Details: ");
      			try {
 					System.out.print(cusF.getCustomer());
-				} catch (DaoExeption e) {
+				} catch (DaoException e) {
 					System.out.println(e.getMessage());
 				}
      			break;

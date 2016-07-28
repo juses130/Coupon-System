@@ -2,7 +2,7 @@ package com.javabeans;
 
 import java.util.Collection;
 
-import com.exeptionerrors.FiledErrorException;
+import com.exceptionerrors.FiledErrorException;
 
 public class Company {
 	

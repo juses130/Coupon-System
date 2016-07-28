@@ -6,7 +6,7 @@ import java.util.*;
 
 import com.dao.interfaces.CompanyDAO;
 import com.dao.interfaces.CouponDAO;
-import com.exeptionerrors.*;
+import com.exceptionerrors.*;
 import com.javabeans.*;
 import com.task.and.singleton.CouponClientFacade;
 import com.task.and.singleton.CouponSystem;
@@ -19,7 +19,7 @@ public class CompanyFacade implements CouponClientFacade{
 	private CouponDAO coupDao = null;
 		
 //	
-	public CompanyFacade() throws ConnectorExeption{
+	public CompanyFacade() throws ConnectorException{
 		
 		compDao = CouponSystem.getInstance().getCompDao();
 		coupDao = CouponSystem.getInstance().getCouponDao();
@@ -27,7 +27,7 @@ public class CompanyFacade implements CouponClientFacade{
 	
 	
 	@Override
-	public CompanyFacade login(String compName, String password, ClientType type) throws LoginException ,DaoExeption {
+	public CompanyFacade login(String compName, String password, ClientType type) throws LoginException ,DaoException {
     	boolean loginSuccessful  = false;
     	
 			loginSuccessful = compDao.login(compName, password);
@@ -42,7 +42,7 @@ public class CompanyFacade implements CouponClientFacade{
 			}
 	} // login - function
 	
-	public void addCoupon(Coupon coupon) throws DaoExeption, FiledErrorException{
+	public void addCoupon(Coupon coupon) throws DaoException, FiledErrorException{
 		
 		coupon.setOwnerID(company.getId());
 		
@@ -51,7 +51,7 @@ public class CompanyFacade implements CouponClientFacade{
 		
 	} // createCouponF
 	
-	public Collection<Coupon> getAllCoupons() throws DaoExeption{
+	public Collection<Coupon> getAllCoupons() throws DaoException{
 
 		Collection<Coupon> coupons = new HashSet<>();
 		coupons = coupDao.getCoupons(company.getId(), ClientType.COMPANY);
@@ -59,23 +59,23 @@ public class CompanyFacade implements CouponClientFacade{
 		return coupons;
 	} 
 	
-	public void removeCoupon(Coupon coupon) throws DaoExeption, FiledErrorException{
+	public void removeCoupon(Coupon coupon) throws DaoException, FiledErrorException{
 		coupon.setOwnerID(company.getId());
 		coupDao.removeCoupon(coupon, ClientType.COMPANY);
 	}
 	
-	public Coupon updateCoupon(Coupon coupon) throws DaoExeption{
+	public Coupon updateCoupon(Coupon coupon) throws DaoException{
 		coupDao.updateCoupon(coupon);
 		
 		return coupon;
 	}
 	
-	public Company viewCompay() throws DaoExeption{
+	public Company viewCompay() throws DaoException{
 		Company company = compDao.viewCompany(this.company.getId());
 		return company;
 	}
 	
-	public Coupon getCoupon(long id) throws DaoExeption, FiledErrorException{
+	public Coupon getCoupon(long id) throws DaoException, FiledErrorException{
 		
 //		Company company = new Company();
 		Coupon coupon = new Coupon();
@@ -88,7 +88,7 @@ public class CompanyFacade implements CouponClientFacade{
 		return coupon;
 	}
 	
-	public Set<Coupon> getCouponsByType(String category) throws DaoExeption, FiledErrorException{
+	public Set<Coupon> getCouponsByType(String category) throws DaoException, FiledErrorException{
 
 		// This next two lines checks if the category-String exist in the Enum Or not.
 		Coupon coupon = new Coupon();
@@ -100,7 +100,7 @@ public class CompanyFacade implements CouponClientFacade{
 
 	}
 	
-	public Set<Coupon> getCouponsOfCompanyByPrice(double maxPrice) throws DaoExeption{
+	public Set<Coupon> getCouponsOfCompanyByPrice(double maxPrice) throws DaoException{
 		Set<Coupon> coupons = coupDao.getCouponByPrice(company.getId(), maxPrice, ClientType.COMPANY);
 //		
 		return coupons;	

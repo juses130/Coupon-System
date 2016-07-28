@@ -8,8 +8,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import com.added.functions.DBconnectorV3;
 import com.dao.interfaces.CustomerDAO;
-import com.exeptionerrors.DaoExeption;
-import com.exeptionerrors.FiledErrorException;
+import com.exceptionerrors.DaoException;
+import com.exceptionerrors.FiledErrorException;
 import com.facade.DetectionBy;
 import com.javabeans.Coupon;
 import com.javabeans.Customer;
@@ -26,7 +26,7 @@ public class CustomerDBDAO implements CustomerDAO {
 	public CustomerDBDAO() {}
 	
 	@Override
-	public boolean login(String userName, String password) throws DaoExeption {
+	public boolean login(String userName, String password) throws DaoException {
 		
 		boolean hasRows = false;
         String sqlName = "SELECT Cust_id, Cust_name, password FROM customer WHERE "
@@ -42,13 +42,13 @@ public class CustomerDBDAO implements CustomerDAO {
 				}
 			
 		} catch (SQLException | NullPointerException e) {
-			throw new DaoExeption("Error: Customer Login - FAILED");
+			throw new DaoException("Error: Customer Login - FAILED");
 		} // catch
 	return hasRows;
 	}
 	
 	@Override
-	public void createCustomer(Customer customer) throws DaoExeption{
+	public void createCustomer(Customer customer) throws DaoException{
 		
 		// check if the cost not exist (Name and ID)
 		if (existOrNotByID(customer) == false && existOrNotByName(customer.getCustName()) == false) {
@@ -70,30 +70,30 @@ public class CustomerDBDAO implements CustomerDAO {
 				}
 			} // try 
 			catch (SQLException | NullPointerException e) {
-				throw new DaoExeption("Error: Creating New Customer - FAILED (something went wrong)");
+				throw new DaoException("Error: Creating New Customer - FAILED (something went wrong)");
 			} // catch
 		}
 		else {
-			throw new DaoExeption("Error: Creating Customer - FAILED (Customer is already exist in the DataBase)");
+			throw new DaoException("Error: Creating Customer - FAILED (Customer is already exist in the DataBase)");
 		} // else
 			} // createCompany - Function
 
 	@Override
-	public Coupon addCoupon(Coupon coupon, long custID) throws DaoExeption {
+	public Coupon addCoupon(Coupon coupon, long custID) throws DaoException {
 		
 		if(purchasedBefore(coupon.getId(), custID) == false) {
 			coupon = addCouponMethod(coupon, custID);
 			return coupon;	
 		}
 		else {
-			throw new DaoExeption("Error: Purchase Coupon - FAILED (The coupon has been purchased before)");			
+			throw new DaoException("Error: Purchase Coupon - FAILED (The coupon has been purchased before)");			
 		}
 		
 	}
 	
 	
 	@Override
-	public void removeCustomer(Customer customer) throws DaoExeption, FiledErrorException {
+	public void removeCustomer(Customer customer) throws DaoException, FiledErrorException {
 		
 		// check if the customer exist
 		if (existOrNotByID(customer) == true) {
@@ -109,28 +109,28 @@ public class CustomerDBDAO implements CustomerDAO {
 				removeMethod(customer.getId());
 			}
 			else {
-				throw new DaoExeption("Error: Removing Customer - FAILED (Customer dosen't exist in the DataBase)");
+				throw new DaoException("Error: Removing Customer - FAILED (Customer dosen't exist in the DataBase)");
 			}
 		} // if - exist
 		else {
-			throw new DaoExeption("Error: Removing Company - FAILED (Company is not exist in the DataBase)");
+			throw new DaoException("Error: Removing Company - FAILED (Company is not exist in the DataBase)");
 		} // else - exist
 	}
 
 	@Override
-	public void updateCustomer(Customer customer) throws DaoExeption{
+	public void updateCustomer(Customer customer) throws DaoException{
 		
 		// check if the customer exist
 		if (existOrNotByID(customer) == true) {
 			updateMethod(customer);		
 		}// if - exist
 		else {
-			throw new DaoExeption("Error: Removing Company - FAILED (Company is not exist in the DataBase)");
+			throw new DaoException("Error: Removing Company - FAILED (Company is not exist in the DataBase)");
 		} // else	
 	}
 
 	@Override
-	public Customer getCustomer(long id) throws DaoExeption{
+	public Customer getCustomer(long id) throws DaoException{
 		
 		Customer customer = new Customer();
 		customer.setId(id);
@@ -153,19 +153,19 @@ public class CustomerDBDAO implements CustomerDAO {
 				customer = new Customer(id, custName, password);	
 			}
 			catch (SQLException | FiledErrorException e) {
-				throw new DaoExeption("Error: Getting Customer By ID - FAILED");
+				throw new DaoException("Error: Getting Customer By ID - FAILED");
 			}
 			return customer;
 		}   
 		else {
-			throw new DaoExeption("Error: Getting Customer - FAILED (Customer is not exist in the DataBase)");
+			throw new DaoException("Error: Getting Customer - FAILED (Customer is not exist in the DataBase)");
 		} // else	
 
 		
 	}
 
 	@Override
-	public Customer getCustomer(String custName) throws DaoExeption {
+	public Customer getCustomer(String custName) throws DaoException {
 		
 		Customer customer = new Customer();
 		
@@ -190,17 +190,17 @@ public class CustomerDBDAO implements CustomerDAO {
 				
 		}
 		else {
-			throw new DaoExeption("Error: Getting Customer By ID - FAILED");
+			throw new DaoException("Error: Getting Customer By ID - FAILED");
 		} // else - exist
 		} catch (SQLException | FiledErrorException e) {
-			throw new DaoExeption("Error: Getting Customer By Name - FAILED (Customer is not exist in the DataBase)");
+			throw new DaoException("Error: Getting Customer By Name - FAILED (Customer is not exist in the DataBase)");
 		} // catch
 
 		return customer;
 	}
 	
 	@Override
-    public Collection<Customer> getAllCustomers() throws DaoExeption{
+    public Collection<Customer> getAllCustomers() throws DaoException{
 		
 		String sql = "SELECT * FROM customer";
 		Collection<Customer> customers = new HashSet<>();
@@ -241,7 +241,7 @@ public class CustomerDBDAO implements CustomerDAO {
 	 * @author Raziel
 	 */
 	
-   private void removeMethod(long id) throws DaoExeption{
+   private void removeMethod(long id) throws DaoException{
 		
 		boolean hasRow = false;
 		PreparedStatement prep = null;
@@ -280,12 +280,12 @@ public class CustomerDBDAO implements CustomerDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new DaoExeption("Error: Removing Company - FAILED (something went wrong..)");
+			throw new DaoException("Error: Removing Company - FAILED (something went wrong..)");
 		} // catch
 		
 	} // removeMethodPart2
 	
-	private void updateMethod(Customer customer) throws DaoExeption{
+	private void updateMethod(Customer customer) throws DaoException{
 		
        try {
 
@@ -319,7 +319,7 @@ public class CustomerDBDAO implements CustomerDAO {
 	*/
 	
 
-	private Coupon addCouponMethod(Coupon coupon, long custID) throws DaoExeption {
+	private Coupon addCouponMethod(Coupon coupon, long custID) throws DaoException {
 					
 			try{
 				// check if we have the coupon in stock
@@ -336,7 +336,7 @@ public class CustomerDBDAO implements CustomerDAO {
 					currentAmount = currentAmount - 1;
 				}
 				else {
-					throw new DaoExeption("Error: Purchase Coupon - FAILD (The coupon out of stock)");
+					throw new DaoException("Error: Purchase Coupon - FAILD (The coupon out of stock)");
 				}
 				// clearing the statement.
 				prep.clearBatch();
@@ -361,13 +361,13 @@ public class CustomerDBDAO implements CustomerDAO {
 
 			} // try
 			catch (SQLException | NullPointerException e) {
-				throw new DaoExeption("Error: Creating Coupon By Customer- FAILED (something went wrong..)");			
+				throw new DaoException("Error: Creating Coupon By Customer- FAILED (something went wrong..)");			
 			} // catch
 			return coupon;
 
 	}
 
-	private boolean purchasedBefore(long coupID, long custID) throws DaoExeption {
+	private boolean purchasedBefore(long coupID, long custID) throws DaoException {
 		boolean isExist = false;
 		
 		String sqlQuery = "SELECT coupon.* "
@@ -387,13 +387,13 @@ public class CustomerDBDAO implements CustomerDAO {
 			} // if - getRow
 			
 		} catch (SQLException e) {
-			throw new DaoExeption("Error: Checking You're Purchase History - FAILED (something went wrong..)");			
+			throw new DaoException("Error: Checking You're Purchase History - FAILED (something went wrong..)");			
 		}
 		
 		return isExist;
 	}
 	
-   private boolean existOrNotByID(Customer customer) throws DaoExeption {
+   private boolean existOrNotByID(Customer customer) throws DaoException {
 		
 		Statement stat = null;
 		ResultSet rs = null;
@@ -411,12 +411,12 @@ public class CustomerDBDAO implements CustomerDAO {
 						answer = true;
 					} // if
 		} catch (SQLException e) {
-			throw new DaoExeption("Error: cannot make sure if the customer is in the DataBase");
+			throw new DaoException("Error: cannot make sure if the customer is in the DataBase");
 		}
 		return answer;
 	}
 	
-   private boolean existOrNotByName(String custName) throws DaoExeption {
+   private boolean existOrNotByName(String custName) throws DaoException {
 
 	   Statement stat = null;
 		ResultSet rs = null;
@@ -435,13 +435,13 @@ public class CustomerDBDAO implements CustomerDAO {
 //				if (rs.getRow() != 0) {
 //				} // if
 	            } catch (SQLException e) {
-	    			throw new DaoExeption("Error: cannot make sure if the customer is in the DataBase");
+	    			throw new DaoException("Error: cannot make sure if the customer is in the DataBase");
 	            } // catch
 		   
 		   return answer;
 	}
 	
-   private DetectionBy customerDetectInDB(Customer customer) throws DaoExeption{
+   private DetectionBy customerDetectInDB(Customer customer) throws DaoException{
 	  
 	   boolean exist = false;
 		
@@ -453,7 +453,7 @@ public class CustomerDBDAO implements CustomerDAO {
 				return DetectionBy.ID;
 			} // if - inner
 			else {
-				throw new DaoExeption("Error: Detection By ID - FAILED (The customer dosen't exist in the DataBase)");
+				throw new DaoException("Error: Detection By ID - FAILED (The customer dosen't exist in the DataBase)");
 			} // else - inner
 		} // if 
 		else if(customer.getCustName() != null) {
@@ -461,7 +461,7 @@ public class CustomerDBDAO implements CustomerDAO {
 				return DetectionBy.USERNAME;
 			} // if - inner
 			else {
-				throw new DaoExeption("Error: Detection By Name - FAILED (The customer dosen't exist in the DataBase)");
+				throw new DaoException("Error: Detection By Name - FAILED (The customer dosen't exist in the DataBase)");
 			} // else - inner
 		} // else if
 		

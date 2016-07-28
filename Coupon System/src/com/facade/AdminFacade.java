@@ -7,10 +7,7 @@ import java.util.Set;
 import com.dao.interfaces.CompanyDAO;
 import com.dao.interfaces.CouponDAO;
 import com.dao.interfaces.CustomerDAO;
-import com.exeptionerrors.ConnectorExeption;
-import com.exeptionerrors.DaoExeption;
-import com.exeptionerrors.FiledErrorException;
-import com.exeptionerrors.LoginException;
+import com.exceptionerrors.*;
 import com.javabeans.*;
 import com.task.and.singleton.CouponClientFacade;
 import com.task.and.singleton.CouponSystem;
@@ -29,7 +26,7 @@ public class AdminFacade implements CouponClientFacade{
 	private CouponDAO coupDao = null;
 	
 	// constructor
-	public AdminFacade() throws ConnectorExeption {
+	public AdminFacade() throws ConnectorException {
 			
 		compDao = CouponSystem.getInstance().getCompDao();
 		custDao = CouponSystem.getInstance().getCustDao();
@@ -41,11 +38,11 @@ public class AdminFacade implements CouponClientFacade{
 	 *  Company Access
 	 */
 	
-	public void createCompany(Company company) throws DaoExeption {
+	public void createCompany(Company company) throws DaoException {
 		compDao.createCompany(company);
 	} // createCompany - function
 	
-	public void removeCompany(Company company) throws DaoExeption{
+	public void removeCompany(Company company) throws DaoException{
 		
 		/* Iv'e added to the DataBase a new Column named - OwnerID.
 		 * When we looking in the Coupons list, we may want to know 
@@ -59,12 +56,12 @@ public class AdminFacade implements CouponClientFacade{
 		
 	} // removeCompanyA - function
 	
-	public void updateCompany(Company company) throws DaoExeption{
+	public void updateCompany(Company company) throws DaoException{
 			compDao.updateCompany(company);
 		
 	} // updateCompanyA - function
 
-	public Company getCompany(long id) throws DaoExeption{
+	public Company getCompany(long id) throws DaoException{
 		Company company = new Company();
 		company = compDao.getCompany(id);
 		return company;
@@ -72,13 +69,13 @@ public class AdminFacade implements CouponClientFacade{
 		
 	} // getCompanyA - function
 	
-	public Company getCompany(String compName) throws DaoExeption{
+	public Company getCompany(String compName) throws DaoException{
 		Company company = new Company();
 		company = compDao.getCompany(compName);
 		return company;
 	}
 	
-	public Collection<Company> getAllCompanies() throws DaoExeption{
+	public Collection<Company> getAllCompanies() throws DaoException{
 		
 		Collection<Company> companies = null;
 		companies = compDao.getAllCompanies();
@@ -90,25 +87,25 @@ public class AdminFacade implements CouponClientFacade{
 	 *  Customer Access
 	 */
 	
-	public void createCustomer(Customer customer) throws DaoExeption{
+	public void createCustomer(Customer customer) throws DaoException{
 		
 		custDao.createCustomer(customer);
 		
 	} // createCustomerA - function
 	
-	public void removeCustomer(Customer customer) throws DaoExeption, FiledErrorException{
+	public void removeCustomer(Customer customer) throws DaoException, FiledErrorException{
 			custDao.removeCustomer(customer);
 	}
 	
-	public void removeCoupon(Coupon coupon) throws DaoExeption, FiledErrorException{
+	public void removeCoupon(Coupon coupon) throws DaoException, FiledErrorException{
 		coupDao.removeCoupon(coupon, ClientType.COMPANY);
 	}
 	
-	public void updateCustomer(Customer customer) throws DaoExeption{
+	public void updateCustomer(Customer customer) throws DaoException{
 		custDao.updateCustomer(customer);
 	} // createCustomerA - function
 	
-	public Customer getCustomer(long id) throws DaoExeption, FiledErrorException{
+	public Customer getCustomer(long id) throws DaoException, FiledErrorException{
 		
 		Customer customer = new Customer();
 		customer = custDao.getCustomer(id);
@@ -120,7 +117,7 @@ public class AdminFacade implements CouponClientFacade{
 		return customer;
 	}
 	
-	public Customer getCustomer(String compName) throws DaoExeption, FiledErrorException{
+	public Customer getCustomer(String compName) throws DaoException, FiledErrorException{
 		
 		Customer customer = new Customer();
 //		c.setId(id);
@@ -133,15 +130,15 @@ public class AdminFacade implements CouponClientFacade{
 		return customer;
 	}
 
-	public Collection<Customer> getAllCustomers() throws DaoExeption{
+	public Collection<Customer> getAllCustomers() throws DaoException{
 		return custDao.getAllCustomers();
 	} // getAllCompaniesA - function
 
-	public Set<Coupon> getCouponByPrice(double maxPrice) throws DaoExeption {
+	public Set<Coupon> getCouponByPrice(double maxPrice) throws DaoException {
 		return coupDao.getCouponByPrice(0, maxPrice, ClientType.ADMIN);
 	}
 	
-	public Set<Coupon> getCouponByType(String category) throws DaoExeption, FiledErrorException {
+	public Set<Coupon> getCouponByType(String category) throws DaoException, FiledErrorException {
 		/* we don't need an ID for the admin.. 
 		 * But we want to use this function from all the Facades, so
 		 * we need id for the two other facades.
@@ -156,7 +153,7 @@ public class AdminFacade implements CouponClientFacade{
 		return coupDao.getCouponByType(id, coupon.getCategory() ,ClientType.ADMIN);
 	}
 
-	public Set<Coupon> getAllCoupons() throws DaoExeption {
+	public Set<Coupon> getAllCoupons() throws DaoException {
 		
 		Set<Coupon> coupons = coupDao.getCoupons(0, ClientType.ADMIN);
 		return coupons;
@@ -164,7 +161,7 @@ public class AdminFacade implements CouponClientFacade{
 	}
 	
 	@Override
-	public AdminFacade login(String adminName, String password, ClientType client) throws LoginException , DaoExeption {
+	public AdminFacade login(String adminName, String password, ClientType client) throws LoginException , DaoException {
 		if(adminName.toLowerCase().equals(adminUser) && String.valueOf(password).equals(adminPassword) 
 				&& client == ClientType.ADMIN) {
 			return this;

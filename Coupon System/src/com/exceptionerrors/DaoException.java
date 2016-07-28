@@ -1,17 +1,17 @@
-package com.exeptionerrors;
+package com.exceptionerrors;
 
-public class DaoExeption extends Exception{
+public class DaoException extends Exception{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
 	// Default Constructor
-	public DaoExeption(){
+	public DaoException(){
 		super();
 	}
 	
-	public DaoExeption(String message){
+	public DaoException(String message){
 		super(message);
 	}
 	

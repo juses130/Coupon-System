@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import com.added.functions.DBconnectorV3;
 import com.dao.interfaces.*;
 import com.dbdao.*;
-import com.exeptionerrors.*;
+import com.exceptionerrors.*;
 import com.facade.AdminFacade;
 import com.facade.ClientType;
 import com.facade.CompanyFacade;
@@ -23,7 +23,7 @@ public class CouponSystem implements CouponClientFacade {
 			
 			
 			// Constructor
-			private CouponSystem() throws ConnectorExeption {
+			private CouponSystem() throws ConnectorException {
 				compDao = new CompanyDBDAO();
 				custDao = new CustomerDBDAO();
 				couponDao = new CouponDBDAO();
@@ -35,14 +35,14 @@ public class CouponSystem implements CouponClientFacade {
 				
 			}
 			
-			public static CouponSystem getInstance() throws ConnectorExeption {
+			public static CouponSystem getInstance() throws ConnectorException {
 				if (instance == null) {
 					instance = new CouponSystem();
 				}
 				return instance;
 			}
 		
-			public void stop() throws ConnectorExeption, SQLException {
+			public void stop() throws ConnectorException, SQLException {
 				
 				dailyTaskThread.interrupt();
 				dailyTask.stop();
@@ -62,7 +62,7 @@ public class CouponSystem implements CouponClientFacade {
 				return couponDao;
 			}
 			
-			public CouponClientFacade login(String userName, String password, ClientType client) throws LoginException, DaoExeption, ConnectorExeption{
+			public CouponClientFacade login(String userName, String password, ClientType client) throws LoginException, DaoException, ConnectorException{
 				
 				CouponClientFacade clientFacade = null;
 				

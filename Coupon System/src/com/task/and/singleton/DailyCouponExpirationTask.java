@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.added.functions.DBconnectorV3;
 import com.dao.interfaces.*;
-import com.exeptionerrors.DaoExeption;
+import com.exceptionerrors.DaoException;
 
 /**
  * This is Version 2 of this Class.
@@ -46,20 +46,19 @@ public class DailyCouponExpirationTask implements Runnable {
 
 			running = false;
 			
-			
 		} //while - running
 		
 				TimeUnit.HOURS.sleep(24);
 
 				} // try 
-				catch (InterruptedException | DaoExeption e) {
+				catch (InterruptedException | DaoException e) {
 					e.getMessage();
 					assert false;
-					
 				} // catch
 		
 	} // run()
-	private void deleteCoupon() throws DaoExeption {
+	
+	private void deleteCoupon() throws DaoException {
 			
 			try {
 				String sqlSelectByEndDate = "DELETE coupon.*, company_coupon.*, customer_coupon.* "
@@ -73,7 +72,7 @@ public class DailyCouponExpirationTask implements Runnable {
 				prep.executeUpdate();
 				
 			} catch (SQLException e) {
-				throw new DaoExeption("Error: Deleting Expired Coupon - FAILD (something went wrong..)");
+				throw new DaoException("Error: Deleting Expired Coupon - FAILD (something went wrong..)");
 			}
 
 

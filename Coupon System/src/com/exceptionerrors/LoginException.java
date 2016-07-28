@@ -1,4 +1,4 @@
-package com.exeptionerrors;
+package com.exceptionerrors;
 
 /**
  * 
