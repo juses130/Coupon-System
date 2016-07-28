@@ -117,7 +117,7 @@ public class shortTest {
 //			TimeUnit.SECONDS.sleep(6);
 //			coup.stop();
 //		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
+//			
 //			e.printStackTrace();
 //		}
 //		CustomerDBDAO customerDBDAO = null;
@@ -127,7 +127,7 @@ public class shortTest {
 //			Customer c = new Customer();
 //			CouponSystem.getInstance();
 //		} catch (ConnectorExeption e1) {
-//			// TODO Auto-generated catch block
+//			
 //			System.out.println(e1.getMessage());;
 //		}
 		
@@ -142,7 +142,7 @@ public class shortTest {
 //			CustomerDBDAO customerDBDAO = new CustomerDBDAO();
 //			System.out.println(customerDBDAO.getCustomer(coup.getCustName()).toString());;
 //		} catch (DaoExeption | FiledErrorException e) {
-			// TODO Auto-generated catch block
+			
 //			System.out.println(e.getMessage());;
 //			e.printStackTrace();
 //		}
@@ -199,7 +199,7 @@ public class shortTest {
 				System.out.println(coup.toString());
 			} // for
 		} catch (ConnectorExeption | FiledErrorException e) {
-			// TODO Auto-generated catch block
+			
 			System.out.println(e.getMessage());;
 		}
 
@@ -224,7 +224,7 @@ public class shortTest {
 				System.out.println(coup.toString());
 			} // for
 		} catch (ConnectorExeption | FiledErrorException e) {
-			// TODO Auto-generated catch block
+			
 			System.out.println(e.getMessage());
 		}
 	}

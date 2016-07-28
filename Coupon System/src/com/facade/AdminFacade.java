@@ -141,14 +141,19 @@ public class AdminFacade implements CouponClientFacade{
 		return coupDao.getCouponByPrice(0, maxPrice, ClientType.ADMIN);
 	}
 	
-	public Set<Coupon> getCouponByType(CouponType category) throws DaoExeption {
+	public Set<Coupon> getCouponByType(String category) throws DaoExeption, FiledErrorException {
 		/* we don't need an ID for the admin.. 
 		 * But we want to use this function from all the Facades, so
 		 * we need id for the two other facades.
 		 * 
 		 */
+		
+		// This next two lines checks if the category-String exist in the Enum Or not.
+		Coupon coupon = new Coupon();
+		coupon.setCategory(category);
+		
 		long id = 0;
-		return coupDao.getCouponByType(id, category ,ClientType.ADMIN);
+		return coupDao.getCouponByType(id, coupon.getCategory() ,ClientType.ADMIN);
 	}
 
 	public Set<Coupon> getAllCoupons() throws DaoExeption {

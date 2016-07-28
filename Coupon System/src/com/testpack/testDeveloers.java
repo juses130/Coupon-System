@@ -452,11 +452,10 @@ public class testDeveloers {
 					admF = ad.login(userName, password, ClientType.ADMIN);
 					
 				} catch (LoginException | ConnectorExeption e) {
-					// TODO Auto-generated catch block
 					System.out.println("\n" + e.getMessage());
 					break;
 				} catch (DaoExeption e) {
-					// TODO Auto-generated catch block
+					
 					System.out.println("\n" + e.getMessage());
 					break;
 				}
@@ -567,10 +566,10 @@ public class testDeveloers {
 		
 		
 			try {
-				if(DBconnectorV3.getConnection().isClosed() != true) {
+				if(DBconnectorV3.getConnection().isClosed() == false) {
 					System.out.println("----------- DRIVER LOADED -----------------" + "\n");
 				}
-			} catch (SQLException | NullPointerException e) {
+			} catch (NullPointerException | SQLException e) {
 				try {
 					throw new ConnectorExeption("Error: Connection to the Data Base - FAILED");
 				} catch (ConnectorExeption e1) {
@@ -767,7 +766,7 @@ public class testDeveloers {
 			
 				admF.createCompany(company);
 			} catch (DaoExeption | FiledErrorException e) {
-				// TODO im here
+				
 				System.out.println(e.getMessage());;
 			}
 
@@ -871,7 +870,7 @@ public class testDeveloers {
 	     	           
 						admF.updateCompany(company);
 				} catch (DaoExeption | FiledErrorException e) {
-					// TODO Auto-generated catch block
+					
 					System.out.println(e.getMessage());
 //					break;
 				}
@@ -913,7 +912,7 @@ public class testDeveloers {
 					System.out.println("\n" + "------------ Company Function (getCompany) Was Run Successfully ----------" + "\n");
 
 			    } catch (DaoExeption e) {
-				// TODO Auto-generated catch block
+				
 				System.out.println(e.getMessage());;
 			} // else
 					printAdminFacadeMenu();
@@ -940,7 +939,7 @@ public class testDeveloers {
     			
 			System.out.println(admF.getAllCompanies().toString());
 			} catch (DaoExeption e) {
-					// TODO Auto-generated catch block
+					
 					System.out.println(e.getMessage());;
 				}
         		printAdminFacadeMenu();
@@ -1095,7 +1094,7 @@ public class testDeveloers {
 	     	    System.out.println("------------ Customer Updated Successfully ----------" + "\n");
 	     	    printGoingBackToUsage();
 			} catch (DaoExeption | FiledErrorException e) {
-				// TODO Auto-generated catch block
+				
 				System.out.println(e.getMessage());;
 			}
  
@@ -1137,14 +1136,13 @@ public class testDeveloers {
     */
     private static void getAllCompanyCouponsByType_T() {
    	
-   	//TODO: 21:30
    	System.out.println("Search By Category :)");
    	System.out.print("Please insert your CATEGORY: ");
    	
    	try {
-		Set<Coupon> couponsByType = compF.getCouponsByType(CouponType.valueOf(userInputString().toUpperCase()));
+		Set<Coupon> couponsByType = compF.getCouponsByType(userInputString());
 	   	System.out.println(couponsByType.toString());
-	} catch (DaoExeption e) {
+	} catch (DaoExeption | FiledErrorException e) {
 		System.out.println(e.getMessage());
 	}
    } // getAllCouponsByType_T
@@ -1335,13 +1333,13 @@ public class testDeveloers {
     	System.out.print("Please insert your CATEGORY: ");
     	String type = userInputString();
     	Set<Coupon> couponsByType = null;
-//    	try {
-//    		couponsByType = cusF.getAllCouponsByType(SharingData.getIdsShare() , CouponType.valueOf(type.toUpperCase()));
-//        	System.out.println(couponsByType.toString());
-//    	}
-//    	catch (IllegalArgumentException | NullPointerException e) {
-//    		System.out.println("\n" + "Error! make sure you're putting right the Category");
-//    	}
+    	try {
+    		couponsByType = cusF.getAllCouponsByType(type);
+        	System.out.println(couponsByType.toString());
+    	}
+    	catch (IllegalArgumentException | NullPointerException | DaoExeption | FiledErrorException e) {
+    		System.out.println(e.getMessage());;
+    	}
     } // getAllCouponsByType_T
     
     /**
@@ -1357,8 +1355,14 @@ public class testDeveloers {
     	
 //    	CustomerFacade cusF = new CustomerFacade();
     	
-//    	Set<Coupon> coupons = cusF.getAllCouponsByPrice(SharingData.getIdsShare(), maxPrice);
-//    	System.out.println(coupons.toString());
+    	Set<Coupon> coupons = new HashSet<>();
+		try {
+			coupons = cusF.getAllCouponsByPrice(maxPrice);
+		} catch (DaoExeption e) {
+			
+			System.out.println(e.getMessage());
+			}
+    	System.out.println(coupons.toString());
     	
     } // getAllCouponsByType_T
        
@@ -1464,8 +1468,14 @@ public class testDeveloers {
 		int startMonth = userInputInt();
 		System.out.print("Year: ");
 		int startYear = userInputInt();
-		startDate = LocalDate.of(startYear, startMonth, startDay);
-		coup.setStartDate(startDate);
+		
+		if(startDay == 0 || startMonth == 0 || startYear == 0) {
+			throw new FiledErrorException("Error: Invaild Values!");
+		}
+		else {
+			startDate = LocalDate.of(startYear, startMonth, startDay);
+			coup.setStartDate(startDate);
+		}
 		
 		System.out.print("NEW Coupon EndDate.. ");
 		LocalDate endDate = null;
@@ -1475,14 +1485,21 @@ public class testDeveloers {
 		int endMonth = userInputInt();
 		System.out.print("Year: ");
 		int endYear = userInputInt();
-		endDate = LocalDate.of(endYear, endMonth, endDay);
-    	coup.setEndDate(endDate);
+		if(endDay == 0 || endDay == 0 || endYear == 0) {
+			throw new FiledErrorException("Error: Invaild Values!");
+		}
+		else {
+			endDate = LocalDate.of(endYear, endMonth, endDay);
+	    	coup.setEndDate(endDate);
+		}
+
 		System.out.print("NEW Amount: ");
         int amount = userInputInt();
 		coup.setAmount(amount);
         System.out.print("In Category: ");
-        String category = userInputString().toUpperCase();
-        coup.setCategory(CouponType.valueOf(category));
+        String category = userInputString();
+        coup.setCategory(category);
+        
         System.out.print("NEW Massage: ");
         String message = userInputString();
         coup.setMessage(message);
@@ -1520,7 +1537,7 @@ public class testDeveloers {
 		}
 	
 	} // while loop
-		} catch (DaoExeption | FiledErrorException e) {
+		} catch (DaoExeption | FiledErrorException | InputMismatchException e) {
 			System.out.println(e.getMessage());
 		}
 	
@@ -1559,7 +1576,7 @@ public class testDeveloers {
     private static void updateCoupon_T() {
     	
     	while(true) {
-    	// TODO: ATTENTION! I have to put here ownerID from the company ID!
+    	
 		System.out.print("Coupon ID: ");
         SharingData.setIdsShare(userInputLong());
     	
@@ -1748,11 +1765,11 @@ public class testDeveloers {
     				Set<Coupon> coupons = new HashSet<>();
     				System.out.print("Type your Category: ");
     				String category = userInputString();
-    				coupons = admF.getCouponByType(CouponType.valueOf(category.toUpperCase()));
+    				coupons = admF.getCouponByType(category);
     				
 					System.out.println(coupons.toString() + "\n");
 					System.out.println("Results: [" + coupons.size() + "] Coupons");
-				} catch (DaoExeption | IllegalArgumentException e) {
+				} catch (DaoExeption | IllegalArgumentException | FiledErrorException e) {
 					System.out.println(e.getMessage());;
 				}
     			printAdminFacadeMenu();
@@ -1943,12 +1960,13 @@ public class testDeveloers {
         		Thread.sleep(100);
 
             }
+			System.out.println("\n" + "[Expired Coupos Deleted!]" + "\n");
+
 
     		// This letting the Daily Task 5 seconds untill we will done.
     		System.out.println();
 
 
-			System.out.println("[Expired Coupos Deleted!]" + "\n");
 		} catch (InterruptedException e) {
 			System.out.println(e.getMessage());
 		} // catch

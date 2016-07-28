@@ -63,18 +63,20 @@ public class CustomerFacade implements CouponClientFacade {
 		
 	} // getAllCoupons
 	
-	public Set<Coupon> getAllCouponsByPrice(long custID ,double maxPrice) throws DaoExeption {
+	public Set<Coupon> getAllCouponsByPrice(double maxPrice) throws DaoExeption {
 		Set<Coupon> coupons = new HashSet<>();
-		
+		coupons = coupDao.getCouponByPrice(customer.getId(), maxPrice, ClientType.CUSTOMER);
 		return coupons;	
 	}
-	
-
-//	public Set<Coupon> getAllCouponsByType(long custID, CouponType category) {
-//		
-//		Set<Coupon> coupons = custDao.getCouponByType("customer_coupon", "cust_id" ,custID, category);
-//		return coupons;
-//	}
+	public Set<Coupon> getAllCouponsByType(String category) throws DaoExeption, FiledErrorException {
+		Set<Coupon> coupons = new HashSet<>();
+		
+		Coupon coupon = new Coupon();
+		coupon.setCategory(category);
+		
+		coupons = coupDao.getCouponByType(customer.getId(), coupon.getCategory(), ClientType.CUSTOMER);
+		return coupons;
+	}
 	
 
 	

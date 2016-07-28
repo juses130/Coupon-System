@@ -88,7 +88,7 @@ public class CouponDBDAO implements CouponDAO{
 
 		       try {
 					
-					String sql = "UPDATE Coupon SET End_Date=?, Amount=?, Message=?, Price=? WHERE Coup_ID=?";
+					String sql = "UPDATE coupon SET end_Date=?, amount=?, message=?, price=? WHERE coup_id=?";
 					PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement (sql);
 					
 					// set all the Coupon to the new one.
@@ -147,7 +147,7 @@ public class CouponDBDAO implements CouponDAO{
 	} // getAllCoupons
 
 	@Override
-	public Set<Coupon> getCouponByType(long id, CouponType category,ClientType client) throws DaoExeption {
+	public Set<Coupon> getCouponByType(long id, CouponType category, ClientType client) throws DaoExeption {
 		
 		Set<Coupon> coupons = new HashSet<>();
 		
@@ -173,7 +173,7 @@ public class CouponDBDAO implements CouponDAO{
 					coupon.setAmount(rs.getInt("amount"));
 					coupon.setMessage(rs.getString("Message"));
 					coupon.setPrice(rs.getDouble("Price"));
-					coupon.setCategory(CouponType.valueOf(rs.getString("Category").toUpperCase()));
+					coupon.setCategory((rs.getString("Category")));
 					coupon.setImage(rs.getString("image"));
 					coupon.setOwnerID(rs.getLong("owner_ID"));
 					
@@ -185,7 +185,12 @@ public class CouponDBDAO implements CouponDAO{
 			} catch (SQLException | FiledErrorException e) {
 				throw new DaoExeption("Error: Get Coupons By Type (Admin) - FAILED (something went wrong)");
 			}
-			return coupons;
+			if(!coupons.isEmpty()) {
+				return coupons;
+			}
+			else {
+				throw new DaoExeption("Error: No Coupons Found");
+			}  // else - Set<> is empty
 		}
 		else if(client == ClientType.COMPANY) {
 			try {
@@ -209,7 +214,7 @@ public class CouponDBDAO implements CouponDAO{
 					coupon.setAmount(rs.getInt("amount"));
 					coupon.setMessage(rs.getString("Message"));
 					coupon.setPrice(rs.getDouble("Price"));
-					coupon.setCategory(CouponType.valueOf(rs.getString("Category").toUpperCase()));
+					coupon.setCategory((rs.getString("Category")));
 					coupon.setImage(rs.getString("image"));
 					coupon.setOwnerID(rs.getLong("owner_ID"));
 					
@@ -219,7 +224,12 @@ public class CouponDBDAO implements CouponDAO{
 			} catch (SQLException | FiledErrorException e) {
 				throw new DaoExeption("Error: Get Coupons By Type (Admin) - FAILED (something went wrong)");
 			}
-			return coupons;
+			if(!coupons.isEmpty()) {
+				return coupons;
+			}
+			else {
+				throw new DaoExeption("Error: No Coupons Found");
+			}  // else - Set<> is empty
 			
 			
 		} // else if - COMPANY
@@ -246,7 +256,7 @@ public class CouponDBDAO implements CouponDAO{
 					coupon.setAmount(rs.getInt("amount"));
 					coupon.setMessage(rs.getString("Message"));
 					coupon.setPrice(rs.getDouble("Price"));
-					coupon.setCategory(CouponType.valueOf(rs.getString("Category").toUpperCase()));
+					coupon.setCategory((rs.getString("Category")));
 					coupon.setImage(rs.getString("image"));
 					coupon.setOwnerID(rs.getLong("owner_ID"));
 					
@@ -256,7 +266,12 @@ public class CouponDBDAO implements CouponDAO{
 			} catch (SQLException | FiledErrorException e) {
 				throw new DaoExeption("Error: Get Coupons By Type (Admin) - FAILED (something went wrong)");
 			} // catch
-			return coupons;
+			if(!coupons.isEmpty()) {
+				return coupons;
+			}
+			else {
+				throw new DaoExeption("Error: No Coupons Found");
+			}  // else - Set<> is empty
 			
 		} // else if - CUSTOMER
 		else {
@@ -286,7 +301,7 @@ public class CouponDBDAO implements CouponDAO{
 					coupon.setAmount(rs.getInt("amount"));
 					coupon.setMessage(rs.getString("Message"));
 					coupon.setPrice(rs.getDouble("Price"));
-					coupon.setCategory(CouponType.valueOf(rs.getString("Category").toUpperCase()));
+					coupon.setCategory((rs.getString("Category")));
 					coupon.setImage(rs.getString("image"));
 					coupon.setOwnerID(rs.getLong("owner_ID"));
 					
@@ -296,7 +311,12 @@ public class CouponDBDAO implements CouponDAO{
 			} catch (SQLException | FiledErrorException e) {
 				throw new DaoExeption("Error: Get Coupons By Max Price (Admin) - FAILED (something went wrong)");
 			}
-			return coupons;
+			if(!coupons.isEmpty()) {
+				return coupons;
+			}
+			else {
+				throw new DaoExeption("Error: No Coupons Found");
+			}  // else - Set<> is empty
 		}
 		else if(client == ClientType.COMPANY) {
 			try {
@@ -321,7 +341,7 @@ public class CouponDBDAO implements CouponDAO{
 					coupon.setAmount(rs.getInt("amount"));
 					coupon.setMessage(rs.getString("Message"));
 					coupon.setPrice(rs.getDouble("Price"));
-					coupon.setCategory(CouponType.valueOf(rs.getString("Category").toUpperCase()));
+					coupon.setCategory((rs.getString("Category")));
 					coupon.setImage(rs.getString("image"));
 					coupon.setOwnerID(rs.getLong("owner_ID"));
 					
@@ -332,11 +352,54 @@ public class CouponDBDAO implements CouponDAO{
 				e.printStackTrace();
 				throw new DaoExeption("Error: Get Coupons By Max Price (Company) - FAILED (something went wrong)");
 			}
-			return coupons;
+			if(!coupons.isEmpty()) {
+				return coupons;
+			}
+			else {
+				throw new DaoExeption("Error: No Coupons Found");
+			}  // else - Set<> is empty
 		}
-//		else if (client == ClientType.CUSTOMER) {
-//			
-//		}
+		else if (client == ClientType.CUSTOMER) {
+try {
+				
+				String sql = "SELECT coupon.* "
+						+ "FROM customer_coupon "
+						+ "LEFT JOIN coupon USING (coup_id) "
+						+ "WHERE customer_coupon.cust_id =" + id + " "
+						+ "AND customer_coupon.coup_id IS NOT NULL "
+						+ "AND coupon.Price <= " + price;
+				
+				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sql);
+				ResultSet rs = prep.executeQuery();
+				
+				while(rs.next()) {
+					Coupon coupon = new Coupon();
+					
+					coupon.setId(rs.getLong("coup_id"));
+					coupon.setTitle(rs.getString("Title"));
+					coupon.setStartDate(rs.getDate("start_date").toLocalDate());
+					coupon.setEndDate(rs.getDate("end_date").toLocalDate());
+					coupon.setAmount(rs.getInt("amount"));
+					coupon.setMessage(rs.getString("Message"));
+					coupon.setPrice(rs.getDouble("Price"));
+					coupon.setCategory((rs.getString("Category")));
+					coupon.setImage(rs.getString("image"));
+					coupon.setOwnerID(rs.getLong("owner_ID"));
+					
+					coupons.add(coupon);
+				} // while 
+				
+			} catch (SQLException | FiledErrorException e) {
+				e.printStackTrace();
+				throw new DaoExeption("Error: Get Coupons By Max Price (Company) - FAILED (something went wrong)");
+			}
+			if(!coupons.isEmpty()) {
+				return coupons;
+			}
+			else {
+				throw new DaoExeption("Error: No Coupons Found");
+			}  // else - Set<> is empty
+		}
 		else {
 			throw new DaoExeption("Error: Getting all Coupons by Max Price (Customer) - FAILD");
 		} // getCouponByType
@@ -525,10 +588,10 @@ public class CouponDBDAO implements CouponDAO{
 				coupon.setId(id);
 
 			if(existOrNotByID(coupon) == true) {
-				String title, message, image;
+				String title, message, image, category;
 				Date stDate, enDate ;	
 				int amount;
-				CouponType category = null;
+				
 				double price;
 				long ownerID = -1;
 				
@@ -546,7 +609,7 @@ public class CouponDBDAO implements CouponDAO{
 						stDate = rs.getDate("start_date");
 						enDate = rs.getDate("end_date");
 						amount = rs.getInt("amount");
-						category = CouponType.valueOf(rs.getString("Category").toUpperCase());
+						category = rs.getString("Category");
 						message = rs.getString("Message");
 						price = rs.getDouble("Price");
 						image = rs.getString("image");
@@ -570,10 +633,9 @@ public class CouponDBDAO implements CouponDAO{
 			try {
 				coupon.setId(id);
 			if(existOrNotByID(coupon) == true) {
-				String title, message, image;
+				String title, message, image, category;
 				Date stDate, enDate ;	
 				int amount;
-				CouponType category = null;
 				double price;
 				long ownerID = -1;
 				
@@ -589,14 +651,13 @@ public class CouponDBDAO implements CouponDAO{
 						stDate = rs.getDate("start_date");
 						enDate = rs.getDate("end_date");
 						amount = rs.getInt("amount");
-						category = CouponType.valueOf(rs.getString("Category").toUpperCase());
+						category = rs.getString("Category");
 						message = rs.getString("Message");
 						price = rs.getDouble("Price");
 						image = rs.getString("image");
 						ownerID = rs.getLong("Owner_ID");
 						
 						coupon = new Coupon(id, title, stDate.toLocalDate(), enDate.toLocalDate(), amount, category,  message, price, image, ownerID);
-						System.out.println(coupon.toString());
 					}
 				
 				return coupon;
@@ -615,10 +676,9 @@ public class CouponDBDAO implements CouponDAO{
 				coupon.setId(id);
 			if(existOrNotByID(coupon) == true) {
 					
-					String title, message, image;
+					String title, message, image, category;
 					Date stDate, enDate ;	
 					int amount;
-					CouponType type = null;
 					double price;
 					long ownerID, coupID;
 				
@@ -634,13 +694,13 @@ public class CouponDBDAO implements CouponDAO{
 						stDate = rs.getDate("start_date");
 						enDate = rs.getDate("end_date");
 						amount = rs.getInt("amount");
-						type = CouponType.valueOf(rs.getString("Category").toUpperCase());
+						category = rs.getString("Category");
 						message = rs.getString("Message");
 						price = rs.getDouble("Price");
 						image = rs.getString("image");
 						ownerID = rs.getLong("owner_id");
 						
-						coupon = new Coupon(coupID, title, stDate.toLocalDate(), enDate.toLocalDate(), amount, type, message, price, image, ownerID);
+						coupon = new Coupon(coupID, title, stDate.toLocalDate(), enDate.toLocalDate(), amount, category, message, price, image, ownerID);
 
 					
 					return coupon;
@@ -674,7 +734,7 @@ public class CouponDBDAO implements CouponDAO{
 	private Set<Coupon> getAllCouponsOfCompany(long compID) throws DaoExeption{
         Set<Coupon> coupons = new HashSet<>(); 
 		try {
-			String sql = "SELECT * FROM Coupon WHERE owner_ID=" + compID;
+			String sql = "SELECT * FROM coupon WHERE owner_ID=" + compID;
 			Statement stat = DBconnectorV3.getConnection().createStatement();
 			ResultSet rs = stat.executeQuery(sql);
 			while (rs.next()) {
@@ -686,7 +746,7 @@ public class CouponDBDAO implements CouponDAO{
 				coupon.setStartDate(rs.getDate("start_date").toLocalDate());
 				coupon.setEndDate(rs.getDate("end_date").toLocalDate());
 				coupon.setAmount(rs.getInt("amount"));
-				coupon.setCategory(CouponType.valueOf(rs.getString("Category").toUpperCase()));
+				coupon.setCategory(rs.getString("Category"));
 				coupon.setMessage(rs.getString("Message"));
 				coupon.setPrice(rs.getDouble("Price"));
 				coupon.setImage(rs.getString("image"));
@@ -698,8 +758,13 @@ public class CouponDBDAO implements CouponDAO{
 		} catch (SQLException | FiledErrorException e) {
 			throw new DaoExeption("Error: Getting Coupons of Company - FAILED (something went wrong)");
 		}
-		return coupons;
-	} // getCoupon - Function
+		if(!coupons.isEmpty()) {
+			return coupons;
+		}
+		else {
+			throw new DaoExeption("Error: No Coupons Found");
+		}  // else - Set<> is empty
+	} // getAllCouponsOfCompany
 	
 	private Set<Coupon> getAllCouponsOfCustomer(long custID) throws DaoExeption{
         Set<Coupon> coupons = new HashSet<>(); 
@@ -721,7 +786,7 @@ public class CouponDBDAO implements CouponDAO{
 				coupon.setStartDate(rs.getDate("start_date").toLocalDate());
 				coupon.setEndDate(rs.getDate("end_date").toLocalDate());
 				coupon.setAmount(rs.getInt("amount"));
-				coupon.setCategory(CouponType.valueOf(rs.getString("Category").toUpperCase()));
+				coupon.setCategory(rs.getString("Category"));
 				coupon.setMessage(rs.getString("Message"));
 				coupon.setPrice(rs.getDouble("Price"));
 				coupon.setImage(rs.getString("image"));
@@ -731,10 +796,15 @@ public class CouponDBDAO implements CouponDAO{
 				coupons.add(coupon);
 			}
 		} catch (SQLException | FiledErrorException e) {
-			throw new DaoExeption("Error: Getting Coupons of Company - FAILED (something went wrong)");
+			throw new DaoExeption("Error: Getting Coupons of Customer - FAILED (something went wrong)");
 		}
-		return coupons;
-	} // getCoupon - Function
+		if(!coupons.isEmpty()) {
+			return coupons;
+		}
+		else {
+			throw new DaoExeption("Error: No Coupons Found");
+		}  // else - Set<> is empty
+	} // getAllCouponsOfCustomer
 
 	private Set<Coupon> getAllCouponsByAdmin() throws DaoExeption{
        
@@ -753,7 +823,7 @@ public class CouponDBDAO implements CouponDAO{
 				coupon.setStartDate(rs.getDate("start_date").toLocalDate());
 				coupon.setEndDate(rs.getDate("end_date").toLocalDate());
 				coupon.setAmount(rs.getInt("amount"));
-				coupon.setCategory(CouponType.valueOf(rs.getString("Category").toUpperCase()));
+				coupon.setCategory(rs.getString("Category"));
 				coupon.setMessage(rs.getString("Message"));
 				coupon.setPrice(rs.getDouble("Price"));
 				coupon.setImage(rs.getString("image"));
@@ -763,10 +833,16 @@ public class CouponDBDAO implements CouponDAO{
 				coupons.add(coupon);
 			}
 		} catch (SQLException | FiledErrorException e) {
-			throw new DaoExeption("Error: Getting Coupons of Company - FAILED (something went wrong)");
+			e.printStackTrace();
+			throw new DaoExeption("Error: Getting All Coupons By ADMIN - FAILED (something went wrong)");
 		}
-		return coupons;
-	}
+		if(!coupons.isEmpty()) {
+			return coupons;
+		}
+		else {
+			throw new DaoExeption("Error: No Coupons Found");
+		}  // else - Set<> is empty
+	} // getAllCouponsByAdmin
 
 	
 } // Class

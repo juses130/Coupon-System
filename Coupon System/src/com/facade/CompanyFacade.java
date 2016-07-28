@@ -88,9 +88,13 @@ public class CompanyFacade implements CouponClientFacade{
 		return coupon;
 	}
 	
-	public Set<Coupon> getCouponsByType(CouponType category) throws DaoExeption{
+	public Set<Coupon> getCouponsByType(String category) throws DaoExeption, FiledErrorException{
 
-		Set<Coupon> coupons = coupDao.getCouponByType(company.getId(), category, ClientType.COMPANY);
+		// This next two lines checks if the category-String exist in the Enum Or not.
+		Coupon coupon = new Coupon();
+		coupon.setCategory(category);
+				
+		Set<Coupon> coupons = coupDao.getCouponByType(company.getId(), coupon.getCategory(), ClientType.COMPANY);
 
 		return coupons;
 

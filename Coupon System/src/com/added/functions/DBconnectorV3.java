@@ -35,7 +35,8 @@ public class DBconnectorV3 {
 				try {
 					con = DriverManager.getConnection(url, userDBname, passowrdDB);
 				} catch (NullPointerException | SQLException e) {
-					throw new ConnectorExeption("Error: Connection to the Data Base - FAILED (DataBase User or Password or Database url are not currect!)");
+					throw new ConnectorExeption("Error: Connection to the Database - FAILED (Check Your Connection To The Internet " 
+							+ "OR Check User and Password of the Database)");
 				}
 				try {
 					Class.forName(driverClass);

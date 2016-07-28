@@ -66,7 +66,7 @@ public class CompanyDBDAO implements CompanyDAO {
 		// check if the company not exist (is checking also if the fields are empty in the 'Company' javaBeans)
 		if (compnayExistByName(company.getCompName()) == false) {
 				try {
-					String sqlQuery = "INSERT INTO company (COMP_NAME, PASSWORD, EMAIL) VALUES(?,?,?)";
+					String sqlQuery = "INSERT INTO company (comp_name, password, email) VALUES(?,?,?)";
 					PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
 					
 					prep.setString(1, company.getCompName());
@@ -96,7 +96,7 @@ public class CompanyDBDAO implements CompanyDAO {
 		
 				try{
 					// Now insert the coupon to the Join Tables.
-					String sqlAddCompanyCoupn = "INSERT INTO Company_coupon (Comp_id, Coup_id) VALUES (" + company.getId() + "," + coupon.getId() + ");";
+					String sqlAddCompanyCoupn = "INSERT INTO company_coupon (Comp_id, Coup_id) VALUES (" + company.getId() + "," + coupon.getId() + ");";
 					PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlAddCompanyCoupn);
 					prep.executeUpdate();
 					

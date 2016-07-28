@@ -43,9 +43,10 @@ public class CouponSystem implements CouponClientFacade {
 			}
 		
 			public void stop() throws ConnectorExeption, SQLException {
-				dailyTask.stop();
+				
 				dailyTaskThread.interrupt();
-			
+				dailyTask.stop();
+				
 				DBconnectorV3.getConnection().close();
 			}
 			

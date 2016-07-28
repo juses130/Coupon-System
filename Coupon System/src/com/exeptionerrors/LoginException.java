@@ -8,7 +8,7 @@ package com.exeptionerrors;
  *
  */
 
-//TODO: all the errors will send the messages from here.
+// all the errors will send the messages from here.
 
 public class LoginException extends Exception{
 	

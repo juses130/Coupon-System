@@ -1,5 +1,6 @@
 package com.task.and.singleton;
 
+import java.nio.channels.InterruptedByTimeoutException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -44,14 +45,16 @@ public class DailyCouponExpirationTask implements Runnable {
 			deleteCoupon();
 
 			running = false;
-
+			
+			
 		} //while - running
 		
 				TimeUnit.HOURS.sleep(24);
-				Thread.currentThread().interrupt();
+
 				} // try 
 				catch (InterruptedException | DaoExeption e) {
-					e.printStackTrace();
+					e.getMessage();
+					assert false;
 					
 				} // catch
 		
@@ -68,6 +71,7 @@ public class DailyCouponExpirationTask implements Runnable {
 				PreparedStatement prep = null;
 				prep = DBconnectorV3.getConnection().prepareStatement(sqlSelectByEndDate, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
 				prep.executeUpdate();
+				
 			} catch (SQLException e) {
 				throw new DaoExeption("Error: Deleting Expired Coupon - FAILD (something went wrong..)");
 			}

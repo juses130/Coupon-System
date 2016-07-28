@@ -1,5 +1,8 @@
 package com.javabeans;
+import java.sql.Statement;
+import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.util.HashSet;
 
 import com.exeptionerrors.DaoExeption;
 import com.exeptionerrors.FiledErrorException;
@@ -27,7 +30,7 @@ public class Coupon {
 	// Constructor
 	public Coupon(){}
 	
-	public Coupon(long id, String title, LocalDate startDate, LocalDate endDate, int amount, CouponType category, String message, double price, String image, long ownerID) throws FiledErrorException{
+	public Coupon(long id, String title, LocalDate startDate, LocalDate endDate, int amount, String category, String message, double price, String image, long ownerID) throws FiledErrorException{
 		
 		/**
 		 * This part of the setters - is just for security. 
@@ -58,7 +61,7 @@ public class Coupon {
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.amount = amount;
-		this.category = category;
+		this.category = CouponType.valueOf(category);
 		this.message = message;
 		this.price = price;
 		this.image = image;
@@ -137,7 +140,7 @@ public class Coupon {
 
 	public void setAmount(int amount) throws FiledErrorException {
 		
-		if(amount < 0) {
+		if(amount <= 0) {
 			throw new FiledErrorException("Error: Setting Amount - FAILED (Field Empty or Under Zero!)");
 		}
 		else 
@@ -200,13 +203,35 @@ public class Coupon {
 		return category;
 	}
 
-	public void setCategory(CouponType category) throws FiledErrorException {
-		//TODO: create a check for the enums.. it's returns a technical error.
-		if(category.toString() == "") {
-			throw new FiledErrorException("Error: Set Category - FAILED (empty field!)");
+	public void setCategory(String category) throws FiledErrorException  {		
+		/*
+		 * After testing the program, Iv'e got to a dead end when
+		 * I'm putting strings into the Category (when it was CouponType) 
+		 * and the program crashed.. the only way was to put the check in the TEST
+		 * and that is ridiculous idea.
+		 * 
+		 * So Iv'e changed this setter that the user can send here 
+		 * Strings. and here we will covert them to UpperCase and
+		 * make some checks before accepting the inputs.
+		 */
+		
+		category = category.toUpperCase();
+		HashSet<String> values = new HashSet<String>();
+		
+		// putting all the categories in HashSet.
+		for(CouponType c : CouponType.values()) {
+        	if(c.name().equals(category)) {
+        		values.add(c.name());
+        	}
+        	
+        } // for
+		if(values.contains(category)) {
+			CouponType typeCategory = CouponType.valueOf(category);
+			this.category = typeCategory;
 		}
 		else {
-			this.category = category;		}
+    		throw new FiledErrorException("Error: Setting Category - FAILED (category dosen't exist)");
+    	}
 		
 	}
 
