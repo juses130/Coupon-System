@@ -34,6 +34,18 @@ public class AdminFacade implements CouponClientFacade{
 		
 	} // AdminFacade() - contructor
 
+	@Override
+	public AdminFacade login(String adminName, String password, ClientType client) throws LoginException , DaoException {
+		if(adminName.toLowerCase().equals(adminUser) && String.valueOf(password).equals(adminPassword) 
+				&& client == ClientType.ADMIN) {
+			return this;
+		} // if
+		else {
+			throw new LoginException ("Admin Login - FAILED (Unidentified user)");
+		} // else
+		
+	} // login
+	
 	/*
 	 *  Company Access
 	 */
@@ -159,19 +171,6 @@ public class AdminFacade implements CouponClientFacade{
 		return coupons;
 		
 	}
-	
-	@Override
-	public AdminFacade login(String adminName, String password, ClientType client) throws LoginException , DaoException {
-		if(adminName.toLowerCase().equals(adminUser) && String.valueOf(password).equals(adminPassword) 
-				&& client == ClientType.ADMIN) {
-			return this;
-		}
-		else {
-			throw new LoginException ("Admin Login - FAILED (Unidentified user)");
-		}
-		
-	}
-	
 	
 	
 }

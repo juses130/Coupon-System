@@ -23,7 +23,10 @@ import com.javabeans.*;
  */
 
 public class CompanyDBDAO implements CompanyDAO {
-	
+
+	// attr
+	private CouponFoundInDatabase existInDB = new CouponFoundInDatabase(); 
+
 	// Default Constructor.
 	public CompanyDBDAO() {}
 	
@@ -262,20 +265,22 @@ public class CompanyDBDAO implements CompanyDAO {
 	} // getAllCompanies
 
 	/**
-	 * This is my Private add-on for this class.</p>
-	 * Explain - Remove Method </p> 
-	 * here is the game plan:
-	 * First, when the function will execute 'sqlCheckExist'.
-	 * we are checking that the Company has (or not) 
-	 * coupons in 'company_coupon Table.
-	 * If Yes - we execute 'sqlDeleteALL' and delete it from 
-	 * the TABLES:
-	 * Company, Company_Coupon, Coupon. 
+	 * This is my Private add-on for this class.</br>
+	 * Remove Method </p> 
+	 * Here is the game plan:
+	 * First, when the function will execute the 'sqlCheckExist' {@code String}. </br>
+	 * It will check if the Company has (or not) 
+	 * coupons in 'company_coupon' Table.</p>
 	 * 
-	 * If No - (Company DOSEN'T have coupons..) We will delete it only from
-	 * the company Table (execute the 'sqlOnlyFromCompany' command).
+	 * If Yes - it will execute 'sqlDeleteALL' {@code String} and delete it from 
+	 * the TABLES:
+	 * Company, Company_Coupon, Coupon. </br>
+	 * 
+	 * If No - (Company DOSEN'T have coupons..) it will delete it only from
+	 * the company Table (execute the 'sqlOnlyFromCompany' {@code String} command).
 	 * 
 	 * @param compID {@code long} Company ID.
+	 * @throws DaoException
 	 */
 	private void removeCompanyMethod(long compID) throws DaoException{
 		
@@ -359,7 +364,7 @@ public class CompanyDBDAO implements CompanyDAO {
 	 * This is a my add-on: CompanyDBDAO. This method checks if the Company compName exist in the Database.
 	 * @param compName a {@code String} Company {@code compName}.
 	 * @return {@code true} if the Company {@code compName} exist in Database, otherwise {@code false}
-	 * @throws DAOException
+	 * @throws DaoException
 	 */
     private boolean compnayExistByName(String compName) throws DaoException {
 		
@@ -381,12 +386,5 @@ public class CompanyDBDAO implements CompanyDAO {
  	 	   			throw new DaoException("Error: cannot make sure if the company is in the DataBase");
  	            } // catch
  		  return answer;
- 	}
-
-
-
-	
-
-    
-    
-}
+ 	} // compnayExistByName
+} // CompanyDBDAO

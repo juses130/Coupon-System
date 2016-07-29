@@ -17,6 +17,14 @@ public class CustomerFacade implements CouponClientFacade {
 	private CouponDAO coupDao = null;
 	
 	
+	// Constructor
+	public CustomerFacade() throws ConnectorException{
+		
+//		compDao = CouponSystem.getInstance().getCompDao();
+		custDao = CouponSystem.getInstance().getCustDao();
+		coupDao = CouponSystem.getInstance().getCouponDao();
+	}
+	
     public CustomerFacade login(String custName, String password, ClientType client) throws LoginException, DaoException {
     	
     	boolean loginSuccessful  = false;
@@ -24,23 +32,16 @@ public class CustomerFacade implements CouponClientFacade {
     		loginSuccessful  = custDao.login(custName, password);
 		} catch (Exception e) {
 			throw new LoginException("Customer Login Failed");
-		}
+		} // catch
     	
     	if(loginSuccessful == true) {
     		this.customer = custDao.getCustomer(custName);
     		return this;
-    	}
+    	} // if - true
     	else {
 			throw new LoginException("Customer Login Failed.");
-		}
+		} // else
 	} // login - function
-	
-	public CustomerFacade() throws ConnectorException{
-		
-//		compDao = CouponSystem.getInstance().getCompDao();
-		custDao = CouponSystem.getInstance().getCustDao();
-		coupDao = CouponSystem.getInstance().getCouponDao();
-	}
 	
 	public Coupon purchaseCoupon(Coupon coupon) throws DaoException {
 

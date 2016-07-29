@@ -21,8 +21,6 @@ import com.task.and.singleton.CouponSystem;
  * 
  * 
  * This is a Test Class for our Project.</p> 
- * Attention! -> THIS IS NOT THE REQUESTED TEST IN THE PROJECT GUIDE INSTRUCTIONS - it's only for us, the Developers.</p>
- *
  * This test was built during the construction methods and other 
  * requirements for the first phase of the project.
  *
@@ -40,15 +38,11 @@ public class testDeveloers {
 	
 	// This static short is helping to the function userInput
 	private static short counterWorngTimes = 0;
-//	private static String userName;
-//	private static String password;
 	
 	private static CouponClientFacade client;
 	private static CompanyFacade compF;
 	private static CustomerFacade cusF;
 	private static AdminFacade admF;
-
-	
     
 	/**
 	 ********     Section A: Main Class     *********
@@ -77,7 +71,6 @@ public class testDeveloers {
 		}
 
 	} // main
-
 	
 	/*/**********************************************
 	 ********      Section B: Print Part     ********
@@ -86,7 +79,6 @@ public class testDeveloers {
 	 * This is a Multi-Use Functions - Main Prints, userInputs, loadDriver and more.
 	 *
 	 */
-
 
 	public static void printWellcom() {
 		System.out.println("Wellcom To Our Coupon System Management - Working with DataBase (Based on MySQL) :)");
@@ -203,22 +195,7 @@ public class testDeveloers {
 		System.out.println("****************************************************" + "\n");
 		//printGoingBackToUsage();
 	}
-    /**
-     * Unused Function.
-     * It was used for the first developer's version. 
-     * Now We can test it By the Facade Section.
-     * 
-     * @author Raziel
-     */
-    @Deprecated
-	public static void printEMAILnotExist() {
-		System.out.println("\n" + "****************************************************");
-		System.out.println("Error - The Email dosen't exist in the DataBase :(");
-		System.out.println("****************************************************" + "\n");
-		printGoingBackToUsage();
-	}
-	
-	
+
     public static void printFoundID() {
 		System.out.println("\n" + "****************************************************");
 		System.out.println("Your Company ID Was Found In The DataBase :)");
@@ -276,7 +253,6 @@ public class testDeveloers {
 	 * in any place on the test.`
 	 *
 	 */
-
 
 	private static short userInputShort() {
 
@@ -657,82 +633,7 @@ public class testDeveloers {
 	 * from the packages in the Coupon System Project.
 	 *
 	 */
-	
-    /**
-     * Unused Function.
-     * It was used for the first developer's version. 
-     * Now We can test it By the Facade Section.
-     * 
-     * @author Raziel
-     */
-    @Deprecated
-    public static void printUsageCompany()  {
-
-		System.out.println( "\n" + 
-				 "Company Side: " + "\n"
-				 + "You Have Couple of Options Here (DB is DataBase): " + "\n");
-		System.out.println("1. Add a Company to the DB."
-				+ "\n" + "2. Remove a Company from the DB."
-				+ "\n" + "3. Update a Company in the DB."
-				+ "\n" + "4. Get a Specific Company (By ID) from the DB."
-				+ "\n" + "5. Get the List of all Companies in the DB."
-				+ "\n" + "0. To Quit" 
-				+ "\n");
-		
-	}
-
-    /**
-     * Unused Function.
-     * It was used for the first developer's version. 
-     * Now We can test it By the Facade Section.
-     * 
-     * @author Raziel
-     */
-    @Deprecated
-    private static void CompanyMenu() {
-    	printUsageCompany();
-
-        	short choice = userInputShort();
-        	switch (choice) {
-        	
-        	case 1: {
-        		addCompnay_T();
-        		//printDbDAOMenu();
-        		break;
-        	}
-        	case 2: {
-        		removeCompany_T();
-        		
-        		break;
-        	}
-        	case 3: {
-        		updateCompany_T();
-        		break;
-        	}
-        	case 4: {
-        		getCompanyID_T();
-        		break;
-        	}
-        	case 5: {
-        		getAllCompanies_T();
-        		break;
-        	}
-        	case 822: { // Developers Option: Reset Table Company
-//        		resetTable_T();
-//        		printDbDAOMenu();
-        		break;
-        	}
-
-        	case 0: {
-        		//printDbDAOMenu();
-        		break;
-        	}
-        	
-        	} // switch
-    	
-    	
-    } // CompanySwitch Function
-    
+ 
     /**
      * This Function is blong ONLY to AdminFacade Access.
      * @category AdminFacede Section
@@ -1177,40 +1078,6 @@ public class testDeveloers {
 	 *
 	 */
     
-    /**
-     * Unused Function.
-     * It was used for the first developer's version. 
-     * Now We can test it By the Facade Section.
-     * 
-     * @author Raziel
-     */
-    @Deprecated
-    public static void printUsageCustomer() {
-
-    	// this function is unused in Facade section!
-    	// it's only for the DbDAO check part.
-		
-		System.out.println( "\n" + 
-				 "Customer Side: " + "\n"
-				 + "You Have Couple of Options Here (DB is DataBase): " + "\n");
-		System.out.println("1. Add a Customer to the DB."
-				+ "\n" + "2. Remove a Customer from the DB."
-				+ "\n" + "3. Update a Customer in the DB."
-				+ "\n" + "4. Get a Specific Customer (By ID) from the DB."
-				+ "\n" + "5. Get the List of all Customers in the DB."
-				+ "\n" + "0. To Quit" 
-				+ "\n");
-		
-	}
-    /**
-     * Unused Function.
-     * It was used for the first developer's version. 
-     * Now We can test it By the Facade Section.
-     * 
-     * @author Raziel
-     */
-   
-    
     private static void getCustomerID_T() {
     	
     	while(true) {
@@ -1248,8 +1115,7 @@ public class testDeveloers {
     	} // while loop
     	
     } // getAllCompanies_T - Function
-    
-    
+
     /**
      * This Function is blong ONLY to CustomerFacade Access.
      * @category CustomerFacade Section
@@ -1364,9 +1230,7 @@ public class testDeveloers {
     	System.out.println(coupons.toString());
     	
     } // getAllCouponsByType_T
-       
-    
-    
+
     /*/***********************************************
 	 ********   Section H: Coupon Section   *******
 	 ************************************************
@@ -1375,78 +1239,6 @@ public class testDeveloers {
 	 * Here we create the connection between all the methods of CouponDB and CouponDAO 
 	 * from the packages in the Coupon System Project.
 	 */
-	 // TODO: to change all of this section to Facades access!
-    /**
-     * Unused Function.
-     * It was used for the first developer's version. 
-     * Now We can test it By the Facade Section.
-     * 
-     * @author Raziel
-     */
-    @Deprecated
-    public static void printUsageCoupon() {
-
-		
-		System.out.println( "\n" + 
-				 "Coupon Side: " + "\n"
-				 + "You Have Couple of Options Here (DB is DataBase): " + "\n");
-		System.out.println("1. Add a Coupon to the DB."
-				+ "\n" + "2. Remove a Coupon from the DB."
-				+ "\n" + "3. Update a Coupon in the DB."
-				+ "\n" + "4. Get a Specific Coupon (By ID) from the DB."
-				+ "\n" + "5. Get the List of all Coupons in the DB."
-				+ "\n" + "0. To Quit" 
-				+ "\n");
-		
-	}
-    /**
-     * Unused Function.
-     * It was used for the first developer's version. 
-     * Now We can test it By the Facade Section.
-     * 
-     * @author Raziel
-     */
-    @Deprecated
-    private static void CouponMenu() {
-        
-    	printUsageCoupon();
-    	short choice = userInputShort();
-    	switch (choice) {
-    	
-    	case 1: {
-    		addCoupon_T();
-    		break;
-    	}
-    	case 2: {
-    		removeCoupon_T();
-    		break;
-    	}
-    	case 3: {
-    		updateCoupon_T();
-    		break;
-    	}
-    	case 4: {
-    		getCoupon_T();
-    		break;
-    	}
-    	case 5: {
-    		getAllCoupon_T();
-    		break;
-    	}
-    	case 822: { // Developers Option: Reset Table Company
-//    		resetTable_T();
-    		printDbDAOMenu();
-    		break;
-    	}
-
-    	case 0: {
-    		printDbDAOMenu();
-    		break;
-    	}
-    	
-    	} // switch
-	
-} // CompanyMenu - Function
    
     private static void addCoupon_T() {
     	
@@ -1654,26 +1446,6 @@ public class testDeveloers {
 
     	} // getCouponID_T - Function
     
-    /**
-     * Unused Function
-     * 
-     * @author Raziel
-     */
-    @Deprecated
-    private static void getAllCoupon_T() {
-
-    	while(true) {
-    		
-//    		CustomerFacade cusF = new CustomerFacade();
-    		
-    		System.out.println("Here is your Couponos List: " + "\n");
-//       		System.out.println(cusF.getAllPurchasedCoupons(custID));
-    		break;
-    			
-    	} // while loop
-    	
-    } // getAllCoupon_T - Function
-      
     /*/***********************************************
 	 ********   Section I: Facade Test Section   *******
 	 ************************************************
