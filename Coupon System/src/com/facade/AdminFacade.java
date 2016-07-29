@@ -98,7 +98,7 @@ public class AdminFacade implements CouponClientFacade{
 	}
 	
 	public void removeCoupon(Coupon coupon) throws DaoException, FiledErrorException{
-		coupDao.removeCoupon(coupon, ClientType.COMPANY);
+		coupDao.removeCoupon(coupon, ClientType.ADMIN);
 	}
 	
 	public void updateCustomer(Customer customer) throws DaoException{

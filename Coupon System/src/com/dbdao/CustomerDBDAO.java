@@ -198,7 +198,7 @@ public class CustomerDBDAO implements CustomerDAO {
 
 		return customer;
 	}
-	
+
 	@Override
     public Collection<Customer> getAllCustomers() throws DaoException{
 		
@@ -233,21 +233,20 @@ public class CustomerDBDAO implements CustomerDAO {
 	/**
 	 * 
 	* <p>This is a Private remove method.</p>
-	 * It is an add on. from here the function will delete the customer from the specific table.
+	 * That's is add-on. from here the function will delete the customer from the specific table.
 	 * 
-	 * @param long id
-	 * @param String table
+	 * @param custID {@code long} of the Customer. 
 	 * 
 	 * @author Raziel
 	 */
 	
-   private void removeMethod(long id) throws DaoException{
+    private void removeMethod(long custID) throws DaoException{
 		
 		boolean hasRow = false;
 		PreparedStatement prep = null;
 		ResultSet rs = null;
 		// Check if the customer has coupons BEFORE Deleting the customer.
-		String sqlCheckExist = "SELECT * FROM customer_coupon WHERE Cust_ID=" + id;
+		String sqlCheckExist = "SELECT * FROM customer_coupon WHERE Cust_ID=" + custID;
 		try {
    		prep = DBconnectorV3.getConnection().prepareStatement(sqlCheckExist);
    		rs = prep.executeQuery();
@@ -263,7 +262,7 @@ public class CustomerDBDAO implements CustomerDAO {
    			String sqlDeleteALL = "DELETE customer_coupon.*, customer.*"
 						+ " FROM customer"
 						+ " LEFT JOIN customer_coupon USING (cust_id)"
-						+ " WHERE customer.cust_id=" + id
+						+ " WHERE customer.cust_id=" + custID
 						+ " AND customer.cust_id IS NOT NULL";
 				prep = DBconnectorV3.getConnection().prepareStatement(sqlDeleteALL);
 				prep.executeUpdate();
@@ -272,7 +271,7 @@ public class CustomerDBDAO implements CustomerDAO {
    		} // if - hasRow		
 			else {
 
-				String sqlOnlyFromCompany = "DELETE FROM customer WHERE Cust_ID=" + id;
+				String sqlOnlyFromCompany = "DELETE FROM customer WHERE Cust_ID=" + custID;
 				PreparedStatement prep2 = DBconnectorV3.getConnection().prepareStatement(sqlOnlyFromCompany);
 				prep2.executeUpdate();
 				prep2.clearBatch();
@@ -342,9 +341,9 @@ public class CustomerDBDAO implements CustomerDAO {
 				prep.clearBatch();
 				
 				// Updating the amount
-				String sqlUpdateAmount = "UPDATE `coupon`.`coupon` "
-						+ "SET `Amount`='" + currentAmount + "' "
-						+ "WHERE `Coup_id`='" + coupon.getId() +"'";
+				String sqlUpdateAmount = "UPDATE `sql6129033`.`coupon` "
+						+ "SET `amount`='" + currentAmount + "' "
+						+ "WHERE `coup_id`='" + coupon.getId() +"'";
 				prep = DBconnectorV3.getConnection().prepareStatement(sqlUpdateAmount);
 				prep.executeUpdate();
 				

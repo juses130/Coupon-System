@@ -843,6 +843,8 @@ try {
 			throw new DaoException("Error: No Coupons Found");
 		}  // else - Set<> is empty
 	} // getAllCouponsByAdmin
+	
+	//TODO: create new function: I need to save all that line of code.. it's 850 lines.. I have to change that. make the code more nice to look. just to add 1 method for 3 options can make it look more good.
 
 	
 } // Class

@@ -16,23 +16,49 @@ import com.javabeans.*;
 public interface CustomerDAO {
 	
 	/**
-	 * <p> createCustomer - Function</p>
-	 * 
-	 * This function is allows us to create New Customer to the DataBase.
-	 * 
-	 * @param Customer {@code Customer} object
-	 * @return a positive {@code Customer} object value if the it was run successfully.
-	 * @throws DaoException
-	 * @author Raziel
+	 * Checks if the password and customer name given, matches the credentials stored in the underling database (or any other persistence storage).
+	 * @param custName a {@code String} Customer name. 
+	 * @param password a {@code String} password.
+	 * @return {@code true} if the credentials match, otherwise {@code false}.
+	 * @throws DAOException 
 	 */
+	public boolean login(String custName, String password) throws DaoException;
 	
-	public void createCustomer(Customer Customer) throws DaoException;
+	/**
+	 * Adds an Customer Object in the underling database (or any other persistence storage).
+	 * @param customer a {@code Customer} object.
+	 * @throws DAOException
+	 */
+	public void createCustomer(Customer customer) throws DaoException;
+	
+	/**
+	 * Remove a Customer from the underling database (or any other persistence storage).
+	 * @param customer a {@code Customer} Object.
+	 * @throws DAOException
+	 */
 	public void removeCustomer(Customer customer) throws DaoException, FiledErrorException;
+	
+	/**
+	 * Updates a Customer in the underling database (or any other persistence storage) 
+	 * from a given {@code Customer} object. The fields affected are Name, Email, Password and Salt.
+	 * @param customer a {@code Customer} object.
+	 * @throws DAOException
+	 */
 	public void updateCustomer(Customer updateCustomer) throws DaoException;
+	
+	/**
+	 * Adds a Coupon {@code Coupon} to the Customer_Coupons {@code SqlTable} Database.
+	 * Pulling the Coupon from the Table Coupon and add it into the Customer Database.
+	 * 
+	 * @param coupon a {@code Coupon} Object.
+	 * @param custID a {@code long} Customer ID.
+	 * @return a {@code Coupon} Object.
+	 * @throws DaoException
+	 */
 	public Coupon addCoupon(Coupon coupon, long custID) throws DaoException;
+	//TODO:  IM here text explain
 	public Customer getCustomer(long id) throws DaoException;
 	public Collection<Customer> getAllCustomers() throws DaoException;
-	public boolean login(String custName, String password) throws DaoException;
 	public Customer getCustomer(String custName) throws DaoException;
 
 	

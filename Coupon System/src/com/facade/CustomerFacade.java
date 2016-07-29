@@ -57,6 +57,15 @@ public class CustomerFacade implements CouponClientFacade {
 		return customer;
 	}
 	
+    public Customer getCustomerAndCoupons() throws DaoException {
+    	
+    	Set<Coupon> coupons = getAllPurchasedCoupons();
+    	Customer customer = this.customer;
+    	customer.setCoupons(coupons);
+    	
+    	return customer;
+	} // getCustomerAndCoupons
+	
 	public Set<Coupon> getAllPurchasedCoupons() throws DaoException {
 		Set<Coupon> coupons = coupDao.getCoupons(customer.getId(), ClientType.CUSTOMER);
 		return coupons;

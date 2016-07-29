@@ -8,6 +8,7 @@ import com.javabeans.*;
 
 public interface CouponDAO {
 
+	
 	public Coupon createCoupon(Coupon coupon) throws DaoException;
 	public void removeCoupon(Coupon coupon, ClientType client) throws DaoException;
 	public Coupon updateCoupon(Coupon coupon) throws DaoException;

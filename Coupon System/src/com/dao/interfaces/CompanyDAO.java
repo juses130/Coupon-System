@@ -10,7 +10,7 @@ public interface CompanyDAO {
 	/**
 	 * Checks if the password and company name given, matches the credentials stored in the underling database (or any other persistence storage).
 	 * @param compName a {@code String} Company name. 
-	 * @param password a {@code char[]} password.
+	 * @param password a {@code String} password.
 	 * @return {@code true} if the credentials match, otherwise {@code false}.
 	 * @throws DAOException 
 	 */

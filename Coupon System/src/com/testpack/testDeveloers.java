@@ -182,6 +182,7 @@ public class testDeveloers {
 				+ "\n" + "3. Get All Purchase Coupons By Type."
 				+ "\n" + "4. Get All Purchase Coupons By Price."
 				+ "\n" + "5. Get Your Customer Details." 
+				+ "\n" + "6. Get Your FULL Customer Details (with your coupons)." 
 				+ "\n" + "0. To Quit" 
 				+ "\n");
 		
@@ -1927,6 +1928,16 @@ public class testDeveloers {
 				}
      			break;
      		}
+     		case 6: {
+     			
+     			System.out.println("Here is the FULL Details: ");
+     			try {
+					System.out.println(cusF.getCustomerAndCoupons());;
+				} catch (DaoException e) {
+					System.out.println(e.getMessage());
+				} // catch
+     			break;
+     		} // case 6
      		case 0: {
      			System.out.println("Thank You! Bye Bye :) ");
      			on = false;
