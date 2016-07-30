@@ -98,18 +98,24 @@ public class CompanyDBDAO implements CompanyDAO {
 	@Override
 	public Coupon addCoupon(Coupon coupon, Company company) throws DaoException{
 		
-				try{
-					// Now insert the coupon to the Join Tables.
-					String sqlAddCompanyCoupn = "INSERT INTO company_coupon (Comp_id, Coup_id) VALUES (" + company.getId() + "," + coupon.getId() + ");";
-					PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlAddCompanyCoupn);
-					prep.executeUpdate();
-					
+		if(existInDB.couponExistByName(coupon) == false) {
+			try{
+				// Now insert the coupon to the Join Tables.
+				String sqlAddCompanyCoupn = "INSERT INTO company_coupon (Comp_id, Coup_id) VALUES (" + company.getId() + "," + coupon.getId() + ");";
+				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlAddCompanyCoupn);
+				prep.executeUpdate();
+				
 
-				} // try
-				catch (SQLException | NullPointerException e) {
-					throw new DaoException("Error: Creating Coupon By Company- FAILED (something went wrong..)");
-				} // catch
-				return coupon;
+			} // try
+			catch (SQLException | NullPointerException e) {
+				throw new DaoException("Error: Creating Coupon By Company- FAILED (something went wrong..)");
+			} // catch
+			return coupon;
+		} // if - existInDB
+		else {
+			throw new DaoException("Error: Creating Coupon By Company - FAILED (You can create only ONE coupon with the same name!)");
+		}
+				
 
 	} // createCoupon - function
 	

@@ -33,7 +33,7 @@ public class CouponDBDAO implements CouponDAO{
 	public Coupon createCoupon(Coupon coupon) throws DaoException{
 
 		// We need to Check if the Company ownes this coupon before.
-		if(isExistInJoinTables(coupon, CheckCouponBy.BY_ID) == true || isExistInJoinTables(coupon, CheckCouponBy.BY_NAME) == true) {
+		if(existInDB.couponFoundInJoinTables(coupon, CheckCouponBy.BY_ID) == true || existInDB.couponFoundInJoinTables(coupon, CheckCouponBy.BY_NAME) == true) {
 			throw new DaoException("Error: Creating Coupon By Company - FAILED (You can create only ONE coupon with the same name!)");
 		} // if
 		else {
@@ -473,77 +473,6 @@ try {
 		} // if - COMPANY
 	} // removeMethod
 
-    private boolean isExistInJoinTables(Coupon coupon, CheckCouponBy coupOption) throws DaoException {
-    	
-    	boolean answer = false;
-
-    	if(coupOption == CheckCouponBy.BY_ID) {
-    		
-    		try {
-        		
-        		String sqlName = "SELECT coupon.Coup_id, company_coupon.Coup_ID, company_coupon.comp_ID "
-        				+ "FROM company_coupon, coupon "
-        				+ "WHERE company_coupon.Coup_ID =" + coupon.getId()
-        				+ " AND coupon.Coup_id=" + coupon.getId()
-        				+ " AND company_coupon.comp_ID=" + coupon.getOwnerID();
-        		
-        		Statement stat = DBconnectorV3.getConnection().createStatement();
-        		ResultSet rs = stat.executeQuery(sqlName);
-    			rs.next();
-    					   
-    			if (rs.getRow() != 0) {
-    				answer = true;
-    			} // if
-    		} catch (SQLException e) {
-    			throw new DaoException("Error: cannot make sure if the coupon is in the DataBase");
-    		}
-    		return answer;
-    	}
-    	else if(coupOption == CheckCouponBy.BY_NAME) { 
-    		
-    		/* Here, the function will check and compare if the company has this coupon WITHOUT KNOWING 
-    		 * the coupon ID in first place. based on his String Name (title).
-    		 * 2 Reasons I did it.
-    		 * 1. I've added this option because I'm not sure if we will allow to have Duplicated Coupons name. 
-    		 * why? 
-    		 * For example, Samsung USA and Samsung Israel sign in to my DataBase. 
-    		 * and now, samsung Israel selling a Galaxy 5, AND samsung USA ALL SO wants to sell Galaxy 5. 
-    		 * it's the same name, with the same attributes. 
-    		 * This is a tapically situtation that CAN happend.
-    		 * 
-    		 * 2. When a company created a NEW coupon, the SQL DataBase gives it an ID number. 
-    		 * The user cannot choose ID. so the user send here a coupon - without ID number.. 
-    		 * And there is the main issue: We can't compare it. the ID is Zero (default).
-    		 * 
-    		 * That's why we can also comparing it with Names (String - Coupon Title).
-    		 * 
-    		 */
-        try {
-        		String sqlName = "SELECT coupon.* "
-        				+ "FROM company_coupon, coupon "
-        				+ "WHERE coupon.title='" + coupon.getTitle() + "' "
-        				+ "AND company_coupon.comp_ID=" + coupon.getOwnerID() 
-        				+ " AND company_coupon.Coup_ID = coupon.Coup_id";
-        		
-        		Statement stat = DBconnectorV3.getConnection().createStatement();
-        		ResultSet rs = stat.executeQuery(sqlName);
-    			rs.next();
-    					   
-    			if (rs.getRow() != 0) {
-    				answer = true;
-    			} // if
-    		} catch (SQLException e) {
-    			throw new DaoException("Error: cannot make sure if the coupon is in the DataBase");
-    		}
-    		return answer;
-    	}
-    	else {
-    		throw new DaoException("Error: Access Denied! (something wrong with the Coupon Parameters..)");
-    		
-    	} // else
-
-    }// bothExistInSameTable
-    
     private Coupon getCouponMethod(long id, ClientType client) throws DaoException {
 		Coupon coupon = new Coupon();
 		/* We set the ID for the existOrNot check method.

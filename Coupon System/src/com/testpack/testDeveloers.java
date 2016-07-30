@@ -87,27 +87,6 @@ public class testDeveloers {
 		System.out.println("******************");
 
 	}
-    /**
-     * Unused Function</p>
-     * It was used for the first developer's version. 
-     * Now We can test it By the Facade Section.
-     * 
-     * @author Raziel
-     */
-    @Deprecated
-	public static void printDbDAOMenu(){ 
-		
-		System.out.println( "\n" + 
-				 "DBDAO Usage: " + "\n"
-				 + "You have 3 Main Option of Using this JavaProgram - Database: " + "\n");
-		System.out.println("1. Compnay - Add, Remove, Update.."
-				+ "\n" + "2. Customer - same as above."
-				+ "\n" + "3. Coupon - same as above."
-				+ "\n" + "8. Go Back The Main Usage Guide."
-				+ "\n" + "0. To Quit" 
-				+ "\n");
-		
-	}
 	
 	public static void printFacadeMenu() {
     	System.out.println( "\n" + 
@@ -549,80 +528,8 @@ public class testDeveloers {
 				} catch (ConnectorException e1) {
 					System.out.println(e1.getMessage());;
 				}
-			}
-		
-				
-	}
-	
-	/**
-	 ********   Section E: DbDAO Switch Part   ******
-	 *
-	 * This the section of all the DbDAO functions and methods.
-	 * Here we create the connection between all the methods of DAO and DB.
-	 *
-	 * THIS PART WAS ONLY FOR DEVELOPERS VERSION. IS UNUSED NOW.
-	 *
-	 *@author Raziel
-	 *
-	 */
-    @Deprecated
-    @SuppressWarnings("unused")
-	private static void DbDAO_T() {
-    	
-    	printDbDAOMenu();
-    	//printDbDAOMenu();
-		short userChoiceOfSideWork = userInputShort();
-		
-		//Check the user choice and switch it:
-		switch (userChoiceOfSideWork) {
-		
-		
-		case 1: {
-//			CompanyMenu();
-			break;
-		} // case 1
-		case 2: {
-			//printDbDAOMenu();
-//			CustomerMenu();
-			break;
-		}
-		case 3: {
-//			CouponMenu();
-			break;
-		}
-		case 4: {
-			//printDbDAOMenu();
-			System.out.println("Still not ready..");
-			break;
-		}
-		case 5: {
-			//printDbDAOMenu();
-			System.out.println("Still not ready..");
-			break;
-		}
-		case 6: {
-			//printDbDAOMenu();
-			System.out.println("Still not ready..");
-			break;
-		}
-		case 7: {
-			//printDbDAOMenu();
-			System.out.println("Still not ready..");
-			break;
-
-		}
-		case 8: {
-//			printDbDAOMenu();
-			
-		}
-		case 0: {
-			System.out.println("Thank You! Bye Bye :) ");
-			break;
-		}
-		} // Switch
-
-    	
-    }
+			} // catch		
+	} // loadDriver
 	
 	/*/***********************************************
 	 ********      Section F: CompanyDB & DAO  ******
@@ -945,7 +852,6 @@ public class testDeveloers {
     			continue;
     		} // if 
     		else {
-    			printDbDAOMenu();
     			break;
     		} // else
     		} // while loop
@@ -990,9 +896,8 @@ public class testDeveloers {
      	    	c.setCustName(name);
           	    c.setPassword(password);
 				admF.updateCustomer(c);
-				System.out.println("\n" + SharingData.getVarchar4());
+				System.out.println(c.toString());
 	     	    System.out.println("------------ Customer Updated Successfully ----------" + "\n");
-	     	    printGoingBackToUsage();
 			} catch (DaoException | FiledErrorException e) {
 				
 				System.out.println(e.getMessage());;
@@ -1002,6 +907,7 @@ public class testDeveloers {
 //     	    System.out.println("Error - No Changes Were Made :(");
 //     	    System.out.println("****************************************************" + "\n");
      	    printGoingBackToUsage();
+     	    printAdminFacadeMenu();
 
      		break;
     	} // while loop
