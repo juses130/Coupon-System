@@ -70,7 +70,7 @@ public class CustomerFacade {
 			this.custName = custName;
 			return this;
 		} else {
-			throw new LoginException("Company Login Failed.");
+			throw new LoginException("Customer Login - FAILED (Unidentified user)");
 		}
 	} // login - function
 	

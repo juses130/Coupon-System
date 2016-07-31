@@ -44,7 +44,7 @@ public class CustomerDBDAO implements CustomerDAO {
 				}
 			
 		} catch (SQLException | NullPointerException e) {
-			throw new DaoException("Error: Customer Login - FAILED");
+        	throw new DaoException("Error: Customer Login - FAILD (one or more of the fields is incurrect or empty)");
 		} // catch
 	return hasRows;
 	}
