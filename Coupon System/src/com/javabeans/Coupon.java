@@ -58,7 +58,7 @@ public class Coupon {
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.amount = amount;
-		this.category = CouponType.valueOf(category);
+		this.category = CouponType.valueOf(category.toUpperCase());
 		this.message = message;
 		this.price = price;
 		this.image = image;
@@ -106,6 +106,11 @@ public class Coupon {
 	public void setStartDate(LocalDate startDate) throws FiledErrorException {
 
 		if(startDate.isAfter(LocalDate.now()) ) {
+			this.startDate = startDate;
+		}
+		else if(startDate.isBefore(LocalDate.now())) {
+			// Default start date will be LocalDate.now()
+			startDate = LocalDate.now();
 			this.startDate = startDate;
 		}
 		else {

@@ -98,7 +98,8 @@ public class CompanyDBDAO implements CompanyDAO {
 	@Override
 	public Coupon addCoupon(Coupon coupon, Company company) throws DaoException{
 		
-		if(existInDB.couponExistByName(coupon) == false) {
+		if(existInDB.couponFoundInJoinTables(coupon, company, CheckCouponBy.BY_NAME) == false 
+				|| existInDB.couponFoundInJoinTables(coupon, company, CheckCouponBy.BY_ID) == false) {
 			try{
 				// Now insert the coupon to the Join Tables.
 				String sqlAddCompanyCoupn = "INSERT INTO company_coupon (Comp_id, Coup_id) VALUES (" + company.getId() + "," + coupon.getId() + ");";
@@ -224,8 +225,8 @@ public class CompanyDBDAO implements CompanyDAO {
 				id = rs.getLong("comp_id");
 				email = rs.getString("Email");
 				password = rs.getString("password");
-				
 				company = new Company(id, compName, password, email);
+				
 				}
 				else {
 					throw new DaoException("Error: Getting Company - FAILED (Company is not exist in the DataBase)");

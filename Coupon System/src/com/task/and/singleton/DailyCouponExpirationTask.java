@@ -1,6 +1,4 @@
 package com.task.and.singleton;
-
-import java.nio.channels.InterruptedByTimeoutException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,8 +35,8 @@ public class DailyCouponExpirationTask implements Runnable {
 		
 		try {
 			/* I think it's more good when the task will delete expired coupons BY AN SQL-COMMAND..
-			 * Because when it will be in Internet Platforme and connected to Server.. it will use
-			 * the internet Clock-TIME of the server / sql Database and the user cannot manipulated that.
+			 * Because when it will be in Internet Platform and connected to Server.. it will use
+			 * the Internet Clock-TIME of the server / sql Database and the user cannot manipulated that.
 			 */
 			while (running) {
 			System.out.println("\n" + "Wait! - " +"[Deleting Expired Coupons]");
@@ -67,8 +65,8 @@ public class DailyCouponExpirationTask implements Runnable {
 						+ "LEFT JOIN customer_coupon USING (coup_id) "
 						+ "WHERE coupon.End_Date < CURDATE() "
 						+ "AND coupon.coup_id IS NOT NULL;";
-				PreparedStatement prep = null;
-				prep = DBconnectorV3.getConnection().prepareStatement(sqlSelectByEndDate, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+				
+				 PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlSelectByEndDate, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
 				prep.executeUpdate();
 				
 			} catch (SQLException e) {

@@ -44,7 +44,7 @@ public class CustomerDBDAO implements CustomerDAO {
 				}
 			
 		} catch (SQLException | NullPointerException e) {
-        	throw new DaoException("Error: Customer Login - FAILD (one or more of the fields is incurrect or empty)");
+			throw new DaoException("Error: Customer Login - FAILED");
 		} // catch
 	return hasRows;
 	}
@@ -335,7 +335,7 @@ public class CustomerDBDAO implements CustomerDAO {
 				prep.clearBatch();
 				
 				// Updating the amount
-				String sqlUpdateAmount = "UPDATE `sql6129033`.`coupon` "
+				String sqlUpdateAmount = "UPDATE `coupon`.`coupon` "
 						+ "SET `amount`='" + currentAmount + "' "
 						+ "WHERE `coup_id`='" + coupon.getId() +"'";
 				prep = DBconnectorV3.getConnection().prepareStatement(sqlUpdateAmount);

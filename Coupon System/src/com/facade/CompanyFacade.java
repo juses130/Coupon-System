@@ -46,7 +46,7 @@ public class CompanyFacade implements CouponClientFacade{
 		
 		coupon.setOwnerID(company.getId());
 		
-		coupon =  coupDao.createCoupon(coupon);
+		coupon =  coupDao.createCoupon(coupon, company);
 		compDao.addCoupon(coupon, company);
 		
 	} // createCouponF

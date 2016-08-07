@@ -148,7 +148,7 @@ public class shortTest {
 //		}
 //		System.out.println(coup.toString());
 		try {
-			addCouponsByCompany(8);
+			addCouponsByCompany(4);
 //			Coupon coupon = new Coupon();
 //			Company company = new Company();
 //			coupon.setTitle("ComputerA0");
@@ -179,20 +179,18 @@ public class shortTest {
 				Company comp = new Company();
 //				Customer customer = new Customer();
 				
-//				comp.setCompName("acer");
+//				comp.setCompName("acer");s
 				comp.setId(id);
 				
 				coup.setAmount(i);
 				coup.setMessage("check message");
-				coup.setTitle("iphone" + i );
+				coup.setTitle("jhhg" + i );
 				coup.setPrice(i + 50);
 				coup.setStartDate(LocalDate.of(2018, 1, 1));
 				coup.setCategory("ELECTRONICS");
 				coup.setEndDate(LocalDate.of(2020, 1, 1));
 				coup.setImage("no image");
 				coup.setOwnerID(id);
-
-//				coup.setOwnerID(comF.viewCompay(8).getId());
 				
 				comF.addCoupon(coup);
 //				custF.purchaseCoupon(coup);

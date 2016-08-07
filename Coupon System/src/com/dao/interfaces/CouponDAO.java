@@ -9,11 +9,13 @@ import com.javabeans.*;
 public interface CouponDAO {
 
 	/**
-	 * Adds an Coupon from the underlying database (or any other persistence storage).
+	 * Adds an Coupon from the underlying database (or any other persistence storage).</br>
+	 * (But before that, it will check if the coupon is already exist in the Company Database)
 	 * @param coupon a {@code Coupon} Object
+	 * @param comapany a {@code Company} Object
 	 * @throws DaoException
 	 */
-	public Coupon createCoupon(Coupon coupon) throws DaoException;
+	public Coupon createCoupon(Coupon coupon, Company company) throws DaoException;
 	
 	/**
 	 * Remove a Coupon from the underlying database (or any other persistence storage).

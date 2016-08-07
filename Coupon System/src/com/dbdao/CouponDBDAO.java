@@ -13,6 +13,7 @@ import com.dao.interfaces.CouponDAO;
 import com.exceptionerrors.DaoException;
 import com.exceptionerrors.FiledErrorException;
 import com.facade.ClientType;
+import com.javabeans.Company;
 import com.javabeans.Coupon;
 import com.javabeans.CouponType;
 
@@ -30,10 +31,10 @@ public class CouponDBDAO implements CouponDAO{
 	private CouponFoundInDatabase existInDB = new CouponFoundInDatabase(); 
 	
 	@Override
-	public Coupon createCoupon(Coupon coupon) throws DaoException{
+	public Coupon createCoupon(Coupon coupon, Company company) throws DaoException{
 
 		// We need to Check if the Company ownes this coupon before.
-		if(existInDB.couponFoundInJoinTables(coupon, CheckCouponBy.BY_ID) == true || existInDB.couponFoundInJoinTables(coupon, CheckCouponBy.BY_NAME) == true) {
+		if(existInDB.couponFoundInJoinTables(coupon, company, CheckCouponBy.BY_ID) == true || existInDB.couponFoundInJoinTables(coupon, company, CheckCouponBy.BY_NAME) == true) {
 			throw new DaoException("Error: Creating Coupon By Company - FAILED (You can create only ONE coupon with the same name!)");
 		} // if
 		else {
@@ -600,6 +601,7 @@ try {
 			} // else - exist
 			}
 			catch (SQLException | FiledErrorException e) {
+				e.printStackTrace();
 				throw new DaoException("Error: Getting Coupon By ID - FAILED (something went wrong)");
 			}
 		}
