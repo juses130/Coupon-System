@@ -34,7 +34,8 @@ public class CouponDBDAO implements CouponDAO{
 	public Coupon createCoupon(Coupon coupon, Company company) throws DaoException{
 
 		// We need to Check if the Company ownes this coupon before.
-		if(existInDB.couponFoundInJoinTables(coupon, company, CheckCouponBy.BY_ID) == true || existInDB.couponFoundInJoinTables(coupon, company, CheckCouponBy.BY_NAME) == true) {
+		if(existInDB.couponFoundInJoinTables(coupon, company, CheckCouponBy.BY_ID) == true 
+				|| existInDB.couponFoundInJoinTables(coupon, company, CheckCouponBy.BY_NAME) == true) {
 			throw new DaoException("Error: Creating Coupon By Company - FAILED (You can create only ONE coupon with the same name!)");
 		} // if
 		else {

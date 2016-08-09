@@ -17,7 +17,9 @@ import com.dbdao.CustomerDBDAO;
 import com.exceptionerrors.ConnectorException;
 import com.exceptionerrors.DaoException;
 import com.exceptionerrors.FiledErrorException;
+import com.exceptionerrors.LoginException;
 import com.facade.AdminFacade;
+import com.facade.ClientType;
 import com.facade.CompanyFacade;
 import com.facade.CustomerFacade;
 import com.javabeans.Company;
@@ -148,7 +150,7 @@ public class shortTest {
 //		}
 //		System.out.println(coup.toString());
 		try {
-			addCouponsByCompany(4);
+			addCouponsByCompany(9);
 //			Coupon coupon = new Coupon();
 //			Company company = new Company();
 //			coupon.setTitle("ComputerA0");
@@ -184,7 +186,7 @@ public class shortTest {
 				
 				coup.setAmount(i);
 				coup.setMessage("check message");
-				coup.setTitle("jhhg" + i );
+				coup.setTitle("JRE" + i );
 				coup.setPrice(i + 50);
 				coup.setStartDate(LocalDate.of(2018, 1, 1));
 				coup.setCategory("ELECTRONICS");
@@ -192,12 +194,13 @@ public class shortTest {
 				coup.setImage("no image");
 				coup.setOwnerID(id);
 				
+//				comF.login("Java", "1234", ClientType.ADMIN);
 				comF.addCoupon(coup);
 //				custF.purchaseCoupon(coup);
 				System.out.println(coup.toString());
 			} // for
-		} catch (ConnectorException | FiledErrorException e) {
-			
+		} catch (ConnectorException | FiledErrorException  e) {
+			e.printStackTrace();
 			System.out.println(e.getMessage());;
 		}
 

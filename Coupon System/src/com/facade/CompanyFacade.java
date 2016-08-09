@@ -42,9 +42,9 @@ public class CompanyFacade implements CouponClientFacade{
 			}
 	} // login - function
 	
-	public void addCoupon(Coupon coupon) throws DaoException, FiledErrorException{
+	public void addCoupon(Coupon coupon) throws DaoException, FiledErrorException {
 		
-		coupon.setOwnerID(company.getId());
+//		coupon.setOwnerID(company.getId());
 		
 		coupon =  coupDao.createCoupon(coupon, company);
 		compDao.addCoupon(coupon, company);

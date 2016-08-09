@@ -804,7 +804,7 @@ public class testDeveloers {
     			continue;
     		} // if 
     		else {
-    			//printDbDAOMenu();
+    			printAdminFacadeMenu();
     			break;
     		}
     	

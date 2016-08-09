@@ -11,8 +11,12 @@ public interface CouponDAO {
 	/**
 	 * Adds an Coupon from the underlying database (or any other persistence storage).</br>
 	 * (But before that, it will check if the coupon is already exist in the Company Database)
-	 * @param coupon a {@code Coupon} Object
-	 * @param comapany a {@code Company} Object
+	 * </br>
+	 * You may ask why do we need the {@code Company} Object? </br>
+	 * The thing is, we need to make sure that the {@code Company} <b>dosen't have the NEW {@code Coupon} more then ones.</b> </br>
+	 * So when we have them both {@code Company} && {@code Coupon} Objects - we can compare them to the Database and check it.
+	 * @param company a {@code Company} Object
+	 * @param coupon a {@code Coupon	} Object
 	 * @throws DaoException
 	 */
 	public Coupon createCoupon(Coupon coupon, Company company) throws DaoException;
