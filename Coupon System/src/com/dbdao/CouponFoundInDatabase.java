@@ -3,10 +3,10 @@ package com.dbdao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.added.functions.DBconnectorV3;
 import com.exceptionerrors.DaoException;
 import com.javabeans.Company;
 import com.javabeans.Coupon;
+import com.task.and.singleton.DBconnectorV3;
 
 /**
  * This is a helper <b>Protected</b> Class.</br>
@@ -27,7 +27,7 @@ public class CouponFoundInDatabase {
 	 * Check if the {@code Coupon} exist in the Database by its Name  {@code String}
 	 * 
 	 * @param coupon a {@code Coupon} Object
-	 * @return true {@code boolean} if the {@code Coupon} was found in the Database, otherwise return false {@code boolean}.
+	 * @return {@code true} if the {@code Coupon} was found in the Database, otherwise {@code false}.
 	 * @throws DaoException
 	 */
 	
@@ -62,7 +62,7 @@ public class CouponFoundInDatabase {
 	 * @param coupon a {@code Coupon} Object
 	 * @param company a {@code Company} Object
 	 * @param type a {@code CheckCouponBy} Enum
-	 * @return true {@code boolean} if the {@code Coupon} was found in the Join Tables, otherwise return false {@code boolean}.  
+	 * @return  {@code true} if the {@code Coupon} was found in the Join Tables, otherwise  {@code false}.  
 	 * @throws DaoException
 	 */
 	
@@ -117,7 +117,7 @@ public class CouponFoundInDatabase {
 	 * Check if the {@code Coupon} exist in the Database by its ID {@code long}.
 	 * 
 	 * @param coupon
-	 * @return true {@code boolean} if {@code Coupon} was found in the Database, otherwise return false {@code boolean}.
+	 * @return  {@code true} if {@code Coupon} was found in the Database, otherwise {@code false}.
 	 * @throws DaoException
 	 */
 	
@@ -148,8 +148,8 @@ public class CouponFoundInDatabase {
      * 
      * @param coupID a {@code long} Coupon ID
      * @param custID a {@code long} Customer ID
-     * @return true {@code boolean} if the Coupon ID {@code long} was found in the Customer Join Tables. 
-     *  otherwise return false {@code boolean}.	
+     * @return {@code true} if the Coupon ID {@code long} was found in the Customer Join Tables
+     *  otherwise  {@code false}.	
      * @throws DaoException
      */
     

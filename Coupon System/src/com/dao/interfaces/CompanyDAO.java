@@ -47,7 +47,7 @@ public interface CompanyDAO {
 	public void updateCompany(Company company) throws DaoException;
 	
 	/**
-	 * This is a my add-on: For CompanyFacade. is an option for us to let the company ONE click for his details.</p>
+	 * This is a my Add-on: For CompanyFacade. is an option for us to let the company ONE click for his details.</p>
 	 * Returns a {@code Company} object from the underlying database (or any other persistence storage).
 	 * @param company a {@code Company} object
 	 * @return a {@code Company} object

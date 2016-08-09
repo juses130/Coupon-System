@@ -8,7 +8,6 @@ import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.added.functions.DBconnectorV3;
 import com.dao.interfaces.CouponDAO;
 import com.exceptionerrors.DaoException;
 import com.exceptionerrors.FiledErrorException;
@@ -16,24 +15,25 @@ import com.facade.ClientType;
 import com.javabeans.Company;
 import com.javabeans.Coupon;
 import com.javabeans.CouponType;
+import com.task.and.singleton.DBconnectorV3;
 
 
 /**
  * This is Coupon Database DAO Class.
- * Just impelemnts the methods from CouponDAO in 'com.dao.intefaces' package. </br>
+ * Just implements the methods from CouponDAO in 'com.dao.intefaces' package. </br>
  * @author Raziel
  *
  */
 
 public class CouponDBDAO implements CouponDAO{
 	
-	// attr
+	// Attributes
 	private CouponFoundInDatabase existInDB = new CouponFoundInDatabase(); 
 	
 	@Override
 	public Coupon createCoupon(Coupon coupon, Company company) throws DaoException{
 
-		// We need to Check if the Company ownes this coupon before.
+		// We need to Check if the Company owns this coupon before.
 		if(existInDB.couponFoundInJoinTables(coupon, company, CheckCouponBy.BY_ID) == true 
 				|| existInDB.couponFoundInJoinTables(coupon, company, CheckCouponBy.BY_NAME) == true) {
 			throw new DaoException("Error: Creating Coupon By Company - FAILED (You can create only ONE coupon with the same name!)");
@@ -67,7 +67,7 @@ public class CouponDBDAO implements CouponDAO{
 			} // catch
 			return coupon;
 		} // else - isExistInJoinTables
-	} // createCoupon - function
+	} // createCoupon 
 
 	@Override
 	public void removeCoupon(Coupon coupon, ClientType client) throws DaoException{
@@ -84,7 +84,7 @@ public class CouponDBDAO implements CouponDAO{
 		else {
 				throw new DaoException("Error: Removing Coupon - FAILED (Coupon is not exist in the DataBase)");
 		} // else - existOrNotByID
-	}
+	} // removeCoupon
 	
 	@Override
 	public Coupon updateCoupon(Coupon coupon) throws DaoException{
@@ -112,7 +112,7 @@ public class CouponDBDAO implements CouponDAO{
 					
 					} catch (SQLException | FiledErrorException e) {
 						throw new DaoException("Error: Updating Coupon - FAILED (something went wrong)");
-					}
+					} // catch
 
 		       return coupon;
 		} // if - exist
@@ -120,7 +120,7 @@ public class CouponDBDAO implements CouponDAO{
 			throw new DaoException("Error: Updating Coupon - FAILED (Coupon dosen't exist in the DataBase)");
 		} // else - exist
 
-		}
+		} // updateCoupon
 	
 	@Override
 	public Coupon getCoupon(long id, ClientType client) throws DaoException{
@@ -128,7 +128,7 @@ public class CouponDBDAO implements CouponDAO{
 		Coupon coupon = getCouponMethod(id, client);
 		return coupon;
 	} // getCoupon - Function
-
+// TODO: Im here - check the Code before sending
 	@Override
 	public Set<Coupon> getCoupons(long id, ClientType client) throws DaoException{
 		
@@ -410,7 +410,7 @@ try {
 		} // getCouponByType
 		
     }
-    
+    //
     /**
      * Remove Coupon {@code Coupon} from the underlying database 
      *(or any other persistence storage) with the 3 Access Points. 

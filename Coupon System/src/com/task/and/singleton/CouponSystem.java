@@ -2,8 +2,6 @@ package com.task.and.singleton;
 
 import java.sql.SQLException;
 
-
-import com.added.functions.DBconnectorV3;
 import com.dao.interfaces.*;
 import com.dbdao.*;
 import com.exceptionerrors.*;

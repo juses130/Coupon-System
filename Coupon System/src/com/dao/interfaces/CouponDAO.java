@@ -6,14 +6,22 @@ import com.exceptionerrors.DaoException;
 import com.facade.ClientType;
 import com.javabeans.*;
 
+/**
+ * <p>Coupon DAO - Interface</p>
+ * 
+ * @author Raziel
+ *
+ */
+
 public interface CouponDAO {
 
 	/**
-	 * Adds an Coupon from the underlying database (or any other persistence storage).</br>
+	 * Add a {@code Coupon}  object from the underlying database (or any other persistence storage).</br>
 	 * (But before that, it will check if the coupon is already exist in the Company Database)
 	 * </br>
+	 * </br>
 	 * You may ask why do we need the {@code Company} Object? </br>
-	 * The thing is, we need to make sure that the {@code Company} <b>dosen't have the NEW {@code Coupon} more then ones.</b> </br>
+	 * The thing is, we need to make sure that the {@code Company} <b>dosen't have the specific {@code Coupon} more then ones.</b> </br>
 	 * So when we have them both {@code Company} && {@code Coupon} Objects - we can compare them to the Database and check it.
 	 * @param company a {@code Company} Object
 	 * @param coupon a {@code Coupon	} Object
@@ -80,7 +88,7 @@ public interface CouponDAO {
 	 * @param id {@code long} of the Client (it can be Customer or Company)
 	 * @param category {@code CouponType} Enum
 	 * @param client {@code ClientType} Enum
-	 * @returna {@code Set<Coupon>} 
+	 * @return a {@code Set<Coupon>} 
 	 * @throws DaoException
 	 */
 	public Set<Coupon> getCouponByType(long id, CouponType category, ClientType client) throws DaoException;

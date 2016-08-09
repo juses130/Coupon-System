@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import com.added.functions.DBconnectorV3;
 import com.added.functions.SharingData;
 import com.dbdao.CompanyDBDAO;
 import com.dbdao.CouponDBDAO;
@@ -27,6 +26,7 @@ import com.javabeans.Coupon;
 import com.javabeans.CouponType;
 import com.javabeans.Customer;
 import com.task.and.singleton.CouponSystem;
+import com.task.and.singleton.DBconnectorV3;
 import com.task.and.singleton.DailyCouponExpirationTask;
 
 /**

@@ -6,13 +6,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashSet;
-import com.added.functions.DBconnectorV3;
+
 import com.dao.interfaces.CustomerDAO;
 import com.exceptionerrors.DaoException;
 import com.exceptionerrors.FiledErrorException;
 import com.facade.DetectionBy;
 import com.javabeans.Coupon;
 import com.javabeans.Customer;
+import com.task.and.singleton.DBconnectorV3;
 
 /**
  * This is Customer Database DAO Class.
