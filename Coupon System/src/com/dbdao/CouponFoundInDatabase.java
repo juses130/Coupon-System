@@ -8,30 +8,42 @@ import com.exceptionerrors.DaoException;
 import com.javabeans.Company;
 import com.javabeans.Coupon;
 
+/**
+ * This is a helper <b>Protected</b> Class.</br>
+ * The system will use this class to Check if the coupon in the question is exist in the Database,.</br>
+ * The access to this class is <b>ONLY</b> for the DBDAO that located in: 'com.dbdao'.
+ * 
+ * @author Raziel
+ *
+ */
+
 public class CouponFoundInDatabase {
 	
 //	private Coupon coupon;
 	
 	protected CouponFoundInDatabase(){}
 	
+	/**
+	 * Check if the {@code Coupon} exist in the Database by its Name  {@code String}
+	 * 
+	 * @param coupon a {@code Coupon} Object
+	 * @return true {@code boolean} if the {@code Coupon} was found in the Database, otherwise return false {@code boolean}.
+	 * @throws DaoException
+	 */
 	
 	protected boolean couponExistByName (Coupon coupon) throws DaoException {
 		
 		boolean isExist = false;
-		ResultSet rs;
 		
 		try {
 			String sqlQuery = "SELECT * FROM coupon WHERE Title='" + coupon.getTitle() + "'";
 			java.sql.Statement stat = DBconnectorV3.getConnection().createStatement();
-			rs = stat.executeQuery(sqlQuery);
+			ResultSet rs = stat.executeQuery(sqlQuery);
 			rs.next();
 			
 			if(rs.getRow() != 0) {
 				isExist = true;
 			}
-//			else {
-//				throw new DaoException("Denied: Coupon dosen't exist in the Database");
-//			}
 			
 		} catch (SQLException e) {
 			throw new DaoException("Error: Checking if the Coupon exist - FAILD (something went wrong)");
@@ -40,6 +52,19 @@ public class CouponFoundInDatabase {
 		return isExist;
 		
 	} // couponExistByName
+	
+	/**
+	 * Check if the {@code Coupon} exist in the <b>Join Tables</b> (in the Database) of the specific {@code Company}.</br>
+	 * We this method we can check and compare the data to the Database by 
+	 * The {@code Coupon} Name {@code String} OR by the 
+	 * {@code Coupon} ID {@code long}.
+	 * 
+	 * @param coupon a {@code Coupon} Object
+	 * @param company a {@code Company} Object
+	 * @param type a {@code CheckCouponBy} Enum
+	 * @return true {@code boolean} if the {@code Coupon} was found in the Join Tables, otherwise return false {@code boolean}.  
+	 * @throws DaoException
+	 */
 	
 	protected boolean couponFoundInJoinTables (Coupon coupon, Company company ,CheckCouponBy type) throws DaoException {
 		
@@ -88,23 +113,27 @@ public class CouponFoundInDatabase {
 		
 	} // couponFoundInJoinTables
 	
+	/**
+	 * Check if the {@code Coupon} exist in the Database by its ID {@code long}.
+	 * 
+	 * @param coupon
+	 * @return true {@code boolean} if {@code Coupon} was found in the Database, otherwise return false {@code boolean}.
+	 * @throws DaoException
+	 */
+	
     protected boolean couponExistByID (Coupon coupon) throws DaoException {
 		
 		boolean isExist = false;
-		ResultSet rs;
 		
 		try {
 			String sqlQuery = "SELECT * FROM coupon WHERE coup_id=" + coupon.getId();
 		java.sql.Statement stat = DBconnectorV3.getConnection().createStatement();
-			rs = stat.executeQuery(sqlQuery);
+		ResultSet rs = stat.executeQuery(sqlQuery);
 			rs.next();
 			
 			if(rs.getRow() != 0) {
 				isExist = true;
 			}
-//			else {
-//				throw new DaoException("Denied: Coupon dosen't exist in the Database");
-//			}
 			
 		} catch (SQLException e) {
 			throw new DaoException("Error: Checking if the Coupon exist - FAILD (something went wrong)");
@@ -112,6 +141,17 @@ public class CouponFoundInDatabase {
 		return isExist;
 		
 	} // couponExistByID
+    
+    /**
+     * Check if the {@code Coupon} exist in the Customer Join Tables (in the Database). Comparing between the Coupon ID {@code long}
+     * and the Customer ID {@code long}.
+     * 
+     * @param coupID a {@code long} Coupon ID
+     * @param custID a {@code long} Customer ID
+     * @return true {@code boolean} if the Coupon ID {@code long} was found in the Customer Join Tables. 
+     *  otherwise return false {@code boolean}.	
+     * @throws DaoException
+     */
     
     protected boolean purchasedBefore(long coupID, long custID) throws DaoException {
     	
@@ -135,7 +175,7 @@ public class CouponFoundInDatabase {
 				
 			}// if
 		} catch (SQLException e) {
-			throw new DaoException();
+			throw new DaoException("Error: Checking Coupon before Purchase - FAILD (something went wrong)");
 		}
     	
 		return isExist;
