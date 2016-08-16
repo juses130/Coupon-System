@@ -773,7 +773,6 @@ public class testDeveloers {
             System.out.print("NEW Customer Password: ");
             String password = (userInputString());
     		
-    		// check if the user put's somthing empty...
     	
     		Customer c = null;
     		try {

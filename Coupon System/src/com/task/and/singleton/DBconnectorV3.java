@@ -48,11 +48,11 @@ public class DBconnectorV3 {
 		
 		/**
 		 * Get the current Connection (public access)
-		 * 
 		 * @return a {@code Connection} Object of the current Connection.
 		 */
 		
 		public static Connection getConnection() {
 				return con;
 		} // getConnection
-} // DBconnectorV3 - Class
+		
+} // Class

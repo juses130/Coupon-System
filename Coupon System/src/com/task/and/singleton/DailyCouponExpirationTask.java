@@ -22,12 +22,12 @@ public class DailyCouponExpirationTask implements Runnable {
 	private CouponDAO coupDao = null;
 	private boolean running = true;
 	
-	// constructor
+	// Constructor
 	public DailyCouponExpirationTask(CompanyDAO compDao, CustomerDAO custDao, CouponDAO couponDao) {
 		this.compDao = compDao;
 		this.custDao = custDao;
 		this.coupDao = couponDao;
-	}
+	} // Constructor
 
 	@Override
 	public void run() {
@@ -35,7 +35,7 @@ public class DailyCouponExpirationTask implements Runnable {
 		try {
 			/* I think it's more good when the task will delete expired coupons BY AN SQL-COMMAND..
 			 * Because when it will be in Internet Platform and connected to Server.. it will use
-			 * the Internet Clock-TIME of the server / sql Database and the user cannot manipulated that.
+			 * the Internet Clock-TIME of the server / sql Database. and the user cannot manipulated that.
 			 */
 			while (running) {
 			System.out.println("\n" + "Wait! - " +"[Deleting Expired Coupons]");
@@ -44,7 +44,6 @@ public class DailyCouponExpirationTask implements Runnable {
 			running = false;
 			
 		} //while - running
-		
 				TimeUnit.HOURS.sleep(24);
 
 				} // try 
@@ -52,7 +51,6 @@ public class DailyCouponExpirationTask implements Runnable {
 					e.getMessage();
 					assert false;
 				} // catch
-		
 	} // run()
 	
 	private void deleteCoupon() throws DaoException {
@@ -70,14 +68,12 @@ public class DailyCouponExpirationTask implements Runnable {
 				
 			} catch (SQLException e) {
 				throw new DaoException("Error: Deleting Expired Coupon - FAILD (something went wrong..)");
-			}
-
-
-	}
+			} // catch
+	} // deleteCoupon
 
 	public void stop() {
 		running = false;
-	}
+	} // stop
 
-}
+} // Class
 

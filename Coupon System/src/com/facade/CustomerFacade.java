@@ -23,7 +23,7 @@ public class CustomerFacade implements CouponClientFacade {
 //		compDao = CouponSystem.getInstance().getCompDao();
 		custDao = CouponSystem.getInstance().getCustDao();
 		coupDao = CouponSystem.getInstance().getCouponDao();
-	}
+	} // Constructor
 	
     public CustomerFacade login(String custName, String password, ClientType client) throws LoginException, DaoException {
     	
@@ -41,53 +41,47 @@ public class CustomerFacade implements CouponClientFacade {
     	else {
 			throw new LoginException("Customer Login Failed.");
 		} // else
-	} // login - function
+	} // login 
 	
 	public Coupon purchaseCoupon(Coupon coupon) throws DaoException {
 
 		coupon = coupDao.getCoupon(coupon.getId(), ClientType.CUSTOMER);
 		custDao.addCoupon(coupon, customer.getId());
-		
 		return coupon;
-		
 	} // purchaseCoupon
 	
 	public Customer getCustomer() throws DaoException {
 		Customer customer = new Customer();
 		customer = custDao.getCustomer(this.customer.getId());
 		return customer;
-	}
+	} // getCustomer
 	
     public Customer getCustomerAndCoupons() throws DaoException {
     	
     	Set<Coupon> coupons = getAllPurchasedCoupons();
     	Customer customer = this.customer;
     	customer.setCoupons(coupons);
-    	
     	return customer;
 	} // getCustomerAndCoupons
 	
 	public Set<Coupon> getAllPurchasedCoupons() throws DaoException {
 		Set<Coupon> coupons = coupDao.getCoupons(customer.getId(), ClientType.CUSTOMER);
 		return coupons;
-		
 	} // getAllCoupons
 	
 	public Set<Coupon> getAllCouponsByPrice(double maxPrice) throws DaoException {
 		Set<Coupon> coupons = new HashSet<>();
 		coupons = coupDao.getCouponByPrice(customer.getId(), maxPrice, ClientType.CUSTOMER);
 		return coupons;	
-	}
+	} // getAllCouponsByPrice
+	
 	public Set<Coupon> getAllCouponsByType(String category) throws DaoException, FiledErrorException {
-		Set<Coupon> coupons = new HashSet<>();
 		
+		Set<Coupon> coupons = new HashSet<>();
 		Coupon coupon = new Coupon();
 		coupon.setCategory(category);
-		
 		coupons = coupDao.getCouponByType(customer.getId(), coupon.getCategory(), ClientType.CUSTOMER);
 		return coupons;
-	}
+	} // getAllCouponsByType
 	
-
-	
-}
+} // Class

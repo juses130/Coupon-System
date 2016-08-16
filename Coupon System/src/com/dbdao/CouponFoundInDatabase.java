@@ -10,17 +10,15 @@ import com.task.and.singleton.DBconnectorV3;
 
 /**
  * This is a helper <b>Protected</b> Class.</br>
- * The system will use this class to Check if the coupon in the question is exist in the Database,.</br>
- * The access to this class is <b>ONLY</b> for the DBDAO that located in: 'com.dbdao'.
+ * The system will use this class to Check if the {@code Coupon} in the question is exist in the Database.</br>
+ * The access to this class is <b>ONLY</b> from the DBDAO that located in: 'com.dbdao'.
  * 
  * @author Raziel
  *
  */
 
 public class CouponFoundInDatabase {
-	
-//	private Coupon coupon;
-	
+		
 	protected CouponFoundInDatabase(){}
 	
 	/**
@@ -30,11 +28,9 @@ public class CouponFoundInDatabase {
 	 * @return {@code true} if the {@code Coupon} was found in the Database, otherwise {@code false}.
 	 * @throws DaoException
 	 */
-	
 	protected boolean couponExistByName (Coupon coupon) throws DaoException {
 		
 		boolean isExist = false;
-		
 		try {
 			String sqlQuery = "SELECT * FROM coupon WHERE Title='" + coupon.getTitle() + "'";
 			java.sql.Statement stat = DBconnectorV3.getConnection().createStatement();
@@ -43,14 +39,12 @@ public class CouponFoundInDatabase {
 			
 			if(rs.getRow() != 0) {
 				isExist = true;
-			}
+			} // if
 			
 		} catch (SQLException e) {
 			throw new DaoException("Error: Checking if the Coupon exist - FAILD (something went wrong)");
-		}
-		
+		} // catch
 		return isExist;
-		
 	} // couponExistByName
 	
 	/**
@@ -80,12 +74,10 @@ public class CouponFoundInDatabase {
 					+ "WHERE coupon.title='" + coupon.getTitle() + "' " 
 					+ "AND company_coupon.comp_ID=" + company.getId() + " "
 					+ "AND company_coupon.Coup_ID = coupon.Coup_id";
-			
-			
+
 				state = DBconnectorV3.getConnection().createStatement();
 				rs = state.executeQuery(sqlQueryByName);
 				rs.next();
-
 		} // if
 		else if(type == CheckCouponBy.BY_ID) {
 			
@@ -98,7 +90,6 @@ public class CouponFoundInDatabase {
 			state = DBconnectorV3.getConnection().createStatement();
 			rs = state.executeQuery(sqlQueryByID);
 			rs.next();
-			
 		} // else if
 		
 		if(rs.getRow() != 0) {
@@ -107,10 +98,8 @@ public class CouponFoundInDatabase {
 		
 		} catch (SQLException e) {
 			throw new DaoException("Error: Checking it the Coupon exist in the Joins - FAILD");
-		} // catch
-		
+		} // catch		
 		return isExist;
-		
 	} // couponFoundInJoinTables
 	
 	/**
@@ -124,7 +113,6 @@ public class CouponFoundInDatabase {
     protected boolean couponExistByID (Coupon coupon) throws DaoException {
 		
 		boolean isExist = false;
-		
 		try {
 			String sqlQuery = "SELECT * FROM coupon WHERE coup_id=" + coupon.getId();
 		java.sql.Statement stat = DBconnectorV3.getConnection().createStatement();
@@ -133,13 +121,12 @@ public class CouponFoundInDatabase {
 			
 			if(rs.getRow() != 0) {
 				isExist = true;
-			}
+			}// if
 			
 		} catch (SQLException e) {
 			throw new DaoException("Error: Checking if the Coupon exist - FAILD (something went wrong)");
-		}
+		}// if
 		return isExist;
-		
 	} // couponExistByID
     
     /**
@@ -156,7 +143,6 @@ public class CouponFoundInDatabase {
     protected boolean purchasedBefore(long coupID, long custID) throws DaoException {
     	
 		boolean isExist = false;
-		
 		try {
 			
 			String sqlQueryByID = "SELECT coupon.* "
@@ -176,10 +162,9 @@ public class CouponFoundInDatabase {
 			}// if
 		} catch (SQLException e) {
 			throw new DaoException("Error: Checking Coupon before Purchase - FAILD (something went wrong)");
-		}
-    	
+		} // catch
 		return isExist;
     } // purchasedBefore
 
-}
+} // Class
 

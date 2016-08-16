@@ -17,13 +17,13 @@ import com.task.and.singleton.DBconnectorV3;
 
 /**
  * This is Customer Database DAO Class.
- * Just impelemnts the methods from CustomerDAO in 'com.dao.intefaces' package. 
+ * Just implements the methods from CustomerDAO in 'com.dao.intefaces' package. 
  * @author Raziel
  *
  */
 
 public class CustomerDBDAO implements CustomerDAO {
-	// attr
+	// Attributes
 	private CouponFoundInDatabase existInDB = new CouponFoundInDatabase();
 	
 	public CustomerDBDAO() {}
@@ -42,13 +42,13 @@ public class CustomerDBDAO implements CustomerDAO {
 			rs.next();
 			if (rs.getRow() != 0) {
 					hasRows = true;
-				}
+				} // if
 			
 		} catch (SQLException | NullPointerException e) {
 			throw new DaoException("Error: Customer Login - FAILED");
 		} // catch
 	return hasRows;
-	}
+	} // login
 	
 	@Override
 	public void createCustomer(Customer customer) throws DaoException{
@@ -65,23 +65,21 @@ public class CustomerDBDAO implements CustomerDAO {
 				prep.setString(1, customer.getCustName());
 				prep.setString(2, customer.getPassword());
 				prep.executeUpdate();
-				
 
 				// This 2 lines will make it run to the next null row. and line 3 will set the ID (next new row).
 				ResultSet rs = prep.getGeneratedKeys();
 				while(rs.next()) {
 					customer.setId(rs.getLong(1));;
-				}
+				} // while
 				prep.clearBatch();
-			} // try 
-			catch (SQLException | NullPointerException e) {
+			} catch (SQLException | NullPointerException e) {
 				throw new DaoException("Error: Creating New Customer - FAILED (something went wrong)");
 			} // catch
-		}
+		} // if
 		else {
 			throw new DaoException("Error: Creating Customer - FAILED (Customer is already exist in the DataBase)");
 		} // else
-			} // createCompany - Function
+	} // createCompany - Function
 
 	@Override
 	public Coupon addCoupon(Coupon coupon, long custID) throws DaoException {
@@ -123,7 +121,7 @@ public class CustomerDBDAO implements CustomerDAO {
 		else {
 			throw new DaoException("Error: Removing Company - FAILED (Company is not exist in the DataBase)");
 		} // else	
-	}
+	} // updateCustomer
 
 	@Override
 	public Customer getCustomer(long custID) throws DaoException{
@@ -143,28 +141,24 @@ public class CustomerDBDAO implements CustomerDAO {
 				while(rs.next()) {
 				custName = rs.getString("Cust_name");
 				password = rs.getString("password");	
-				
-				}
+				} // while
 				
 				customer = new Customer(custID, custName, password);	
-			}
+			} // try
 			catch (SQLException | FiledErrorException e) {
 				throw new DaoException("Error: Getting Customer By ID - FAILED");
-			}
+			} // catch
 			return customer;
-		}   
+		} // if
 		else {
 			throw new DaoException("Error: Getting Customer - FAILED (Customer is not exist in the DataBase)");
 		} // else	
-
-		
-	}
+	} // getCustomer - ID long
 
 	@Override
 	public Customer getCustomer(String custName) throws DaoException {
 		
 		Customer customer = null;
-		
 		try {
 
 		if(custotmerExistByName(custName) == true) {
@@ -181,19 +175,16 @@ public class CustomerDBDAO implements CustomerDAO {
 				id = rs.getLong("cust_id");
 				} // while
 				
-				customer = new Customer(id, custName, password);
-				
-				
-		}
+				customer = new Customer(id, custName, password);	
+		} // if
 		else {
 			throw new DaoException("Error: Getting Customer By ID - FAILED");
 		} // else - exist
 		} catch (SQLException | FiledErrorException e) {
 			throw new DaoException("Error: Getting Customer By Name - FAILED (Customer is not exist in the DataBase)");
 		} // catch
-
 		return customer;
-	}
+	} // getCustomer - Name String
 
 	@Override
     public Collection<Customer> getAllCustomers() throws DaoException{
@@ -204,7 +195,6 @@ public class CustomerDBDAO implements CustomerDAO {
 		ResultSet rs = null;
 		
 		try {
-			
 			Statement stat = DBconnectorV3.getConnection().createStatement();
 			rs = stat.executeQuery(sql);
 			
@@ -221,21 +211,17 @@ public class CustomerDBDAO implements CustomerDAO {
 		} catch (SQLException | FiledErrorException e) {
 			e.printStackTrace();
 		} // catch
-		
-		
 		return customers;
 	} // getAllCompanies
 	
 	/**
 	 * 
-	* <p>This is a Private remove method.</p>
-	 * That's is add-on. from here the function will delete the customer from the specific table.
+	* This is a Private remove method.</br>
+	 * That's is add-on. from here the function will delete the customer from is specific tables.
 	 * 
 	 * @param custID {@code long} of the Customer. 
-	 * 
 	 * @author Raziel
 	 */
-	
     private void removeMethod(long custID) throws DaoException{
 		
 		boolean hasRow = false;
@@ -249,10 +235,8 @@ public class CustomerDBDAO implements CustomerDAO {
    		while(rs.next()) {
    			// if we have rows in customer_coupon, make hasRow = true.
    			hasRow = true;
-   		}
-   		
-			prep.clearBatch();
-			
+   		} // while
+			prep.clearBatch();			
    		if(hasRow == true) {
 
    			String sqlDeleteALL = "DELETE customer_coupon.*, customer.*"
@@ -263,7 +247,6 @@ public class CustomerDBDAO implements CustomerDAO {
 				prep = DBconnectorV3.getConnection().prepareStatement(sqlDeleteALL);
 				prep.executeUpdate();
 				prep.clearBatch();
-				
    		} // if - hasRow		
 			else {
 
@@ -272,18 +255,22 @@ public class CustomerDBDAO implements CustomerDAO {
 				prep2.executeUpdate();
 				prep2.clearBatch();
 			} // else - hasRow
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new DaoException("Error: Removing Company - FAILED (something went wrong..)");
 		} // catch
-		
 	} // removeMethodPart2
 	
+    /**
+     * This is a Private update Method</br>.
+     * That's is add-on. from here the function will update the customer from is specific table.
+     * 
+     * @param customer
+     * @throws DaoException
+     */
 	private void updateMethod(Customer customer) throws DaoException{
 		
        try {
-
 			String sqlUpdateCustomerTable = "UPDATE customer SET Cust_name=?, password=? WHERE Cust_ID=?";
 			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement (sqlUpdateCustomerTable);
 			prep.setString(1, customer.getCustName());
@@ -302,17 +289,16 @@ public class CustomerDBDAO implements CustomerDAO {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} // catch
-		
-	}
-	
-	/* Here it's 3 pirvate methods. my add on to this class.
-	*  the Two last methods 'exist' - can be in some public class.
-	*  but all the work, like connection to database, and checks, and exception.. 
-	*  all goes from here. from the DBDAO.
-	*  so consequently I decieded to put this 3 methods here as private. in all the DBDAO (3 classes)
-	*  and adjust this methods to the currently DBDAO class.  
-	*/
+	} // updateMethod
 
+	/**
+	 * This is a Private addCoupon Method</br>
+	 * This method adds a {@code Coupon} for a specific {@code Customer} by it's ID {@code long}.
+	 * @param {@code Coupon} Object
+	 * @param custID {@code long}
+	 * @return a {@code Coupon} Object .
+	 * @throws DaoException
+	 */
 	private Coupon addCouponMethod(Coupon coupon, long custID) throws DaoException {
 					
 			try{
@@ -328,10 +314,10 @@ public class CustomerDBDAO implements CustomerDAO {
 				if(rs.getRow() != 0) {
 					currentAmount = rs.getInt("amount");
 					currentAmount = currentAmount - 1;
-				}
+				} // if
 				else {
 					throw new DaoException("Error: Purchase Coupon - FAILD (The coupon out of stock)");
-				}
+				} // else
 				// clearing the statement.
 				prep.clearBatch();
 				
@@ -351,15 +337,12 @@ public class CustomerDBDAO implements CustomerDAO {
 				prep = DBconnectorV3.getConnection().prepareStatement(sqlAddCoupon);
 				prep.executeUpdate();
 				prep.clearBatch();
-//	
-
 			} // try
 			catch (SQLException | NullPointerException e) {
 				throw new DaoException("Error: Creating Coupon By Customer- FAILED (something went wrong..)");			
 			} // catch
 			return coupon;
-
-	}
+	} // addCouponMethod
 
    private boolean custotmerExistByID(long custID) throws DaoException {
 		
@@ -398,10 +381,9 @@ public class CustomerDBDAO implements CustomerDAO {
 				stat = DBconnectorV3.getConnection().createStatement();
 				rs = stat.executeQuery(sqlName);
 				rs.next();
-				
 				if(rs.getRow() != 0) {
 					answer = true;	
-				}
+				} // if
 
 				stat.clearBatch();
 	            } catch (SQLException e) {
@@ -411,6 +393,7 @@ public class CustomerDBDAO implements CustomerDAO {
 	} // custotmerExistByName
 	
    private DetectionBy customerDetectInDB(Customer customer) throws DaoException{
+	   
 	   boolean exist = false;
 	   if(customer.getId() > 0) {
 			exist = custotmerExistByID(customer.getId());
@@ -432,4 +415,5 @@ public class CustomerDBDAO implements CustomerDAO {
 		} // else if
 		return DetectionBy.NONE;
 	} // customerDetectInDB
+   
 } // CustomerDBDAO

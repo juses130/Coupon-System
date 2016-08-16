@@ -31,14 +31,14 @@ public class CouponSystem implements CouponClientFacade {
 				DBconnectorV3.startPool();
 				dailyTaskThread.start();
 				
-			}
+			} // Constructor
 			
 			public static CouponSystem getInstance() throws ConnectorException {
 				if (instance == null) {
 					instance = new CouponSystem();
-				}
+				} // if
 				return instance;
-			}
+			} // getInstance
 		
 			public void stop() throws ConnectorException, SQLException {
 				
@@ -46,43 +46,41 @@ public class CouponSystem implements CouponClientFacade {
 				dailyTask.stop();
 				
 				DBconnectorV3.getConnection().close();
-			}
+			} // stop
 			
 			public CompanyDAO getCompDao() {
 				return compDao;
-			}
+			} // getCompDao
 		
 			public CustomerDAO getCustDao() {
 				return custDao;
-			}
+			} // getCustDao
 		
 			public CouponDAO getCouponDao() {
 				return couponDao;
-			}
+			} // getCouponDao
 			
 			public CouponClientFacade login(String userName, String password, ClientType client) throws LoginException, DaoException, ConnectorException{
 				
-				CouponClientFacade clientFacade = null;
+					CouponClientFacade clientFacade = null;
 				
-				if(client.equals(ClientType.ADMIN) ) {
-					AdminFacade admF = new AdminFacade();
-					clientFacade = admF.login(userName, password, client);
-					return clientFacade;
-				}
-				else if (client.equals(ClientType.COMPANY)) {
-					CompanyFacade compF = new CompanyFacade();			
-					clientFacade = compF.login(userName, password, client);
-
-					return clientFacade;
-				}
-				else if (client.equals(ClientType.CUSTOMER)) {
-					CustomerFacade custF = new CustomerFacade();
-					clientFacade = custF.login(userName, password, client);
-					return clientFacade;
-				}
+							if(client.equals(ClientType.ADMIN) ) {
+								AdminFacade admF = new AdminFacade();
+								clientFacade = admF.login(userName, password, client);
+								return clientFacade;
+							} // if
+							else if (client.equals(ClientType.COMPANY)) {
+								CompanyFacade compF = new CompanyFacade();			
+								clientFacade = compF.login(userName, password, client);
+			
+								return clientFacade;
+							} // else if
+							else if (client.equals(ClientType.CUSTOMER)) {
+								CustomerFacade custF = new CustomerFacade();
+								clientFacade = custF.login(userName, password, client);
+								return clientFacade;
+							} // else if
 				return null;
-				}
-			
-			
-	
+				} // login
+
 }

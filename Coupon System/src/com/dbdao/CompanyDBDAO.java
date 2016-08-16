@@ -1,7 +1,6 @@
 package com.dbdao;
 
 import java.sql.*;
-import java.sql.Date;
 import java.util.Collection;
 
 
@@ -141,7 +140,7 @@ public class CompanyDBDAO implements CompanyDAO {
 				} catch (SQLException e) {
 					throw new DaoException("Error: Updating Company - FAILED");
 				} // catch
-		}
+		} // if
 		else {
 			throw new DaoException("Error: Updating Company - FAILED (Company is not exist in the DataBase)");
 		} // else
@@ -181,8 +180,7 @@ public class CompanyDBDAO implements CompanyDAO {
 				} // while
 
 				company = new Company(id, compName, password, email);
-			}
-			catch (SQLException | FiledErrorException e) {
+			} catch (SQLException | FiledErrorException e) {
 				throw new DaoException("Error: Getting Company By ID - FAILED");
 			} // catch
 			return company;

@@ -128,7 +128,7 @@ public class CouponDBDAO implements CouponDAO{
 		Coupon coupon = getCouponMethod(id, client);
 		return coupon;
 	} // getCoupon - Function
-// TODO: Im here - check the Code before sending
+	
 	@Override
 	public Set<Coupon> getCoupons(long id, ClientType client) throws DaoException{
 		
@@ -155,7 +155,6 @@ public class CouponDBDAO implements CouponDAO{
 	public Set<Coupon> getCouponByType(long id, CouponType category, ClientType client) throws DaoException {
 		
 		Set<Coupon> coupons = new HashSet<>();
-		
 		if(client == ClientType.ADMIN) {
 			
 			try {
@@ -165,12 +164,10 @@ public class CouponDBDAO implements CouponDAO{
 				
 				while(rs.next()) {
 					Coupon coupon = new Coupon();
-					
 					/* I am aware that I could write all this in a single line 
 					 * through the Constructor, but in this form it looks like 
 					 * more readable in my opinion. 
 					 */
-					
 					coupon.setId(rs.getLong("coup_id"));
 					coupon.setTitle(rs.getString("Title"));
 					coupon.setStartDate(rs.getDate("start_date").toLocalDate());
@@ -183,20 +180,18 @@ public class CouponDBDAO implements CouponDAO{
 					coupon.setOwnerID(rs.getLong("owner_ID"));
 					
 					coupons.add(coupon);
-					
-					
-				}
+				} // while
 				
 			} catch (SQLException | FiledErrorException e) {
 				throw new DaoException("Error: Get Coupons By Type (Admin) - FAILED (something went wrong)");
-			}
+			} // catch
 			if(!coupons.isEmpty()) {
 				return coupons;
-			}
+			} // if
 			else {
 				throw new DaoException("Error: No Coupons Found");
 			}  // else - Set<> is empty
-		}
+		} // if
 		else if(client == ClientType.COMPANY) {
 			try {
 				String sql = "SELECT coupon.* "
@@ -231,12 +226,10 @@ public class CouponDBDAO implements CouponDAO{
 			}
 			if(!coupons.isEmpty()) {
 				return coupons;
-			}
+			} // if
 			else {
 				throw new DaoException("Error: No Coupons Found");
 			}  // else - Set<> is empty
-			
-			
 		} // else if - COMPANY
 		else if (client == ClientType.CUSTOMER) {
 			
@@ -273,7 +266,7 @@ public class CouponDBDAO implements CouponDAO{
 			} // catch
 			if(!coupons.isEmpty()) {
 				return coupons;
-			}
+			} // if
 			else {
 				throw new DaoException("Error: No Coupons Found");
 			}  // else - Set<> is empty
@@ -281,14 +274,13 @@ public class CouponDBDAO implements CouponDAO{
 		} // else if - CUSTOMER
 		else {
 			throw new DaoException("Error: Getting Coupons by Type (Category) - FAILD (Unidentified user)");
-		} // getCouponByType
-
-	}
+		} // else
+	}// getCouponByType
     
     @Override
 	public Set<Coupon> getCouponByPrice(long id, double price,ClientType client) throws DaoException {
+    
     	Set<Coupon> coupons = new HashSet<>();
-		
 		if(client == ClientType.ADMIN) {
 			
 			try {
@@ -318,11 +310,11 @@ public class CouponDBDAO implements CouponDAO{
 			}
 			if(!coupons.isEmpty()) {
 				return coupons;
-			}
+			} // if
 			else {
 				throw new DaoException("Error: No Coupons Found");
 			}  // else - Set<> is empty
-		}
+		} // if - ClientType.ADMIN
 		else if(client == ClientType.COMPANY) {
 			try {
 				
@@ -356,16 +348,16 @@ public class CouponDBDAO implements CouponDAO{
 			} catch (SQLException | FiledErrorException e) {
 				e.printStackTrace();
 				throw new DaoException("Error: Get Coupons By Max Price (Company) - FAILED (something went wrong)");
-			}
+			} // catch
 			if(!coupons.isEmpty()) {
 				return coupons;
-			}
+			} // if
 			else {
 				throw new DaoException("Error: No Coupons Found");
 			}  // else - Set<> is empty
-		}
+		} // if - ClientType.COMPANY
 		else if (client == ClientType.CUSTOMER) {
-try {
+ try {
 				
 				String sql = "SELECT coupon.* "
 						+ "FROM customer_coupon "
@@ -397,20 +389,19 @@ try {
 			} catch (SQLException | FiledErrorException e) {
 				e.printStackTrace();
 				throw new DaoException("Error: Get Coupons By Max Price (Company) - FAILED (something went wrong)");
-			}
+			} // catch
 			if(!coupons.isEmpty()) {
 				return coupons;
-			}
+			} // if
 			else {
 				throw new DaoException("Error: No Coupons Found");
 			}  // else - Set<> is empty
-		}
+		} // if - ClientType.CUSTOMER
 		else {
 			throw new DaoException("Error: Getting all Coupons by Max Price (Customer) - FAILD");
-		} // getCouponByType
-		
-    }
-    //
+		} // else
+    }  // getCouponByType
+    
     /**
      * Remove Coupon {@code Coupon} from the underlying database 
      *(or any other persistence storage) with the 3 Access Points. 
@@ -453,7 +444,7 @@ try {
 	else if(client == ClientType.COMPANY) {
 			/*
 			 * NOTE! we are not deleting coupons from customer_coupon.
-			 * The business logic says that the Cusotmer will lose his coupon
+			 * The business logic says that the Customer will lose his coupon
 			 * ONLY when the coupon END-DATE will Expired.
 			 */
 			
@@ -475,13 +466,21 @@ try {
 		} // if - COMPANY
 	} // removeMethod
 
-    private Coupon getCouponMethod(long id, ClientType client) throws DaoException {
+	/**
+	 * This is my add-on. </br>
+	 * Getting all coupons by the ID {@code long} of a Client {@code ClientType}.
+	 * @param id {@code long}
+	 * @param client {@code ClientType} Enum
+	 * @return a {@code Coupon} Object by the client {@code ClientType}.
+	 * @throws DaoException
+	 */
+	    private Coupon getCouponMethod(long id, ClientType client) throws DaoException {
 		Coupon coupon = new Coupon();
 		/* We set the ID for the existOrNot check method.
 		 * and if the coupon exist - we don't need to get the ID or setting it again. 
 		 * we just gonna put it in the constructor below.
 		 */
-		// we have 3 access option of get method.
+		// we have 3 access option of this get method.
 		if(client == ClientType.ADMIN) {
 			try {
 				coupon.setId(id);
@@ -519,10 +518,9 @@ try {
 			else {
 				throw new DaoException("Error: Getting Coupon By ID - FAILED (Coupon dosen't exist in the DataBase)");
 			} // else - exist
-			}
-			catch (SQLException | FiledErrorException e) {
+			} catch (SQLException | FiledErrorException e) {
 				throw new DaoException("Error: Getting Coupon By ID - FAILED (something went wrong)");
-			}
+			} // catch
 		} // if - admin
 		else if (client == ClientType.COMPANY) {
 			try {
@@ -551,17 +549,16 @@ try {
 						ownerID = rs.getLong("Owner_ID");
 						
 						coupon = new Coupon(id, title, stDate.toLocalDate(), enDate.toLocalDate(), amount, category,  message, price, image, ownerID);
-					}
+					} // while
 				
 				return coupon;
 			} // if - exist
 			else {
 				throw new DaoException("Error: Getting Coupon By ID - FAILED (Coupon dosen't exist in the DataBase)");
 			} // else - exist
-			}
-			catch (SQLException | FiledErrorException e) {
+			} catch (SQLException | FiledErrorException e) {
 				throw new DaoException("Error: Getting Coupon By ID - FAILED (something went wrong)");
-			}
+			} // catch
 		} // else - COMPANY
 		else if (client == ClientType.CUSTOMER) {
 			
@@ -600,28 +597,24 @@ try {
 			else {
 				throw new DaoException("Error: Getting Coupon By ID - FAILED (Coupon dosen't exist in the DataBase)");
 			} // else - exist
-			}
-			catch (SQLException | FiledErrorException e) {
+			} catch (SQLException | FiledErrorException e) {
 				e.printStackTrace();
 				throw new DaoException("Error: Getting Coupon By ID - FAILED (something went wrong)");
-			}
-		}
+			} // catch
+		} // else if - ClientType.CUSTOMER
 		else {
 			throw new DaoException("Error: Getting Coupon - FAILED (Unidentified user)");
-		}
-		
-    }
-
-	/**
-	 * <p>getAllCouponsOfCompany</p>
-	 * 
-	 * This is my add on. 
-	 * it will bring all the coupons of the specefic company using owner ID for searching in the DataBase. (ownerID = company id).
-	 * @param compID
-	 * @return
+		} // else
+    } // getCouponMethod
+	    
+	/** 
+	 * This is my add on. </br>
+	 * <b>Company Access</b></br>
+	 * it will bring all the coupons of the
+	 *  company using owner ID for searching in the DataBase. (ownerID = company id).
+	 * @param compID {@code long} 
+	 * @return a {@code Set<Coupon>} Objects 
 	 * @throws DaoException
-	 * 
-	 * @author Raziel
 	 */
 	private Set<Coupon> getAllCouponsOfCompany(long compID) throws DaoException{
         Set<Coupon> coupons = new HashSet<>(); 
@@ -646,18 +639,25 @@ try {
 
 				// adding the current coupon to the collection
 				coupons.add(coupon);
-			}
+			}// while
 		} catch (SQLException | FiledErrorException e) {
 			throw new DaoException("Error: Getting Coupons of Company - FAILED (something went wrong)");
-		}
+		} // catch
 		if(!coupons.isEmpty()) {
 			return coupons;
-		}
+		} // if
 		else {
 			throw new DaoException("Error: No Coupons Found");
 		}  // else - Set<> is empty
 	} // getAllCouponsOfCompany
 	
+	/**
+	 * This is my add-on.
+	 * It will bring all the coupons {@code Coupon} of the customer {@code Customer} using the customer ID {@code long}.
+	 * @param custID {@code long}
+	 * @return a {@code Set<Coupon>}
+	 * @throws DaoException
+	 */
 	private Set<Coupon> getAllCouponsOfCustomer(long custID) throws DaoException{
         Set<Coupon> coupons = new HashSet<>(); 
 		try {
@@ -686,18 +686,25 @@ try {
 				
 				// adding the current coupon to the collection
 				coupons.add(coupon);
-			}
+			} // while 
 		} catch (SQLException | FiledErrorException e) {
 			throw new DaoException("Error: Getting Coupons of Customer - FAILED (something went wrong)");
-		}
+		} // catch
 		if(!coupons.isEmpty()) {
 			return coupons;
-		}
+		} // if
 		else {
 			throw new DaoException("Error: No Coupons Found");
 		}  // else - Set<> is empty
 	} // getAllCouponsOfCustomer
 
+	/**
+	 * This is my add-on. </br>
+	 * <b>Admin Access</b> </br>
+	 * It will bring all the coupons {@code Coupon} from the Database.
+	 * @return a {@code Set<Coupon>} Objects
+	 * @throws DaoException
+	 */
 	private Set<Coupon> getAllCouponsByAdmin() throws DaoException{
 		Set<Coupon> coupons = new HashSet<>(); 
 		

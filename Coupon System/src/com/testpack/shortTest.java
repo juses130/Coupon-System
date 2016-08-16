@@ -150,8 +150,10 @@ public class shortTest {
 //		}
 //		System.out.println(coup.toString());
 		try {
-			addCouponsByCompany(9);
-//			Coupon coupon = new Coupon();
+//			addCouponsByCompany(9);
+			
+			Coupon coupon = new Coupon();
+			coupon.setId(-50);;
 //			Company company = new Company();
 //			coupon.setTitle("ComputerA0");
 //			company.setId(4);
@@ -159,7 +161,7 @@ public class shortTest {
 //			System.out.println(coupon.toString());
 
 				CouponSystem.getInstance().stop();
-			} catch (ConnectorException | SQLException | DaoException e) {
+			} catch (ConnectorException | SQLException | FiledErrorException e) {
 
 				e.printStackTrace();
 				System.out.println(e.getMessage());

@@ -16,7 +16,7 @@ import com.facade.ClientType;
 public interface CouponClientFacade {
 	
 	/**
-	 * Retruns a CouponClientFacade {@code Interface} if the log-in was successful, 
+	 * Returns a CouponClientFacade {@code Interface} if the log-in was successful, 
 	 * otherwise it will Return an Error {@code Exception}. 
 	 * 
 	 * @param userName {@code String} of the Client

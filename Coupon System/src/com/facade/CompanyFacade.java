@@ -14,7 +14,6 @@ import com.task.and.singleton.CouponSystem;
 public class CompanyFacade implements CouponClientFacade{
 	
 	private Company company;
-//	private String compPassword;
 	private CompanyDAO compDao = null;
 	private CouponDAO coupDao = null;
 		
@@ -57,53 +56,42 @@ public class CompanyFacade implements CouponClientFacade{
 		coupons = coupDao.getCoupons(company.getId(), ClientType.COMPANY);
 		
 		return coupons;
-	} 
+	} // getAllCoupons
 	
 	public void removeCoupon(Coupon coupon) throws DaoException, FiledErrorException{
 		coupon.setOwnerID(company.getId());
 		coupDao.removeCoupon(coupon, ClientType.COMPANY);
-	}
+	} // removeCoupon
 	
 	public Coupon updateCoupon(Coupon coupon) throws DaoException{
 		coupDao.updateCoupon(coupon);
-		
 		return coupon;
-	}
+	} // updateCoupon
 	
 	public Company viewCompay() throws DaoException{
 		Company company = compDao.viewCompany(this.company.getId());
 		return company;
-	}
+	} // viewCompay
 	
 	public Coupon getCoupon(long id) throws DaoException, FiledErrorException{
 		
-//		Company company = new Company();
 		Coupon coupon = new Coupon();
-//		
-//		coupon.setId(id);
-//		company.setId(company.getId());
-//		
-//		coupon = compDao.getCoupon(coupon, company);
 		coupon = coupDao.getCoupon(id, ClientType.COMPANY);
 		return coupon;
-	}
+	} // getCoupon
 	
 	public Set<Coupon> getCouponsByType(String category) throws DaoException, FiledErrorException{
 
 		// This next two lines checks if the category-String exist in the Enum Or not.
 		Coupon coupon = new Coupon();
 		coupon.setCategory(category);
-				
 		Set<Coupon> coupons = coupDao.getCouponByType(company.getId(), coupon.getCategory(), ClientType.COMPANY);
-
 		return coupons;
-
-	}
+	} // getCouponsByType
 	
 	public Set<Coupon> getCouponsOfCompanyByPrice(double maxPrice) throws DaoException{
 		Set<Coupon> coupons = coupDao.getCouponByPrice(company.getId(), maxPrice, ClientType.COMPANY);
-//		
 		return coupons;	
-	}
+	} // getCouponsOfCompanyByPrice
 
-}
+} // Class
