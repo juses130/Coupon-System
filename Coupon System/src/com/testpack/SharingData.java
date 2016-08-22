@@ -1,4 +1,4 @@
-package com.added.functions;
+package com.testpack;
 
 import java.util.InputMismatchException;
 

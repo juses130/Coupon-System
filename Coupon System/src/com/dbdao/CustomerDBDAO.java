@@ -6,6 +6,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
+
+import javax.annotation.Generated;
+import javax.jws.soap.InitParam;
 
 import com.dao.interfaces.CustomerDAO;
 import com.exceptionerrors.DaoException;
@@ -213,6 +217,48 @@ public class CustomerDBDAO implements CustomerDAO {
 		} // catch
 		return customers;
 	} // getAllCompanies
+	
+
+	@Override
+	public Collection<Coupon> getCoupons(long custID) throws DaoException {
+		Collection<Coupon> coupons = new HashSet<>(); 
+		try {
+			String sql = "SELECT coupon.* "
+					+ "FROM customer_coupon "
+					+ "LEFT JOIN coupon USING (coup_id) "
+					+ "WHERE customer_coupon.cust_id =" + custID + " "
+					+ "AND customer_coupon.Coup_ID = coupon.Coup_id "
+					+ "AND customer_coupon.Coup_ID IS NOT NULL";
+			Statement stat = DBconnectorV3.getConnection().createStatement();
+			ResultSet rs = stat.executeQuery(sql);
+			while (rs.next()) {
+				
+				Coupon coupon = new Coupon();
+
+				coupon.setId(rs.getLong("coup_id"));
+				coupon.setTitle(rs.getString("Title"));
+				coupon.setStartDate(rs.getDate("start_date").toLocalDate());
+				coupon.setEndDate(rs.getDate("end_date").toLocalDate());
+				coupon.setAmount(rs.getInt("amount"));
+				coupon.setCategory(rs.getString("Category"));
+				coupon.setMessage(rs.getString("Message"));
+				coupon.setPrice(rs.getDouble("Price"));
+				coupon.setImage(rs.getString("image"));
+				coupon.setOwnerID(rs.getLong("owner_ID"));
+				
+				// adding the current coupon to the collection
+				coupons.add(coupon);
+			} // while 
+		} catch (SQLException | FiledErrorException e) {
+			throw new DaoException("Error: Getting Coupons of Customer - FAILED (something went wrong)");
+		} // catch
+		if(!coupons.isEmpty()) {
+			return coupons;
+		} // if
+		else {
+			throw new DaoException("Error: No Coupons Found");
+		}  // else - Set<> is empty
+	} // getCoupons
 	
 	/**
 	 * 

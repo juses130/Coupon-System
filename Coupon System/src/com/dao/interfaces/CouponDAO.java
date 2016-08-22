@@ -59,15 +59,15 @@ public interface CouponDAO {
 	public Coupon getCoupon(long id, ClientType client) throws DaoException;
 	
 	/**
-	 * Returns a {@code Set<Coupon>} of all Coupons from the 
+	 * Returns a {@code Collection<Coupon>} of all Coupons from the 
 	 * underlying database (or any other persistence storage).
 	 * 
 	 * @param id {@code long} of the Client (it can be Customer or Company)
 	 * @param client {@code ClientType} Enum 
-	 * @return a {@code Set<Coupon>}
+	 * @return a {@code Collection<Coupon>}
 	 * @throws DaoException
 	 */
-	public Set<Coupon> getCoupons(long id, ClientType client) throws DaoException;
+	public Collection<Coupon> getAllCoupons() throws DaoException;
 	
 	/**
 	 * Returns a {@code Set<Coupon>} of all Coupons by the maximum price {@code double} from the 
@@ -79,7 +79,7 @@ public interface CouponDAO {
 	 * @return a {@code Set<Coupon>} 
 	 * @throws DaoException
 	 */
-	public Set<Coupon> getCouponByPrice(long id, double price,ClientType client) throws DaoException;
+	public Collection<Coupon> getCouponByPrice(long id, double price,ClientType client) throws DaoException;
 	
 	/**
 	 * Returns a {@code Set<Coupon>} of all Coupons by the Category {@code CouponType} from the 
@@ -91,6 +91,6 @@ public interface CouponDAO {
 	 * @return a {@code Set<Coupon>} 
 	 * @throws DaoException
 	 */
-	public Set<Coupon> getCouponByType(long id, CouponType category, ClientType client) throws DaoException;
+	public Collection<Coupon> getCouponByType(long id, CouponType category, ClientType client) throws DaoException;
 	
 }

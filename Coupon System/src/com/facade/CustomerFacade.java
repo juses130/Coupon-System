@@ -1,5 +1,6 @@
 package com.facade;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -58,26 +59,26 @@ public class CustomerFacade implements CouponClientFacade {
 	
     public Customer getCustomerAndCoupons() throws DaoException {
     	
-    	Set<Coupon> coupons = getAllPurchasedCoupons();
+    	Collection<Coupon> coupons = getCoupons();
     	Customer customer = this.customer;
     	customer.setCoupons(coupons);
     	return customer;
 	} // getCustomerAndCoupons
 	
-	public Set<Coupon> getAllPurchasedCoupons() throws DaoException {
-		Set<Coupon> coupons = coupDao.getCoupons(customer.getId(), ClientType.CUSTOMER);
+	public Collection<Coupon> getCoupons() throws DaoException {
+		Collection<Coupon> coupons = custDao.getCoupons(customer.getId());
 		return coupons;
 	} // getAllCoupons
 	
-	public Set<Coupon> getAllCouponsByPrice(double maxPrice) throws DaoException {
-		Set<Coupon> coupons = new HashSet<>();
+	public Collection<Coupon> getAllCouponsByPrice(double maxPrice) throws DaoException {
+		Collection<Coupon> coupons = new HashSet<>();
 		coupons = coupDao.getCouponByPrice(customer.getId(), maxPrice, ClientType.CUSTOMER);
 		return coupons;	
 	} // getAllCouponsByPrice
 	
-	public Set<Coupon> getAllCouponsByType(String category) throws DaoException, FiledErrorException {
+	public Collection<Coupon> getAllCouponsByType(String category) throws DaoException, FiledErrorException {
 		
-		Set<Coupon> coupons = new HashSet<>();
+		Collection<Coupon> coupons = new HashSet<>();
 		Coupon coupon = new Coupon();
 		coupon.setCategory(category);
 		coupons = coupDao.getCouponByType(customer.getId(), coupon.getCategory(), ClientType.CUSTOMER);

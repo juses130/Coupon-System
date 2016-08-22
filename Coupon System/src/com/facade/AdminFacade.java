@@ -20,7 +20,7 @@ public class AdminFacade implements CouponClientFacade{
 	private static final String adminPassword = "1234";
 	
 	// 3 dao instances (working by CouponSystem-Singleton)
-	private static CompanyDAO compDao = null;
+	private  CompanyDAO compDao = null;
 	private CustomerDAO custDao = null;
 	private CouponDAO coupDao = null;
 	
@@ -45,7 +45,7 @@ public class AdminFacade implements CouponClientFacade{
 	} // login
 	
 	/*
-	 *  Company
+	 *  Company Access
 	 */
 	
 	public void createCompany(Company company) throws DaoException {
@@ -88,7 +88,7 @@ public class AdminFacade implements CouponClientFacade{
 	} // getAllCompaniesA 
 	
 	/*
-	 *  Customer
+	 *  Customer Access
 	 */
 	
 	public void createCustomer(Customer customer) throws DaoException{
@@ -98,11 +98,7 @@ public class AdminFacade implements CouponClientFacade{
 	public void removeCustomer(Customer customer) throws DaoException, FiledErrorException{
 			custDao.removeCustomer(customer);
 	} // removeCustomer
-	
-	public void removeCoupon(Coupon coupon) throws DaoException, FiledErrorException{
-		coupDao.removeCoupon(coupon, ClientType.ADMIN);
-	} // removeCoupon
-	
+		
 	public void updateCustomer(Customer customer) throws DaoException{
 		custDao.updateCustomer(customer);
 	} // createCustomerA
@@ -114,7 +110,7 @@ public class AdminFacade implements CouponClientFacade{
 		
 		if(customer != null) {
 		// set the Collection of the Coupons.
-		customer.setCoupons(coupDao.getCoupons(customer.getId(), ClientType.CUSTOMER));
+			customer.setCoupons(custDao.getCoupons(customer.getId()));
 		} // if
 		return customer;
 	} // getCustomer - id long
@@ -127,7 +123,7 @@ public class AdminFacade implements CouponClientFacade{
 		
 		if(customer != null) {
 		// set the Collection of the Coupons.
-		customer.setCoupons(coupDao.getCoupons(customer.getId(), ClientType.CUSTOMER));
+		customer.setCoupons(custDao.getCoupons(customer.getId()));
 		} // if
 		return customer;
 	} // getCustomer - name String
@@ -136,11 +132,19 @@ public class AdminFacade implements CouponClientFacade{
 		return custDao.getAllCustomers();
 	} // getAllCompaniesA
 
-	public Set<Coupon> getCouponByPrice(double maxPrice) throws DaoException {
+	/*
+	 * Coupon Access
+	 */
+	
+	public void removeCoupon(Coupon coupon) throws DaoException, FiledErrorException{
+		coupDao.removeCoupon(coupon, ClientType.ADMIN);
+	} // removeCoupon
+	
+	public Collection<Coupon> getCouponByPrice(double maxPrice) throws DaoException {
 		return coupDao.getCouponByPrice(0, maxPrice, ClientType.ADMIN);
 	} // getCouponByPrice
 	
-	public Set<Coupon> getCouponByType(String category) throws DaoException, FiledErrorException {
+	public Collection<Coupon> getCouponByType(String category) throws DaoException, FiledErrorException {
 		/* we don't need an ID for the admin.. 
 		 * But we want to use this function from all the Facades, so
 		 * we need id for the two other facades.
@@ -155,9 +159,9 @@ public class AdminFacade implements CouponClientFacade{
 		return coupDao.getCouponByType(id, coupon.getCategory() ,ClientType.ADMIN);
 	} // getCouponByType
 
-	public Set<Coupon> getAllCoupons() throws DaoException {
+	public Collection<Coupon> getAllCoupons() throws DaoException {
 		
-		Set<Coupon> coupons = coupDao.getCoupons(0, ClientType.ADMIN);
+		Collection<Coupon> coupons = coupDao.getAllCoupons();
 		return coupons;
 	} // getAllCoupons
 	

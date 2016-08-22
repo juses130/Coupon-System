@@ -53,7 +53,7 @@ public class CompanyFacade implements CouponClientFacade{
 	public Collection<Coupon> getAllCoupons() throws DaoException{
 
 		Collection<Coupon> coupons = new HashSet<>();
-		coupons = coupDao.getCoupons(company.getId(), ClientType.COMPANY);
+		coupons = compDao.getCoupons(company.getId());
 		
 		return coupons;
 	} // getAllCoupons
@@ -80,17 +80,17 @@ public class CompanyFacade implements CouponClientFacade{
 		return coupon;
 	} // getCoupon
 	
-	public Set<Coupon> getCouponsByType(String category) throws DaoException, FiledErrorException{
+	public Collection<Coupon> getCouponsByType(String category) throws DaoException, FiledErrorException{
 
 		// This next two lines checks if the category-String exist in the Enum Or not.
 		Coupon coupon = new Coupon();
 		coupon.setCategory(category);
-		Set<Coupon> coupons = coupDao.getCouponByType(company.getId(), coupon.getCategory(), ClientType.COMPANY);
+		Collection<Coupon> coupons = coupDao.getCouponByType(company.getId(), coupon.getCategory(), ClientType.COMPANY);
 		return coupons;
 	} // getCouponsByType
 	
-	public Set<Coupon> getCouponsOfCompanyByPrice(double maxPrice) throws DaoException{
-		Set<Coupon> coupons = coupDao.getCouponByPrice(company.getId(), maxPrice, ClientType.COMPANY);
+	public Collection<Coupon> getCouponsOfCompanyByPrice(double maxPrice) throws DaoException{
+		Collection<Coupon> coupons = coupDao.getCouponByPrice(company.getId(), maxPrice, ClientType.COMPANY);
 		return coupons;	
 	} // getCouponsOfCompanyByPrice
 

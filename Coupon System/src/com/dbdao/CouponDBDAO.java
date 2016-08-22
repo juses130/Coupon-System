@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -130,70 +131,62 @@ public class CouponDBDAO implements CouponDAO{
 	} // getCoupon - Function
 	
 	@Override
-	public Set<Coupon> getCoupons(long id, ClientType client) throws DaoException{
+	public Collection<Coupon> getAllCoupons() throws DaoException{
+
+		Collection<Coupon> coupons = new HashSet<>(); 
 		
-		Set<Coupon> coupons = new HashSet<>();
-		
-		if(client == ClientType.ADMIN) {
-			coupons = getAllCouponsByAdmin();
+        try {
+			String sql = "SELECT * FROM coupon";
+			Statement stat = DBconnectorV3.getConnection().createStatement();
+			ResultSet rs = stat.executeQuery(sql);
+			
+			while (rs.next()) {	
+				Coupon coupon = new Coupon();
+
+				coupon.setId(rs.getLong("coup_id"));
+				coupon.setTitle(rs.getString("Title"));
+				coupon.setStartDate(rs.getDate("start_date").toLocalDate());
+				coupon.setEndDate(rs.getDate("end_date").toLocalDate());
+				coupon.setAmount(rs.getInt("amount"));
+				coupon.setCategory(rs.getString("Category"));
+				coupon.setMessage(rs.getString("Message"));
+				coupon.setPrice(rs.getDouble("Price"));
+				coupon.setImage(rs.getString("image"));
+				coupon.setOwnerID(rs.getLong("owner_ID"));
+				
+				// adding the current coupon to the collection
+				coupons.add(coupon);
+			} // while
+		} catch (SQLException | FiledErrorException e) {
+			e.printStackTrace();
+			throw new DaoException("Error: Getting All Coupons By ADMIN - FAILED (something went wrong)");
+		} // catch
+		if(!coupons.isEmpty()) {
 			return coupons;
-		} // if - ADMIN
-		else if(client == ClientType.COMPANY) {
-			coupons = getAllCouponsOfCompany(id);
-			return coupons;
-		} // else if - COMPANY
-		else if(client == ClientType.CUSTOMER) {
-			coupons = getAllCouponsOfCustomer(id);
-			return coupons;
-		} // else if - CUSTOMER
+		} // if - empty
 		else {
-			throw new DaoException("Error: Getting Coupons - FAILED (Unidentified user)");
-		} // else 
+			throw new DaoException("Error: No Coupons Found");
+		}  // else - Set<> is empty
 	} // getAllCoupons
 
 	@Override
 	public Set<Coupon> getCouponByType(long id, CouponType category, ClientType client) throws DaoException {
 		
 		Set<Coupon> coupons = new HashSet<>();
-		if(client == ClientType.ADMIN) {
+		PreparedStatement prep = null;
+		ResultSet rs = null;
+
+		try {
+		
+		if(client == ClientType.ADMIN) {	
 			
-			try {
 				String sql = "SELECT * FROM coupon WHERE Category='"+ category.toString() + "'";
-				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sql);
-				ResultSet rs = prep.executeQuery();
-				
-				while(rs.next()) {
-					Coupon coupon = new Coupon();
-					/* I am aware that I could write all this in a single line 
-					 * through the Constructor, but in this form it looks like 
-					 * more readable in my opinion. 
-					 */
-					coupon.setId(rs.getLong("coup_id"));
-					coupon.setTitle(rs.getString("Title"));
-					coupon.setStartDate(rs.getDate("start_date").toLocalDate());
-					coupon.setEndDate(rs.getDate("end_date").toLocalDate());
-					coupon.setAmount(rs.getInt("amount"));
-					coupon.setMessage(rs.getString("Message"));
-					coupon.setPrice(rs.getDouble("Price"));
-					coupon.setCategory((rs.getString("Category")));
-					coupon.setImage(rs.getString("image"));
-					coupon.setOwnerID(rs.getLong("owner_ID"));
-					
-					coupons.add(coupon);
-				} // while
-				
-			} catch (SQLException | FiledErrorException e) {
-				throw new DaoException("Error: Get Coupons By Type (Admin) - FAILED (something went wrong)");
-			} // catch
-			if(!coupons.isEmpty()) {
-				return coupons;
-			} // if
-			else {
-				throw new DaoException("Error: No Coupons Found");
-			}  // else - Set<> is empty
-		} // if
+				prep = DBconnectorV3.getConnection().prepareStatement(sql);
+				rs = prep.executeQuery();
+
+		} // if - ADMIN
 		else if(client == ClientType.COMPANY) {
-			try {
+		
 				String sql = "SELECT coupon.* "
 						+ "FROM company_coupon "
 						+ "LEFT JOIN coupon USING (coup_id)"
@@ -201,39 +194,12 @@ public class CouponDBDAO implements CouponDAO{
 						+ " AND company_coupon.Comp_ID IS NOT NULL "
 						+ "AND company_coupon.Coup_ID = coupon.Coup_id "
 						+ "AND coupon.Category='" +  category.toString() + "'";
-				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sql);
-				ResultSet rs = prep.executeQuery();
+				prep = DBconnectorV3.getConnection().prepareStatement(sql);
+				rs = prep.executeQuery();
 				
-				while(rs.next()) {
-					Coupon coupon = new Coupon();
-					
-					coupon.setId(rs.getLong("coup_id"));
-					coupon.setTitle(rs.getString("Title"));
-					coupon.setStartDate(rs.getDate("start_date").toLocalDate());
-					coupon.setEndDate(rs.getDate("end_date").toLocalDate());
-					coupon.setAmount(rs.getInt("amount"));
-					coupon.setMessage(rs.getString("Message"));
-					coupon.setPrice(rs.getDouble("Price"));
-					coupon.setCategory((rs.getString("Category")));
-					coupon.setImage(rs.getString("image"));
-					coupon.setOwnerID(rs.getLong("owner_ID"));
-					
-					coupons.add(coupon);
-				} // while 
-				
-			} catch (SQLException | FiledErrorException e) {
-				throw new DaoException("Error: Get Coupons By Type (Admin) - FAILED (something went wrong)");
-			}
-			if(!coupons.isEmpty()) {
-				return coupons;
-			} // if
-			else {
-				throw new DaoException("Error: No Coupons Found");
-			}  // else - Set<> is empty
 		} // else if - COMPANY
 		else if (client == ClientType.CUSTOMER) {
-			
-			try {
+
 				String sql = "SELECT coupon.* "
 						+ "FROM customer_coupon "
 						+ "LEFT JOIN coupon USING (coup_id)"
@@ -241,40 +207,41 @@ public class CouponDBDAO implements CouponDAO{
 						+ " AND customer_coupon.Cust_ID IS NOT NULL "
 						+ "AND customer_coupon.coup_id = coupon.Coup_id "
 						+ "AND coupon.Category='" +  category.toString() + "'";
-				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sql);
-				ResultSet rs = prep.executeQuery();
-				
-				while(rs.next()) {
-					Coupon coupon = new Coupon();
-					
-					coupon.setId(rs.getLong("coup_id"));
-					coupon.setTitle(rs.getString("Title"));
-					coupon.setStartDate(rs.getDate("start_date").toLocalDate());
-					coupon.setEndDate(rs.getDate("end_date").toLocalDate());
-					coupon.setAmount(rs.getInt("amount"));
-					coupon.setMessage(rs.getString("Message"));
-					coupon.setPrice(rs.getDouble("Price"));
-					coupon.setCategory((rs.getString("Category")));
-					coupon.setImage(rs.getString("image"));
-					coupon.setOwnerID(rs.getLong("owner_ID"));
-					
-					coupons.add(coupon);
-				} // while 
-				
-			} catch (SQLException | FiledErrorException e) {
-				throw new DaoException("Error: Get Coupons By Type (Admin) - FAILED (something went wrong)");
-			} // catch
-			if(!coupons.isEmpty()) {
-				return coupons;
-			} // if
-			else {
-				throw new DaoException("Error: No Coupons Found");
-			}  // else - Set<> is empty
-			
+				prep = DBconnectorV3.getConnection().prepareStatement(sql);
+				rs = prep.executeQuery();
+	
 		} // else if - CUSTOMER
 		else {
 			throw new DaoException("Error: Getting Coupons by Type (Category) - FAILD (Unidentified user)");
 		} // else
+		
+		while(rs.next()) {
+			Coupon coupon = new Coupon();
+			
+			coupon.setId(rs.getLong("coup_id"));
+			coupon.setTitle(rs.getString("Title"));
+			coupon.setStartDate(rs.getDate("start_date").toLocalDate());
+			coupon.setEndDate(rs.getDate("end_date").toLocalDate());
+			coupon.setAmount(rs.getInt("amount"));
+			coupon.setMessage(rs.getString("Message"));
+			coupon.setPrice(rs.getDouble("Price"));
+			coupon.setCategory((rs.getString("Category")));
+			coupon.setImage(rs.getString("image"));
+			coupon.setOwnerID(rs.getLong("owner_ID"));
+			
+			coupons.add(coupon);
+		} // while 
+		
+	if(!coupons.isEmpty()) {
+		return coupons;
+	} // if
+	else {
+		throw new DaoException("Error: No Coupons Found");
+	}  // else - Set<> is empty
+		
+		} catch (FiledErrorException | SQLException e) {
+			throw new DaoException("Error: Get Coupons By Type - FAILED (something went wrong)");
+		} // catch
 	}// getCouponByType
     
     @Override
@@ -606,140 +573,6 @@ public class CouponDBDAO implements CouponDAO{
 			throw new DaoException("Error: Getting Coupon - FAILED (Unidentified user)");
 		} // else
     } // getCouponMethod
-	    
-	/** 
-	 * This is my add on. </br>
-	 * <b>Company Access</b></br>
-	 * it will bring all the coupons of the
-	 *  company using owner ID for searching in the DataBase. (ownerID = company id).
-	 * @param compID {@code long} 
-	 * @return a {@code Set<Coupon>} Objects 
-	 * @throws DaoException
-	 */
-	private Set<Coupon> getAllCouponsOfCompany(long compID) throws DaoException{
-        Set<Coupon> coupons = new HashSet<>(); 
-		try {
-			String sql = "SELECT * FROM coupon WHERE owner_ID=" + compID;
-			Statement stat = DBconnectorV3.getConnection().createStatement();
-			ResultSet rs = stat.executeQuery(sql);
-			while (rs.next()) {
-				
-				Coupon coupon = new Coupon();
-				
-				coupon.setId(rs.getLong("coup_id"));
-				coupon.setTitle(rs.getString("Title"));
-				coupon.setStartDate(rs.getDate("start_date").toLocalDate());
-				coupon.setEndDate(rs.getDate("end_date").toLocalDate());
-				coupon.setAmount(rs.getInt("amount"));
-				coupon.setCategory(rs.getString("Category"));
-				coupon.setMessage(rs.getString("Message"));
-				coupon.setPrice(rs.getDouble("Price"));
-				coupon.setImage(rs.getString("image"));
-				coupon.setOwnerID(rs.getLong("owner_ID"));
 
-				// adding the current coupon to the collection
-				coupons.add(coupon);
-			}// while
-		} catch (SQLException | FiledErrorException e) {
-			throw new DaoException("Error: Getting Coupons of Company - FAILED (something went wrong)");
-		} // catch
-		if(!coupons.isEmpty()) {
-			return coupons;
-		} // if
-		else {
-			throw new DaoException("Error: No Coupons Found");
-		}  // else - Set<> is empty
-	} // getAllCouponsOfCompany
-	
-	/**
-	 * This is my add-on.
-	 * It will bring all the coupons {@code Coupon} of the customer {@code Customer} using the customer ID {@code long}.
-	 * @param custID {@code long}
-	 * @return a {@code Set<Coupon>}
-	 * @throws DaoException
-	 */
-	private Set<Coupon> getAllCouponsOfCustomer(long custID) throws DaoException{
-        Set<Coupon> coupons = new HashSet<>(); 
-		try {
-			String sql = "SELECT coupon.* "
-					+ "FROM customer_coupon "
-					+ "LEFT JOIN coupon USING (coup_id) "
-					+ "WHERE customer_coupon.cust_id =" + custID + " "
-					+ "AND customer_coupon.Coup_ID = coupon.Coup_id "
-					+ "AND customer_coupon.Coup_ID IS NOT NULL";
-			Statement stat = DBconnectorV3.getConnection().createStatement();
-			ResultSet rs = stat.executeQuery(sql);
-			while (rs.next()) {
-				
-				Coupon coupon = new Coupon();
-
-				coupon.setId(rs.getLong("coup_id"));
-				coupon.setTitle(rs.getString("Title"));
-				coupon.setStartDate(rs.getDate("start_date").toLocalDate());
-				coupon.setEndDate(rs.getDate("end_date").toLocalDate());
-				coupon.setAmount(rs.getInt("amount"));
-				coupon.setCategory(rs.getString("Category"));
-				coupon.setMessage(rs.getString("Message"));
-				coupon.setPrice(rs.getDouble("Price"));
-				coupon.setImage(rs.getString("image"));
-				coupon.setOwnerID(rs.getLong("owner_ID"));
-				
-				// adding the current coupon to the collection
-				coupons.add(coupon);
-			} // while 
-		} catch (SQLException | FiledErrorException e) {
-			throw new DaoException("Error: Getting Coupons of Customer - FAILED (something went wrong)");
-		} // catch
-		if(!coupons.isEmpty()) {
-			return coupons;
-		} // if
-		else {
-			throw new DaoException("Error: No Coupons Found");
-		}  // else - Set<> is empty
-	} // getAllCouponsOfCustomer
-
-	/**
-	 * This is my add-on. </br>
-	 * <b>Admin Access</b> </br>
-	 * It will bring all the coupons {@code Coupon} from the Database.
-	 * @return a {@code Set<Coupon>} Objects
-	 * @throws DaoException
-	 */
-	private Set<Coupon> getAllCouponsByAdmin() throws DaoException{
-		Set<Coupon> coupons = new HashSet<>(); 
-		
-        try {
-			String sql = "SELECT * FROM coupon";
-			Statement stat = DBconnectorV3.getConnection().createStatement();
-			ResultSet rs = stat.executeQuery(sql);
-			
-			while (rs.next()) {	
-				Coupon coupon = new Coupon();
-
-				coupon.setId(rs.getLong("coup_id"));
-				coupon.setTitle(rs.getString("Title"));
-				coupon.setStartDate(rs.getDate("start_date").toLocalDate());
-				coupon.setEndDate(rs.getDate("end_date").toLocalDate());
-				coupon.setAmount(rs.getInt("amount"));
-				coupon.setCategory(rs.getString("Category"));
-				coupon.setMessage(rs.getString("Message"));
-				coupon.setPrice(rs.getDouble("Price"));
-				coupon.setImage(rs.getString("image"));
-				coupon.setOwnerID(rs.getLong("owner_ID"));
-				
-				// adding the current coupon to the collection
-				coupons.add(coupon);
-			} // while
-		} catch (SQLException | FiledErrorException e) {
-			e.printStackTrace();
-			throw new DaoException("Error: Getting All Coupons By ADMIN - FAILED (something went wrong)");
-		} // catch
-		if(!coupons.isEmpty()) {
-			return coupons;
-		} // if - empty
-		else {
-			throw new DaoException("Error: No Coupons Found");
-		}  // else - Set<> is empty
-	} // getAllCouponsByAdmin
 	
 } // Class

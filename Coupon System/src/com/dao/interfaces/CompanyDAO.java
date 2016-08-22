@@ -78,5 +78,13 @@ public interface CompanyDAO {
 	 */
 	public Collection<Company> getAllCompanies() throws DaoException;
 	
+	/** 
+	 * Returns  all the coupons of the
+	 *  company using owner ID for searching in the DataBase. (ownerID = company id).
+	 * @param compID {@code long} 
+	 * @return a {@code Set<Coupon>} Objects 
+	 * @throws DaoException
+	 */
+	public Collection<Coupon> getCoupons(long compID) throws DaoException;
 
 }

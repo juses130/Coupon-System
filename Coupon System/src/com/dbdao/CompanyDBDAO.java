@@ -1,9 +1,6 @@
 package com.dbdao;
 
 import java.sql.*;
-import java.util.Collection;
-
-
 import java.util.*;
 
 import com.dao.interfaces.*;
@@ -52,7 +49,7 @@ public class CompanyDBDAO implements CompanyDAO {
 			}
             } catch (SQLException | NullPointerException e) {
             	/* The throw exception here is an general error, mostly sql error.
-            	 * Login failed exception - because of incurrent user Or password will throw from the CompanyFacade.
+            	 * Login failed exception - because of incorrect user Or password will throw from the CompanyFacade.
             	 */
     			throw new DaoException("Error: Company Login - FAILED (something went wrong..)");
             } // catch
@@ -251,6 +248,42 @@ public class CompanyDBDAO implements CompanyDAO {
 		return companies;
 	} // getAllCompanies
 
+	@Override	
+	public Collection<Coupon> getCoupons(long compID) throws DaoException {
+		Collection<Coupon> coupons = new HashSet<>(); 
+		try {
+			String sql = "SELECT * FROM coupon WHERE owner_ID=" + compID;
+			Statement stat = DBconnectorV3.getConnection().createStatement();
+			ResultSet rs = stat.executeQuery(sql);
+			while (rs.next()) {
+				
+				Coupon coupon = new Coupon();
+				
+				coupon.setId(rs.getLong("coup_id"));
+				coupon.setTitle(rs.getString("Title"));
+				coupon.setStartDate(rs.getDate("start_date").toLocalDate());
+				coupon.setEndDate(rs.getDate("end_date").toLocalDate());
+				coupon.setAmount(rs.getInt("amount"));
+				coupon.setCategory(rs.getString("Category"));
+				coupon.setMessage(rs.getString("Message"));
+				coupon.setPrice(rs.getDouble("Price"));
+				coupon.setImage(rs.getString("image"));
+				coupon.setOwnerID(rs.getLong("owner_ID"));
+
+				// adding the current coupon to the collection
+				coupons.add(coupon);
+			}// while
+		} catch (SQLException | FiledErrorException e) {
+			throw new DaoException("Error: Getting Coupons of Company - FAILED (something went wrong)");
+		} // catch
+		if(!coupons.isEmpty()) {
+			return coupons;
+		} // if
+		else {
+			throw new DaoException("Error: No Coupons Found");
+		}  // else - Set<> is empty
+	} // getAllCouponsOfCompany
+	
 	/**
 	 * This is my Private add-on for this class.</br>
 	 * Remove Method </p> 
@@ -287,7 +320,6 @@ public class CompanyDBDAO implements CompanyDAO {
 			prep.clearBatch();
 			
     		if(hasRow == true) {
-
     			String sqlDeleteALL = "DELETE coupon.*, company.*, company_coupon.*"
 						+ " FROM company_coupon"
 						+ " LEFT JOIN coupon USING (coup_id)"

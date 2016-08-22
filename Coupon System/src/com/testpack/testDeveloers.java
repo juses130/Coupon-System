@@ -4,7 +4,6 @@ import java.sql.*;
 import java.time.*;
 import java.util.*;
 
-import com.added.functions.SharingData;
 import com.exceptionerrors.*;
 import com.exceptionerrors.DaoException;
 import com.exceptionerrors.FiledErrorException;
@@ -946,7 +945,7 @@ public class testDeveloers {
    	System.out.print("Please insert your CATEGORY: ");
    	
    	try {
-		Set<Coupon> couponsByType = compF.getCouponsByType(userInputString());
+   		Collection<Coupon> couponsByType = compF.getCouponsByType(userInputString());
 	   	System.out.println(couponsByType.toString());
 	} catch (DaoException | FiledErrorException e) {
 		System.out.println(e.getMessage());
@@ -961,7 +960,7 @@ public class testDeveloers {
 
     	
     	try {
-			Set<Coupon> coupons = compF.getCouponsOfCompanyByPrice(maxPrice);
+    		Collection<Coupon> coupons = compF.getCouponsOfCompanyByPrice(maxPrice);
 			System.out.println(coupons.toString() + "\n");
 			System.out.println("Results: [" + coupons.size() + "] Coupons");
 		} catch (DaoException e) {
@@ -1076,9 +1075,9 @@ public class testDeveloers {
      */
     private static void getAllPurchasedCoupon_T() {
     	
-    	Set<Coupon> c = null;
+    	Collection<Coupon> c = null;
 		try {
-			c = cusF.getAllPurchasedCoupons();
+			c = cusF.getCoupons();
 		} catch (DaoException e) {
 			System.out.println(e.getMessage());
 		}
@@ -1103,7 +1102,7 @@ public class testDeveloers {
     	System.out.println("Search By Category :)");
     	System.out.print("Please insert your CATEGORY: ");
     	String type = userInputString();
-    	Set<Coupon> couponsByType = null;
+    	Collection<Coupon> couponsByType = null;
     	try {
     		couponsByType = cusF.getAllCouponsByType(type);
         	System.out.println(couponsByType.toString());
@@ -1126,7 +1125,7 @@ public class testDeveloers {
     	
 //    	CustomerFacade cusF = new CustomerFacade();
     	
-    	Set<Coupon> coupons = new HashSet<>();
+    	Collection<Coupon> coupons = new HashSet<>();
 		try {
 			coupons = cusF.getAllCouponsByPrice(maxPrice);
 		} catch (DaoException e) {
@@ -1439,7 +1438,7 @@ public class testDeveloers {
     		}
     		case 12: { // Get Coupons By Category
     			try {
-    				Set<Coupon> coupons = new HashSet<>();
+    				Collection<Coupon> coupons = new HashSet<>();
     				System.out.print("Type your Category: ");
     				String category = userInputString();
     				coupons = admF.getCouponByType(category);
@@ -1458,7 +1457,7 @@ public class testDeveloers {
     				double price = userInputDouble();
     				System.out.println("Max Price: [" + price + "]");
     				System.out.println("List OF all Coupons By Maximum Price: ");
-    				Set<Coupon> coupons = new HashSet<>();
+    				Collection<Coupon> coupons = new HashSet<>();
     				coupons = admF.getCouponByPrice(price);
     				
 					System.out.println(coupons.toString() + "\n");
@@ -1473,7 +1472,7 @@ public class testDeveloers {
     		case 14: { // Get All Coupons
     			try {
     				System.out.println("List OF all Coupons: ");
-    				Set<Coupon> coupons = new HashSet<>();
+    				Collection<Coupon> coupons = new HashSet<>();
     				coupons = admF.getAllCoupons();
     				
 					System.out.println(coupons.toString() + "\n");

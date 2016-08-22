@@ -83,5 +83,12 @@ public interface CustomerDAO {
 	 */
 	public Collection<Customer> getAllCustomers() throws DaoException;
 
+	/**
+	 * Returns all the coupons {@code Coupon} of the customer {@code Customer} using the customer ID {@code long}.
+	 * @param custID {@code long}
+	 * @return a {@code Collection<Coupon>}
+	 * @throws DaoException
+	 */
+	public Collection<Coupon> getCoupons(long custID) throws DaoException;
 	
 }
