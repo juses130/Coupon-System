@@ -11,7 +11,7 @@ import com.exceptionerrors.ConnectorException;
  * @author Raziel
  */
 
-public class DBconnectorV3 {
+public class DBconnector {
 
 	// Attributes
 	private static final String url = "jdbc:mysql://localhost:3306/coupon?characterEncoding=UTF-8&useSSL=false";
@@ -21,7 +21,7 @@ public class DBconnectorV3 {
 	private static Connection con = null;
 	
 	// private constructor
-		private DBconnectorV3(){}
+		private DBconnector(){}
 
 		/**
 		 * Starting Pool Connection (protected access) </br>

@@ -12,7 +12,7 @@ import com.facade.*;
 import com.javabeans.*;
 import com.task.and.singleton.CouponClientFacade;
 import com.task.and.singleton.CouponSystem;
-import com.task.and.singleton.DBconnectorV3;
+import com.task.and.singleton.DBconnector;
 
 
 /**
@@ -519,7 +519,7 @@ public class testDeveloers {
 		
 		
 			try {
-				if(DBconnectorV3.getConnection().isClosed() == false) {
+				if(DBconnector.getConnection().isClosed() == false) {
 					System.out.println("----------- DRIVER LOADED -----------------" + "\n");
 				}
 			} catch (NullPointerException | SQLException e) {

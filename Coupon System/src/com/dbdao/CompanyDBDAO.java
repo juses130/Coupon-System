@@ -7,7 +7,7 @@ import com.dao.interfaces.*;
 import com.exceptionerrors.DaoException;
 import com.exceptionerrors.FiledErrorException;
 import com.javabeans.*;
-import com.task.and.singleton.DBconnectorV3;
+import com.task.and.singleton.DBconnector;
 
 
 /**
@@ -33,7 +33,7 @@ public class CompanyDBDAO implements CompanyDAO {
 			String sqlLoginCompany = "SELECT Comp_name, password FROM company WHERE "
 					+ "Comp_name= '" + compName + "'" + " AND " + "password= '" 
 					+ password + "'";
-			Statement stat = DBconnectorV3.getConnection().createStatement();
+			Statement stat = DBconnector.getConnection().createStatement();
 			ResultSet rs = stat.executeQuery(sqlLoginCompany);
 			/*
 			 * The logical thinking here- is if the resultSet has NO ROW to next
@@ -64,7 +64,7 @@ public class CompanyDBDAO implements CompanyDAO {
 		if (compnayExistByName(company.getCompName()) == false) {
 				try {
 					String sqlQuery = "INSERT INTO company (comp_name, password, email) VALUES(?,?,?)";
-					PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
+					PreparedStatement prep = DBconnector.getConnection().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
 					
 					prep.setString(1, company.getCompName());
 					prep.setString(2, company.getPassword());
@@ -94,7 +94,7 @@ public class CompanyDBDAO implements CompanyDAO {
 			try{
 				// Now insert the coupon to the Join Tables.
 				String sqlAddCompanyCoupn = "INSERT INTO company_coupon (Comp_id, Coup_id) VALUES (" + company.getId() + "," + coupon.getId() + ");";
-				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlAddCompanyCoupn);
+				PreparedStatement prep = DBconnector.getConnection().prepareStatement(sqlAddCompanyCoupn);
 				prep.executeUpdate();
 			} // try
 			catch (SQLException | NullPointerException e) {
@@ -121,21 +121,21 @@ public class CompanyDBDAO implements CompanyDAO {
 	
 	@Override
 	public void updateCompany(Company company) throws DaoException{
-		
 		// check if the company exist
 		if (compnayExistByID(company.getId()) == true) {
 			try {
-				String sqlUpdate = "UPDATE company SET Comp_name=?, password=?, email=? WHERE Comp_ID=?";
-				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement (sqlUpdate);
+				String sqlUpdate = "UPDATE coupon.company SET Comp_name=?, password=?, email=? WHERE Comp_ID=?";
+				PreparedStatement prep = DBconnector.getConnection().prepareStatement (sqlUpdate);
 				prep.setString(1, company.getCompName());
 				prep.setString(2, company.getPassword());
 				prep.setString(3, company.getEmail());
 				prep.setLong(4, company.getId());
 				
 				prep.executeUpdate();
-			    
+				prep.clearBatch();
+				
 				} catch (SQLException e) {
-					throw new DaoException("Error: Updating Company - FAILED");
+					throw new DaoException("Error: Updating Company - FAILED (somthing went wrong)");
 				} // catch
 		} // if
 		else {
@@ -167,7 +167,7 @@ public class CompanyDBDAO implements CompanyDAO {
 			try {
 
 				String sqlSEL = "SELECT * FROM company WHERE Comp_ID= ?" ;
-				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlSEL);
+				PreparedStatement prep = DBconnector.getConnection().prepareStatement(sqlSEL);
 				prep.setLong(1, id);
 				ResultSet rs = prep.executeQuery();
 				while(rs.next()) {
@@ -195,19 +195,19 @@ public class CompanyDBDAO implements CompanyDAO {
 				// check if the company exist
 				
 				if (compnayExistByName(compName) == true) {
-					String email, password;
+					String email, name, password;
 					long id;
 				
 				String sqlSEL = "SELECT * FROM company WHERE comp_name= ?";
-				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlSEL);
+				PreparedStatement prep = DBconnector.getConnection().prepareStatement(sqlSEL);
 				prep.setString(1, compName);
 				ResultSet rs = prep.executeQuery();
 				rs.next();
 				id = rs.getLong("comp_id");
+				name = rs.getString("comp_name");
 				email = rs.getString("Email");
 				password = rs.getString("password");
-				company = new Company(id, compName, password, email);
-				
+				company = new Company(id, name, password, email);
 				} // if
 				else {
 					throw new DaoException("Error: Getting Company - FAILED (Company is not exist in the DataBase)");
@@ -228,7 +228,7 @@ public class CompanyDBDAO implements CompanyDAO {
 		
 		try {
 			
-			Statement stat = DBconnectorV3.getConnection().createStatement();
+			Statement stat = DBconnector.getConnection().createStatement();
 			rs = stat.executeQuery(sql);
 			
 			while(rs.next()) {
@@ -253,7 +253,7 @@ public class CompanyDBDAO implements CompanyDAO {
 		Collection<Coupon> coupons = new HashSet<>(); 
 		try {
 			String sql = "SELECT * FROM coupon WHERE owner_ID=" + compID;
-			Statement stat = DBconnectorV3.getConnection().createStatement();
+			Statement stat = DBconnector.getConnection().createStatement();
 			ResultSet rs = stat.executeQuery(sql);
 			while (rs.next()) {
 				
@@ -310,7 +310,7 @@ public class CompanyDBDAO implements CompanyDAO {
 		// Check if the company has any coupons BEFORE Deleting the company.
 		String sqlCheckExist = "SELECT * FROM company_coupon WHERE Comp_ID=" + compID;
 		try {
-    		prep = DBconnectorV3.getConnection().prepareStatement(sqlCheckExist);
+    		prep = DBconnector.getConnection().prepareStatement(sqlCheckExist);
     		rs = prep.executeQuery();
     		while(rs.next()) {
     			// if we have rows in Company_coupon, make hasRow = true.
@@ -326,7 +326,7 @@ public class CompanyDBDAO implements CompanyDAO {
 						+ " LEFT JOIN company USING (comp_id)"
 						+ " WHERE company_coupon.Comp_ID=" + compID
 						+ " AND company_coupon.Comp_ID IS NOT NULL";
-				prep = DBconnectorV3.getConnection().prepareStatement(sqlDeleteALL);
+				prep = DBconnector.getConnection().prepareStatement(sqlDeleteALL);
 				prep.executeUpdate();
 				prep.clearBatch();
 				
@@ -334,7 +334,7 @@ public class CompanyDBDAO implements CompanyDAO {
 			else {
 
 				String sqlOnlyFromCompany = "DELETE FROM company WHERE Comp_ID=" + compID;
-				PreparedStatement prep2 = DBconnectorV3.getConnection().prepareStatement(sqlOnlyFromCompany);
+				PreparedStatement prep2 = DBconnector.getConnection().prepareStatement(sqlOnlyFromCompany);
 				prep2.executeUpdate();
 				prep2.clearBatch();
 			} // else - hasRow
@@ -361,7 +361,7 @@ public class CompanyDBDAO implements CompanyDAO {
         		String sqlName = "SELECT Comp_ID FROM company WHERE "
         		+ "Comp_ID= " + "'" + compID + "'";
         		
-        		Statement stat = DBconnectorV3.getConnection().createStatement();
+        		Statement stat = DBconnector.getConnection().createStatement();
         		ResultSet rs = stat.executeQuery(sqlName);
     			rs.next();
     	    					   
@@ -376,7 +376,7 @@ public class CompanyDBDAO implements CompanyDAO {
     		} // catch
     		return answer;
     	} // if - compID
-    	throw new DaoException("Error: Confirming CompanyID - FAILED (ID cannot contain Zero!)");
+    	throw new DaoException("Error: Confirming CompanyID - FAILED (ID cannot contain or been under Zero!)");
     	} // compnayExistByID
     
     /**
@@ -390,13 +390,13 @@ public class CompanyDBDAO implements CompanyDAO {
  	    Statement stat = null;
  		ResultSet rs = null;
  		boolean answer = false;
- 		   
+ 		
  		  try {
- 				String sqlName = "SELECT Comp_name FROM company WHERE "
- 				+ "comp_name= '" + compName + "'";
- 				stat = DBconnectorV3.getConnection().createStatement();
- 				rs = stat.executeQuery(sqlName);
- 				rs.next();
+				String sqlName = "SELECT Comp_name FROM company WHERE "
+				+ "comp_name= '" + compName + "'";
+				stat = DBconnector.getConnection().createStatement();
+				rs = stat.executeQuery(sqlName);
+				rs.next();
  			   
  				if (rs.getRow() != 0) {
  					answer = true;

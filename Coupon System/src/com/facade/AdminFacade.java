@@ -18,6 +18,8 @@ public class AdminFacade implements CouponClientFacade{
 	// static final instances
 	private static final String adminUser = "admin";
 	private static final String adminPassword = "1234";
+	// Instance of Security Access Check
+	private static boolean adminIsConnected = false;
 	
 	// 3 dao instances (working by CouponSystem-Singleton)
 	private  CompanyDAO compDao = null;
@@ -37,6 +39,7 @@ public class AdminFacade implements CouponClientFacade{
 	public AdminFacade login(String adminName, String password, ClientType client) throws LoginException , DaoException {
 		if(adminName.toLowerCase().equals(adminUser) && String.valueOf(password).equals(adminPassword) 
 				&& client == ClientType.ADMIN) {
+			adminIsConnected = true;
 			return this;
 		} // if
 		else {
@@ -49,7 +52,14 @@ public class AdminFacade implements CouponClientFacade{
 	 */
 	
 	public void createCompany(Company company) throws DaoException {
-		compDao.createCompany(company);
+		
+		// Security Access Check		
+		if(adminIsConnected != false) {
+			compDao.createCompany(company);
+			}
+			else {
+				throw new DaoException("Error: Access Denied - Admin login failed!");
+			}
 	} // createCompany - function
 	
 	public void removeCompany(Company company) throws DaoException{
@@ -60,31 +70,66 @@ public class AdminFacade implements CouponClientFacade{
 		 * the specific coupon and only then you will find out who is the owner..
 		 * We can see it from the coupons list.
 		 */
-		compDao.removeCompany(company);
 		
+		// Security Access Check	
+		if(adminIsConnected != false) {
+			compDao.removeCompany(company);
+			}
+			else {
+				throw new DaoException("Error: Access Denied - Admin login failed!");
+			}
 	} // removeCompanyA
 	
 	public void updateCompany(Company company) throws DaoException{
-			compDao.updateCompany(company);
+		
+		// Security Access Check
+		if(adminIsConnected != false) {
+		compDao.updateCompany(company);
+		}
+		else {
+			throw new DaoException("Error: Access Denied - Admin login failed!");
+		}
 	} // updateCompanyA 
 
 	public Company getCompany(long id) throws DaoException{
-		Company company = new Company();
-		company = compDao.getCompany(id);
-		return company;
+		
+		// Security Access Check	
+		if(adminIsConnected != false) {
+			Company company = new Company();
+			company = compDao.getCompany(id);
+			return company;			}
+			else {
+				throw new DaoException("Error: Access Denied - Admin login failed!");
+			}
+	
 	} // getCompanyA - ID long
 	
 	public Company getCompany(String compName) throws DaoException{
-		Company company = new Company();
-		company = compDao.getCompany(compName);
-		return company;
+		
+		// Security Access Check	
+		if(adminIsConnected != false) {
+			Company company = new Company();
+			company = compDao.getCompany(compName);
+			return company;		
+			}
+			else {
+				throw new DaoException("Error: Access Denied - Admin login failed!");
+			}
+
 	} // getCompany - Name String
 	
 	public Collection<Company> getAllCompanies() throws DaoException{
 		
-		Collection<Company> companies = null;
-		companies = compDao.getAllCompanies();
-		return companies;
+		// Security Access Check	
+		if(adminIsConnected != false) {
+			Collection<Company> companies = null;
+			companies = compDao.getAllCompanies();
+			return companies;
+			}
+			else {
+				throw new DaoException("Error: Access Denied - Admin login failed!");
+			}
+
 	} // getAllCompaniesA 
 	
 	/*
@@ -92,11 +137,25 @@ public class AdminFacade implements CouponClientFacade{
 	 */
 	
 	public void createCustomer(Customer customer) throws DaoException{
-		custDao.createCustomer(customer);
+		
+		// Security Access Check	
+		if(adminIsConnected != false) {
+			custDao.createCustomer(customer);
+			}
+			else {
+				throw new DaoException("Error: Access Denied - Admin login failed!");
+			}
 	} // createCustomerA 
 	
 	public void removeCustomer(Customer customer) throws DaoException, FiledErrorException{
+			
+		// Security Access Check	
+		if(adminIsConnected != false) {
 			custDao.removeCustomer(customer);
+			}
+			else {
+				throw new DaoException("Error: Access Denied - Admin login failed!");
+			}
 	} // removeCustomer
 		
 	public void updateCustomer(Customer customer) throws DaoException{
@@ -105,31 +164,49 @@ public class AdminFacade implements CouponClientFacade{
 	
 	public Customer getCustomer(long id) throws DaoException, FiledErrorException{
 		
-		Customer customer = new Customer();
-		customer = custDao.getCustomer(id);
-		
-		if(customer != null) {
-		// set the Collection of the Coupons.
-			customer.setCoupons(custDao.getCoupons(customer.getId()));
-		} // if
-		return customer;
+		// Security Access Check	
+		if(adminIsConnected != false) {
+			Customer customer = new Customer();
+			customer = custDao.getCustomer(id);
+			
+			if(customer != null) {
+			// set the Collection of the Coupons.
+				customer.setCoupons(custDao.getCoupons(customer.getId()));
+			} // if
+			return customer;
+			} // if - adminIsConnected
+			else {
+				throw new DaoException("Error: Access Denied - Admin login failed!");
+			} // else - adminIsConnected
 	} // getCustomer - id long
 	
 	public Customer getCustomer(String compName) throws DaoException, FiledErrorException{
 		
-		Customer customer = new Customer();
-//		c.setId(id);
-		customer = custDao.getCustomer(compName);
+		// Security Access Check	
+		if(adminIsConnected != false) {
+			Customer customer = new Customer();
+			customer = custDao.getCustomer(compName);
+			
+			if(customer != null) {
+			// set the Collection of the Coupons.
+			customer.setCoupons(custDao.getCoupons(customer.getId()));
+			} // if
+			return customer;
+			} // if - adminIsConnected
+			else {
+				throw new DaoException("Error: Access Denied - Admin login failed!");
+			} // else - adminIsConnected
 		
-		if(customer != null) {
-		// set the Collection of the Coupons.
-		customer.setCoupons(custDao.getCoupons(customer.getId()));
-		} // if
-		return customer;
 	} // getCustomer - name String
 
 	public Collection<Customer> getAllCustomers() throws DaoException{
-		return custDao.getAllCustomers();
+		// Security Access Check	
+		if(adminIsConnected != false) {
+			return custDao.getAllCustomers();
+			} // if - adminIsConnected
+			else {
+				throw new DaoException("Error: Access Denied - Admin login failed!");
+			} // else - adminIsConnected
 	} // getAllCompaniesA
 
 	/*
@@ -137,11 +214,25 @@ public class AdminFacade implements CouponClientFacade{
 	 */
 	
 	public void removeCoupon(Coupon coupon) throws DaoException, FiledErrorException{
-		coupDao.removeCoupon(coupon, ClientType.ADMIN);
+		
+		// Security Access Check	
+		if(adminIsConnected != false) {
+			coupDao.removeCoupon(coupon, ClientType.ADMIN);
+			} // if - adminIsConnected
+			else {
+				throw new DaoException("Error: Access Denied - Admin login failed!");
+			} // else - adminIsConnected
 	} // removeCoupon
 	
 	public Collection<Coupon> getCouponByPrice(double maxPrice) throws DaoException {
-		return coupDao.getCouponByPrice(0, maxPrice, ClientType.ADMIN);
+		
+		// Security Access Check	
+		if(adminIsConnected != false) {
+			return coupDao.getCouponByPrice(0, maxPrice, ClientType.ADMIN);
+			} // if - adminIsConnected
+			else {
+				throw new DaoException("Error: Access Denied - Admin login failed!");
+			} // else - adminIsConnected
 	} // getCouponByPrice
 	
 	public Collection<Coupon> getCouponByType(String category) throws DaoException, FiledErrorException {
@@ -151,18 +242,30 @@ public class AdminFacade implements CouponClientFacade{
 		 * 
 		 */
 		
-		// This next two lines checks if the category-String exist in the Enum Or not.
-		Coupon coupon = new Coupon();
-		coupon.setCategory(category);
-		
-		long id = 0;
-		return coupDao.getCouponByType(id, coupon.getCategory() ,ClientType.ADMIN);
+		// Security Access Check	
+		if(adminIsConnected != false) {
+			// This next two lines checks if the category-String exist in the Enum Or not.
+			Coupon coupon = new Coupon();
+			coupon.setCategory(category);
+			
+			long id = 0;
+			return coupDao.getCouponByType(id, coupon.getCategory() ,ClientType.ADMIN);
+			} // if - adminIsConnected
+			else {
+				throw new DaoException("Error: Access Denied - Admin login failed!");
+			} // else - adminIsConnected
 	} // getCouponByType
 
 	public Collection<Coupon> getAllCoupons() throws DaoException {
 		
-		Collection<Coupon> coupons = coupDao.getAllCoupons();
-		return coupons;
+		// Security Access Check	
+		if(adminIsConnected != false) {
+			Collection<Coupon> coupons = coupDao.getAllCoupons();
+			return coupons;
+			} // if - adminIsConnected
+			else {
+				throw new DaoException("Error: Access Denied - Admin login failed!");
+			} // else - adminIsConnected
 	} // getAllCoupons
 	
 } // AdminFacade

@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import com.exceptionerrors.DaoException;
 import com.javabeans.Company;
 import com.javabeans.Coupon;
-import com.task.and.singleton.DBconnectorV3;
+import com.task.and.singleton.DBconnector;
 
 /**
  * This is a helper <b>Protected</b> Class.</br>
@@ -33,7 +33,7 @@ public class CouponFoundInDatabase {
 		boolean isExist = false;
 		try {
 			String sqlQuery = "SELECT * FROM coupon WHERE Title='" + coupon.getTitle() + "'";
-			java.sql.Statement stat = DBconnectorV3.getConnection().createStatement();
+			java.sql.Statement stat = DBconnector.getConnection().createStatement();
 			ResultSet rs = stat.executeQuery(sqlQuery);
 			rs.next();
 			
@@ -75,7 +75,7 @@ public class CouponFoundInDatabase {
 					+ "AND company_coupon.comp_ID=" + company.getId() + " "
 					+ "AND company_coupon.Coup_ID = coupon.Coup_id";
 
-				state = DBconnectorV3.getConnection().createStatement();
+				state = DBconnector.getConnection().createStatement();
 				rs = state.executeQuery(sqlQueryByName);
 				rs.next();
 		} // if
@@ -87,7 +87,7 @@ public class CouponFoundInDatabase {
 					+ "AND company_coupon.comp_ID=" + company.getId() + " "
 					+ "AND company_coupon.Coup_ID = coupon.Coup_id";
 			
-			state = DBconnectorV3.getConnection().createStatement();
+			state = DBconnector.getConnection().createStatement();
 			rs = state.executeQuery(sqlQueryByID);
 			rs.next();
 		} // else if
@@ -115,7 +115,7 @@ public class CouponFoundInDatabase {
 		boolean isExist = false;
 		try {
 			String sqlQuery = "SELECT * FROM coupon WHERE coup_id=" + coupon.getId();
-		java.sql.Statement stat = DBconnectorV3.getConnection().createStatement();
+		java.sql.Statement stat = DBconnector.getConnection().createStatement();
 		ResultSet rs = stat.executeQuery(sqlQuery);
 			rs.next();
 			
@@ -151,7 +151,7 @@ public class CouponFoundInDatabase {
 					+ "AND customer_coupon.cust_id=" + custID + " "
 					+ "AND customer_coupon.Coup_ID = coupon.Coup_id";
 			
-			java.sql.Statement state = DBconnectorV3.getConnection().createStatement();
+			java.sql.Statement state = DBconnector.getConnection().createStatement();
 			ResultSet rs = state.executeQuery(sqlQueryByID);
 			rs.next();
 			

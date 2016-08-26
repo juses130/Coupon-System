@@ -14,10 +14,9 @@ import javax.jws.soap.InitParam;
 import com.dao.interfaces.CustomerDAO;
 import com.exceptionerrors.DaoException;
 import com.exceptionerrors.FiledErrorException;
-import com.facade.DetectionBy;
 import com.javabeans.Coupon;
 import com.javabeans.Customer;
-import com.task.and.singleton.DBconnectorV3;
+import com.task.and.singleton.DBconnector;
 
 /**
  * This is Customer Database DAO Class.
@@ -40,7 +39,7 @@ public class CustomerDBDAO implements CustomerDAO {
 				+ "Cust_name= '" + userName + "'" + " AND " + "password= '" 
 				+ password + "'";
 		try {
-			Statement stat = DBconnectorV3.getConnection().createStatement();
+			Statement stat = DBconnector.getConnection().createStatement();
 			ResultSet rs = stat.executeQuery(sqlName);
 			
 			rs.next();
@@ -63,7 +62,7 @@ public class CustomerDBDAO implements CustomerDAO {
 			try {
 				
 				String sqlQuery = "INSERT INTO customer (CUST_NAME, PASSWORD) VALUES(?,?)";
-				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
+				PreparedStatement prep = DBconnector.getConnection().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
 				
 				// now we will put the in their places.
 				prep.setString(1, customer.getCustName());
@@ -103,12 +102,12 @@ public class CustomerDBDAO implements CustomerDAO {
 		DetectionBy detect = customerDetectInDB(customer);
 
 			if(detect == DetectionBy.ID) {
-				removeMethod(customer.getId());
+				removeCustomerMethod(customer.getId());
 				
 			} // if - id
 			else if (customerDetectInDB(customer) == DetectionBy.USERNAME) {
 				customer = getCustomer(customer.getCustName());
-				removeMethod(customer.getId());
+				removeCustomerMethod(customer.getId());
 			} // else if - name
 			else {
 				throw new DaoException("Error: Removing Customer - FAILED (Customer dosen't exist in the DataBase)");
@@ -120,13 +119,33 @@ public class CustomerDBDAO implements CustomerDAO {
 		
 		// check if the customer exist
 		if (custotmerExistByID(customer.getId()) == true) {
-			updateMethod(customer);		
+			
+		       try {
+					String sqlUpdateCustomerTable = "UPDATE customer SET Cust_name=?, password=? WHERE Cust_ID=?";
+					PreparedStatement prep = DBconnector.getConnection().prepareStatement (sqlUpdateCustomerTable);
+					prep.setString(1, customer.getCustName());
+					prep.setString(2, customer.getPassword());
+					prep.setLong(3, customer.getId());
+					
+					prep.executeUpdate();
+					//prep.close();
+					
+					String sqlUpdateCustomer_CouponTable = "UPDATE customer_coupon SET Cust_ID=? WHERE Cust_ID=?";
+					PreparedStatement prep1 = DBconnector.getConnection().prepareStatement(sqlUpdateCustomer_CouponTable);
+					prep1.setLong(1, customer.getId());
+					prep1.setLong(2, customer.getId());
+					prep1.executeUpdate();
+
+					} catch (SQLException e) {
+						throw new DaoException("Error - Updating Company - FAILED (something went wrong..)");
+					} // catch
+			
 		}// if - exist
 		else {
 			throw new DaoException("Error: Removing Company - FAILED (Company is not exist in the DataBase)");
 		} // else	
 	} // updateCustomer
-
+	
 	@Override
 	public Customer getCustomer(long custID) throws DaoException{
 		
@@ -138,7 +157,7 @@ public class CustomerDBDAO implements CustomerDAO {
 			
 			try {
 				String sqlSEL = "SELECT * FROM customer WHERE Cust_ID= ?" ;
-				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlSEL);
+				PreparedStatement prep = DBconnector.getConnection().prepareStatement(sqlSEL);
 				prep.setLong(1, custID);
 				
 				ResultSet rs = prep.executeQuery();
@@ -171,7 +190,7 @@ public class CustomerDBDAO implements CustomerDAO {
 			long id = 0;
 
 				String sqlSEL = "SELECT * FROM customer WHERE cust_name= ?" ;
-				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlSEL);
+				PreparedStatement prep = DBconnector.getConnection().prepareStatement(sqlSEL);
 				prep.setString(1, custName);
 				ResultSet rs = prep.executeQuery();
 				while(rs.next()) {
@@ -199,7 +218,7 @@ public class CustomerDBDAO implements CustomerDAO {
 		ResultSet rs = null;
 		
 		try {
-			Statement stat = DBconnectorV3.getConnection().createStatement();
+			Statement stat = DBconnector.getConnection().createStatement();
 			rs = stat.executeQuery(sql);
 			
 			while(rs.next()) {
@@ -217,7 +236,6 @@ public class CustomerDBDAO implements CustomerDAO {
 		} // catch
 		return customers;
 	} // getAllCompanies
-	
 
 	@Override
 	public Collection<Coupon> getCoupons(long custID) throws DaoException {
@@ -229,7 +247,7 @@ public class CustomerDBDAO implements CustomerDAO {
 					+ "WHERE customer_coupon.cust_id =" + custID + " "
 					+ "AND customer_coupon.Coup_ID = coupon.Coup_id "
 					+ "AND customer_coupon.Coup_ID IS NOT NULL";
-			Statement stat = DBconnectorV3.getConnection().createStatement();
+			Statement stat = DBconnector.getConnection().createStatement();
 			ResultSet rs = stat.executeQuery(sql);
 			while (rs.next()) {
 				
@@ -268,7 +286,7 @@ public class CustomerDBDAO implements CustomerDAO {
 	 * @param custID {@code long} of the Customer. 
 	 * @author Raziel
 	 */
-    private void removeMethod(long custID) throws DaoException{
+    private void removeCustomerMethod(long custID) throws DaoException{
 		
 		boolean hasRow = false;
 		PreparedStatement prep = null;
@@ -276,7 +294,7 @@ public class CustomerDBDAO implements CustomerDAO {
 		// Check if the customer has coupons BEFORE Deleting the customer.
 		String sqlCheckExist = "SELECT * FROM customer_coupon WHERE Cust_ID=" + custID;
 		try {
-   		prep = DBconnectorV3.getConnection().prepareStatement(sqlCheckExist);
+   		prep = DBconnector.getConnection().prepareStatement(sqlCheckExist);
    		rs = prep.executeQuery();
    		while(rs.next()) {
    			// if we have rows in customer_coupon, make hasRow = true.
@@ -290,14 +308,14 @@ public class CustomerDBDAO implements CustomerDAO {
 						+ " LEFT JOIN customer_coupon USING (cust_id)"
 						+ " WHERE customer.cust_id=" + custID
 						+ " AND customer.cust_id IS NOT NULL";
-				prep = DBconnectorV3.getConnection().prepareStatement(sqlDeleteALL);
+				prep = DBconnector.getConnection().prepareStatement(sqlDeleteALL);
 				prep.executeUpdate();
 				prep.clearBatch();
    		} // if - hasRow		
 			else {
 
 				String sqlOnlyFromCompany = "DELETE FROM customer WHERE Cust_ID=" + custID;
-				PreparedStatement prep2 = DBconnectorV3.getConnection().prepareStatement(sqlOnlyFromCompany);
+				PreparedStatement prep2 = DBconnector.getConnection().prepareStatement(sqlOnlyFromCompany);
 				prep2.executeUpdate();
 				prep2.clearBatch();
 			} // else - hasRow
@@ -307,36 +325,6 @@ public class CustomerDBDAO implements CustomerDAO {
 		} // catch
 	} // removeMethodPart2
 	
-    /**
-     * This is a Private update Method</br>.
-     * That's is add-on. from here the function will update the customer from is specific table.
-     * 
-     * @param customer
-     * @throws DaoException
-     */
-	private void updateMethod(Customer customer) throws DaoException{
-		
-       try {
-			String sqlUpdateCustomerTable = "UPDATE customer SET Cust_name=?, password=? WHERE Cust_ID=?";
-			PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement (sqlUpdateCustomerTable);
-			prep.setString(1, customer.getCustName());
-			prep.setString(2, customer.getPassword());
-			prep.setLong(3, customer.getId());
-			
-			prep.executeUpdate();
-			//prep.close();
-			
-			String sqlUpdateCustomer_CouponTable = "UPDATE customer_coupon SET Cust_ID=? WHERE Cust_ID=?";
-			PreparedStatement prep1 = DBconnectorV3.getConnection().prepareStatement(sqlUpdateCustomer_CouponTable);
-			prep1.setLong(1, customer.getId());
-			prep1.setLong(2, customer.getId());
-			prep1.executeUpdate();
-
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} // catch
-	} // updateMethod
-
 	/**
 	 * This is a Private addCoupon Method</br>
 	 * This method adds a {@code Coupon} for a specific {@code Customer} by it's ID {@code long}.
@@ -353,7 +341,7 @@ public class CustomerDBDAO implements CustomerDAO {
 						+ "FROM coupon "
 						+ "WHERE coupon.Coup_id=" + coupon.getId() + " " 
 						+ "AND coupon.Amount > 0";
-				PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlCheckAmount);
+				PreparedStatement prep = DBconnector.getConnection().prepareStatement(sqlCheckAmount);
 				ResultSet rs = prep.executeQuery();
 				rs.next();
 				int currentAmount = 0;
@@ -371,7 +359,7 @@ public class CustomerDBDAO implements CustomerDAO {
 				String sqlUpdateAmount = "UPDATE `coupon`.`coupon` "
 						+ "SET `amount`='" + currentAmount + "' "
 						+ "WHERE `coup_id`='" + coupon.getId() +"'";
-				prep = DBconnectorV3.getConnection().prepareStatement(sqlUpdateAmount);
+				prep = DBconnector.getConnection().prepareStatement(sqlUpdateAmount);
 				prep.executeUpdate();
 				
 				// Clearing the statement
@@ -380,7 +368,7 @@ public class CustomerDBDAO implements CustomerDAO {
 				// Adding the coupon to customer_coupon
 				String sqlAddCoupon = "INSERT INTO customer_coupon (cust_id, coup_id)" 
 				+ "VALUES(" + custID + "," + coupon.getId() + ")";	
-				prep = DBconnectorV3.getConnection().prepareStatement(sqlAddCoupon);
+				prep = DBconnector.getConnection().prepareStatement(sqlAddCoupon);
 				prep.executeUpdate();
 				prep.clearBatch();
 			} // try
@@ -390,6 +378,12 @@ public class CustomerDBDAO implements CustomerDAO {
 			return coupon;
 	} // addCouponMethod
 
+	/**
+	 * This is a my add-on: CustomerDBDAO. This method checks if the Customer {@code ID} exist in the Database.
+	 * @param custID a {@code long} Customer {@code ID}.
+	 * @return {@code true} if the Customer {@code ID} exist in Database, otherwise {@code false}
+	 * @throws DaoException
+	 */
    private boolean custotmerExistByID(long custID) throws DaoException {
 		
 		Statement stat = null;
@@ -400,7 +394,7 @@ public class CustomerDBDAO implements CustomerDAO {
 			String sqlName = "SELECT Cust_ID FROM customer WHERE "
 					+ "Cust_ID= " + custID;
 					
-					stat = DBconnectorV3.getConnection().createStatement();
+					stat = DBconnector.getConnection().createStatement();
 					rs = stat.executeQuery(sqlName);
 					rs.next();
 					
@@ -415,6 +409,12 @@ public class CustomerDBDAO implements CustomerDAO {
 		return answer;
 	} // custotmerExistByID
 	
+   /**
+	 * This is a my add-on: CustomerDBDAO. This method checks if the CustomerDBDAO custName exist in the Database.
+	 * @param custName a {@code String} Customer {@code custName}.
+	 * @return {@code true} if the Customer {@code custName} exist in Database, otherwise {@code false}
+	 * @throws DaoException
+	 */
    private boolean custotmerExistByName(String custName) throws DaoException {
 
 	   Statement stat = null;
@@ -424,7 +424,7 @@ public class CustomerDBDAO implements CustomerDAO {
 		   try {
 				String sqlName = "SELECT Cust_name FROM customer WHERE "
 						+ "cust_name= '" + custName + "'";
-				stat = DBconnectorV3.getConnection().createStatement();
+				stat = DBconnector.getConnection().createStatement();
 				rs = stat.executeQuery(sqlName);
 				rs.next();
 				if(rs.getRow() != 0) {
@@ -438,20 +438,29 @@ public class CustomerDBDAO implements CustomerDAO {
 		   return answer;
 	} // custotmerExistByName
 	
+   /**
+    * This is my add-on: CustomerDBDAO. This method using the DetetionBy {@code Enum}. This {@code Enum} created because in the future we'll 
+    * have the Option to search Customer by the custName {@code String} or by the custID {@code long}.
+    * For now (year 2016), removeCustomer {@code Method}  is the only method that's implement it. </br>
+    * 
+    * @param  a Customer {@code Object}
+    * @return DetectionBy {@code Enum}.  that will be <b>one</b> of the <u>third</u> options: ID, NAME or NONE.
+    * @throws DaoException
+    */
    private DetectionBy customerDetectInDB(Customer customer) throws DaoException{
 	   
-	   boolean exist = false;
+	   boolean isExist = false;
 	   if(customer.getId() > 0) {
-			exist = custotmerExistByID(customer.getId());
+			isExist = custotmerExistByID(customer.getId());
 
-			if(exist == true) {
+			if(isExist == true) {
 				return DetectionBy.ID;
 			} // if - inner
 			else {
 				throw new DaoException("Error: Detection By ID - FAILED (The customer dosen't exist in the DataBase)");
 			} // else - inner
 		} // if 
-		else if(customer.getCustName() != null) {
+		else if(!customer.getCustName().equals(null) || !customer.getCustName().isEmpty()) {
 			if(custotmerExistByName(customer.getCustName()) == true) {
 				return DetectionBy.USERNAME;
 			} // if - inner

@@ -28,7 +28,7 @@ public class CouponSystem implements CouponClientFacade {
 				dailyTask = new DailyCouponExpirationTask(compDao, custDao, couponDao);
 				dailyTaskThread = new Thread(dailyTask);
 				
-				DBconnectorV3.startPool();
+				DBconnector.startPool();
 				dailyTaskThread.start();
 				
 			} // Constructor
@@ -45,7 +45,7 @@ public class CouponSystem implements CouponClientFacade {
 				dailyTaskThread.interrupt();
 				dailyTask.stop();
 				
-				DBconnectorV3.getConnection().close();
+				DBconnector.getConnection().close();
 			} // stop
 			
 			public CompanyDAO getCompDao() {

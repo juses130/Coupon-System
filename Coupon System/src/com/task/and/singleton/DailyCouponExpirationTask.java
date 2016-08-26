@@ -63,7 +63,7 @@ public class DailyCouponExpirationTask implements Runnable {
 						+ "WHERE coupon.End_Date < CURDATE() "
 						+ "AND coupon.coup_id IS NOT NULL;";
 				
-				 PreparedStatement prep = DBconnectorV3.getConnection().prepareStatement(sqlSelectByEndDate, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+				 PreparedStatement prep = DBconnector.getConnection().prepareStatement(sqlSelectByEndDate, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
 				prep.executeUpdate();
 				
 			} catch (SQLException e) {
