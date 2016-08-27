@@ -55,7 +55,7 @@ public class CustomerFacade implements CouponClientFacade {
 			return coupon;
 			} // if - customerIsConnected
 			else {
-				throw new DaoException("Error: Access Denied - Customer login failed!");
+				throw new DaoException("Error: Access Denied [Customer] - FAILED (Unidentified user)");
 			} // else - customerIsConnected
 	} // purchaseCoupon
 	
@@ -68,7 +68,7 @@ public class CustomerFacade implements CouponClientFacade {
 			return customer;
 			} // if - customerIsConnected
 			else {
-				throw new DaoException("Error: Access Denied - Customer login failed!");
+				throw new DaoException("Error: Access Denied [Customer] - FAILED (Unidentified user)");
 			} // else - customerIsConnected
 	} // getCustomer
 	
@@ -82,7 +82,7 @@ public class CustomerFacade implements CouponClientFacade {
 	    	return customer;
 			} // if - customerIsConnected
 			else {
-				throw new DaoException("Error: Access Denied - Customer login failed!");
+				throw new DaoException("Error: Access Denied [Customer] - FAILED (Unidentified user)");
 			} // else - customerIsConnected
 	} // getCustomerAndCoupons
 	
@@ -94,7 +94,7 @@ public class CustomerFacade implements CouponClientFacade {
 			return coupons;
 			} // if - customerIsConnected
 			else {
-				throw new DaoException("Error: Access Denied - Customer login failed!");
+				throw new DaoException("Error: Access Denied [Customer] - FAILED (Unidentified user)");
 			} // else - customerIsConnected
 	} // getAllCoupons
 	
@@ -107,7 +107,7 @@ public class CustomerFacade implements CouponClientFacade {
 			return coupons;	
 			} // if - customerIsConnected
 			else {
-				throw new DaoException("Error: Access Denied - Customer login failed!");
+				throw new DaoException("Error: Access Denied [Customer] - FAILED (Unidentified user)");
 			} // else - customerIsConnected
 	} // getAllCouponsByPrice
 	
@@ -122,7 +122,7 @@ public class CustomerFacade implements CouponClientFacade {
 			return coupons;
 			} // if - customerIsConnected
 			else {
-				throw new DaoException("Error: Access Denied - Customer login failed!");
+				throw new DaoException("Error: Access Denied [Customer] - FAILED (Unidentified user)");
 			} // else - customerIsConnected
 	} // getAllCouponsByType
 	

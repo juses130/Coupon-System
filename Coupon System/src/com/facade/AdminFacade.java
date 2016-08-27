@@ -43,8 +43,8 @@ public class AdminFacade implements CouponClientFacade{
 			return this;
 		} // if
 		else {
-			throw new LoginException ("Admin Login - FAILED (Unidentified user)");
-		} // else
+			throw new LoginException ("Admin Login - FAILED (Incorrect password or username)");
+			} // else
 	} // login
 	
 	/*
@@ -58,7 +58,7 @@ public class AdminFacade implements CouponClientFacade{
 			compDao.createCompany(company);
 			}
 			else {
-				throw new DaoException("Error: Access Denied - Admin login failed!");
+				throw new DaoException("Error: Access Denied [Admin] - FAILED (Unidentified user)");
 			}
 	} // createCompany - function
 	
@@ -76,7 +76,7 @@ public class AdminFacade implements CouponClientFacade{
 			compDao.removeCompany(company);
 			}
 			else {
-				throw new DaoException("Error: Access Denied - Admin login failed!");
+				throw new DaoException("Error: Access Denied [Admin] - FAILED (Unidentified user)");
 			}
 	} // removeCompanyA
 	
@@ -87,7 +87,7 @@ public class AdminFacade implements CouponClientFacade{
 		compDao.updateCompany(company);
 		}
 		else {
-			throw new DaoException("Error: Access Denied - Admin login failed!");
+			throw new DaoException("Error: Access Denied [Admin] - FAILED (Unidentified user)");
 		}
 	} // updateCompanyA 
 
@@ -99,7 +99,7 @@ public class AdminFacade implements CouponClientFacade{
 			company = compDao.getCompany(id);
 			return company;			}
 			else {
-				throw new DaoException("Error: Access Denied - Admin login failed!");
+				throw new DaoException("Error: Access Denied [Admin] - FAILED (Unidentified user)");
 			}
 	
 	} // getCompanyA - ID long
@@ -113,7 +113,7 @@ public class AdminFacade implements CouponClientFacade{
 			return company;		
 			}
 			else {
-				throw new DaoException("Error: Access Denied - Admin login failed!");
+				throw new DaoException("Error: Access Denied [Admin] - FAILED (Unidentified user)");
 			}
 
 	} // getCompany - Name String
@@ -127,7 +127,7 @@ public class AdminFacade implements CouponClientFacade{
 			return companies;
 			}
 			else {
-				throw new DaoException("Error: Access Denied - Admin login failed!");
+				throw new DaoException("Error: Access Denied [Admin] - FAILED (Unidentified user)");
 			}
 
 	} // getAllCompaniesA 
@@ -143,7 +143,7 @@ public class AdminFacade implements CouponClientFacade{
 			custDao.createCustomer(customer);
 			}
 			else {
-				throw new DaoException("Error: Access Denied - Admin login failed!");
+				throw new DaoException("Error: Access Denied [Admin] - FAILED (Unidentified user)");
 			}
 	} // createCustomerA 
 	
@@ -154,7 +154,7 @@ public class AdminFacade implements CouponClientFacade{
 			custDao.removeCustomer(customer);
 			}
 			else {
-				throw new DaoException("Error: Access Denied - Admin login failed!");
+				throw new DaoException("Error: Access Denied [Admin] - FAILED (Unidentified user)");
 			}
 	} // removeCustomer
 		
@@ -176,7 +176,7 @@ public class AdminFacade implements CouponClientFacade{
 			return customer;
 			} // if - adminIsConnected
 			else {
-				throw new DaoException("Error: Access Denied - Admin login failed!");
+				throw new DaoException("Error: Access Denied [Admin] - FAILED (Unidentified user)");
 			} // else - adminIsConnected
 	} // getCustomer - id long
 	
@@ -194,7 +194,7 @@ public class AdminFacade implements CouponClientFacade{
 			return customer;
 			} // if - adminIsConnected
 			else {
-				throw new DaoException("Error: Access Denied - Admin login failed!");
+				throw new DaoException("Error: Access Denied [Admin] - FAILED (Unidentified user)");
 			} // else - adminIsConnected
 		
 	} // getCustomer - name String
@@ -205,7 +205,7 @@ public class AdminFacade implements CouponClientFacade{
 			return custDao.getAllCustomers();
 			} // if - adminIsConnected
 			else {
-				throw new DaoException("Error: Access Denied - Admin login failed!");
+				throw new DaoException("Error: Access Denied [Admin] - FAILED (Unidentified user)");
 			} // else - adminIsConnected
 	} // getAllCompaniesA
 
@@ -220,7 +220,7 @@ public class AdminFacade implements CouponClientFacade{
 			coupDao.removeCoupon(coupon, ClientType.ADMIN);
 			} // if - adminIsConnected
 			else {
-				throw new DaoException("Error: Access Denied - Admin login failed!");
+				throw new DaoException("Error: Access Denied [Admin] - FAILED (Unidentified user)");
 			} // else - adminIsConnected
 	} // removeCoupon
 	
@@ -231,7 +231,7 @@ public class AdminFacade implements CouponClientFacade{
 			return coupDao.getCouponByPrice(0, maxPrice, ClientType.ADMIN);
 			} // if - adminIsConnected
 			else {
-				throw new DaoException("Error: Access Denied - Admin login failed!");
+				throw new DaoException("Error: Access Denied [Admin] - FAILED (Unidentified user)");
 			} // else - adminIsConnected
 	} // getCouponByPrice
 	
@@ -252,7 +252,7 @@ public class AdminFacade implements CouponClientFacade{
 			return coupDao.getCouponByType(id, coupon.getCategory() ,ClientType.ADMIN);
 			} // if - adminIsConnected
 			else {
-				throw new DaoException("Error: Access Denied - Admin login failed!");
+				throw new DaoException("Error: Access Denied [Admin] - FAILED (Unidentified user)");
 			} // else - adminIsConnected
 	} // getCouponByType
 
@@ -264,7 +264,7 @@ public class AdminFacade implements CouponClientFacade{
 			return coupons;
 			} // if - adminIsConnected
 			else {
-				throw new DaoException("Error: Access Denied - Admin login failed!");
+				throw new DaoException("Error: Access Denied [Admin] - FAILED (Unidentified user)");
 			} // else - adminIsConnected
 	} // getAllCoupons
 	

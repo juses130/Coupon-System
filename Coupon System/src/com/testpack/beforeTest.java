@@ -16,7 +16,7 @@ public class beforeTest {
 		try {
 			
 			AdminFacade admf = new AdminFacade();
-			admf = admf.login("admin", "1234", ClientType.ADMIN);
+//			admf = admf.login("admin", "1234", ClientType.ADMIN);
 			Company company = new Company(14, "visa", "1234", "visa@gmail.com");
 //			admf.createCompany(company);
 
@@ -27,7 +27,7 @@ public class beforeTest {
 //			
 //			System.out.println("Your Input: " + admf.getCompany(company.getId()));
 //			System.out.println(admf.getCompany(company.getPassword()));
-		} catch (ConnectorException | DaoException | FiledErrorException | LoginException e) {
+		} catch (ConnectorException | DaoException | FiledErrorException e) {
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
 			e.printStackTrace();

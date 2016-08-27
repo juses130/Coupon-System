@@ -38,7 +38,7 @@ public class CompanyFacade implements CouponClientFacade{
 	    		return this;
 	    	}
 			else {
-			throw new LoginException("Error: Company Login - FAILED (Unidentified user)");
+			throw new DaoException("Error: Access Denied [Company] - FAILED (Unidentified user)");
 			}
 	} // login - function
 	
@@ -50,7 +50,7 @@ public class CompanyFacade implements CouponClientFacade{
 			compDao.addCoupon(coupon, company);
 			} // if - companyIsConnected
 			else {
-				throw new DaoException("Error: Access Denied - Company login failed!");
+				throw new DaoException("Error: Access Denied [Company] - FAILED (Unidentified user)");
 			} // else - companyIsConnected
 	} // createCouponF
 	
@@ -63,7 +63,7 @@ public class CompanyFacade implements CouponClientFacade{
 			return coupons;
 			} // if - companyIsConnected
 			else {
-				throw new DaoException("Error: Access Denied - Company login failed!");
+				throw new DaoException("Error: Access Denied [Company] - FAILED (Unidentified user)");
 			} // else - companyIsConnected
 	} // getAllCoupons
 	
@@ -75,7 +75,7 @@ public class CompanyFacade implements CouponClientFacade{
 			coupDao.removeCoupon(coupon, ClientType.COMPANY);
 			} // if - companyIsConnected
 			else {
-				throw new DaoException("Error: Access Denied - Company login failed!");
+				throw new DaoException("Error: Access Denied [Company] - FAILED (Unidentified user)");
 			} // else - companyIsConnected
 	} // removeCoupon
 	
@@ -87,7 +87,7 @@ public class CompanyFacade implements CouponClientFacade{
 			return coupon;
 			} // if - companyIsConnected
 			else {
-				throw new DaoException("Error: Access Denied - Company login failed!");
+				throw new DaoException("Error: Access Denied [Company] - FAILED (Unidentified user)");
 			} // else - companyIsConnected
 	} // updateCoupon
 	
@@ -99,7 +99,7 @@ public class CompanyFacade implements CouponClientFacade{
 			return company;
 			} // if - companyIsConnected
 			else {
-				throw new DaoException("Error: Access Denied - Company login failed!");
+				throw new DaoException("Error: Access Denied [Company] - FAILED (Unidentified user)");
 			} // else - companyIsConnected
 	} // viewCompay
 	
@@ -112,7 +112,7 @@ public class CompanyFacade implements CouponClientFacade{
 			return coupon;
 			} // if - companyIsConnected
 			else {
-				throw new DaoException("Error: Access Denied - Company login failed!");
+				throw new DaoException("Error: Access Denied [Company] - FAILED (Unidentified user)");
 			} // else - companyIsConnected
 	} // getCoupon
 	
@@ -127,7 +127,7 @@ public class CompanyFacade implements CouponClientFacade{
 			return coupons;
 			} // if - companyIsConnected
 			else {
-				throw new DaoException("Error: Access Denied - Company login failed!");
+				throw new DaoException("Error: Access Denied [Company] - FAILED (Unidentified user)");
 			} // else - companyIsConnected
 	} // getCouponsByType
 	
@@ -138,7 +138,7 @@ public class CompanyFacade implements CouponClientFacade{
 			return coupons;
 			} // if - companyIsConnected
 			else {
-				throw new DaoException("Error: Access Denied - Company login failed!");
+				throw new DaoException("Error: Access Denied [Company] - FAILED (Unidentified user)");
 			} // else - companyIsConnected	
 	} // getCouponsOfCompanyByPrice
 
