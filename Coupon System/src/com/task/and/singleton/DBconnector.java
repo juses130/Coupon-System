@@ -33,8 +33,10 @@ public class DBconnector {
 		protected static void startPool() throws ConnectorException{
 						
 				try {
+					// This 'Class.forName' line fixed the exception of: "No suitable driver found for jdbc"
+			           Class.forName(driverClass);
 					con = DriverManager.getConnection(url, userDBname, passowrdDB);
-				} catch (NullPointerException | SQLException e) {
+				} catch (NullPointerException | SQLException | ClassNotFoundException e) {
 					throw new ConnectorException("Error: Connection to the Database - FAILED (Check Your Connection To The Internet " 
 							+ "OR Check User and Password of the Database)");
 				} // catch

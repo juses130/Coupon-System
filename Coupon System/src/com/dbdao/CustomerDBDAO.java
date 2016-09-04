@@ -6,11 +6,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
-
-import javax.annotation.Generated;
-import javax.jws.soap.InitParam;
-
 import com.dao.interfaces.CustomerDAO;
 import com.exceptionerrors.DaoException;
 import com.exceptionerrors.FiledErrorException;
