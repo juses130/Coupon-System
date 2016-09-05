@@ -12,6 +12,8 @@ import com.javabeans.*;
 import com.task.and.singleton.CouponClientFacade;
 import com.task.and.singleton.CouponSystem;
 
+@XmlRootElement
+
 public class AdminFacade implements CouponClientFacade{
 
 	 // Attributes

@@ -2,8 +2,10 @@ package com.javabeans;
 
 import java.util.Collection;
 
-import com.exceptionerrors.FiledErrorException;
+import javax.xml.bind.annotation.XmlRootElement;
 
+import com.exceptionerrors.FiledErrorException;
+@XmlRootElement
 public class Customer {
 	
 	// Attributes

@@ -2,7 +2,10 @@ package com.javabeans;
 
 import java.util.Collection;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import com.exceptionerrors.FiledErrorException;
+@XmlRootElement
 
 public class Company {
 	

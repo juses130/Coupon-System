@@ -2,9 +2,11 @@ package com.javabeans;
 import java.time.LocalDate;
 import java.util.HashSet;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import com.exceptionerrors.FiledErrorException;
 
-
+@XmlRootElement
 
 public class Coupon {
 
