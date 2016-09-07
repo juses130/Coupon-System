@@ -30,7 +30,9 @@ public class CustomerDBDAO implements CustomerDAO {
 	public boolean login(String userName, String password) throws DaoException {
 		
 		boolean hasRows = false;
-        String sqlName = "SELECT Cust_id, Cust_name, password FROM customer WHERE "
+        String sqlName = "SELECT Cust_id, Cust_name, password "
+        		+ DatabaseInfo.getDBname() + ".FROM customer "
+        		+ "WHERE "
 				+ "Cust_name= '" + userName + "'" + " AND " + "password= '" 
 				+ password + "'";
 		try {
@@ -56,7 +58,7 @@ public class CustomerDBDAO implements CustomerDAO {
 				&& custotmerExistByName(customer.getCustName()) == false) {
 			try {
 				
-				String sqlQuery = "INSERT INTO customer (CUST_NAME, PASSWORD) VALUES(?,?)";
+				String sqlQuery = "INSERT INTO " + DatabaseInfo.getDBname() + ".customer (CUST_NAME, PASSWORD) VALUES(?,?)";
 				PreparedStatement prep = DBconnector.getConnection().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
 				
 				// now we will put the in their places.
@@ -116,7 +118,9 @@ public class CustomerDBDAO implements CustomerDAO {
 		if (custotmerExistByID(customer.getId()) == true) {
 			
 		       try {
-					String sqlUpdateCustomerTable = "UPDATE customer SET Cust_name=?, password=? WHERE Cust_ID=?";
+					String sqlUpdateCustomerTable = "UPDATE " + DatabaseInfo.getDBname() + ".customer "
+							+ "SET Cust_name=?, password=? "
+							+ "WHERE Cust_ID=?";
 					PreparedStatement prep = DBconnector.getConnection().prepareStatement (sqlUpdateCustomerTable);
 					prep.setString(1, customer.getCustName());
 					prep.setString(2, customer.getPassword());
@@ -151,7 +155,7 @@ public class CustomerDBDAO implements CustomerDAO {
 			String custName = null, password = null;
 			
 			try {
-				String sqlSEL = "SELECT * FROM customer WHERE Cust_ID= ?" ;
+				String sqlSEL = "SELECT * FROM " + DatabaseInfo.getDBname() + ".customer WHERE Cust_ID= ?" ;
 				PreparedStatement prep = DBconnector.getConnection().prepareStatement(sqlSEL);
 				prep.setLong(1, custID);
 				
@@ -184,7 +188,8 @@ public class CustomerDBDAO implements CustomerDAO {
 			String password = null;
 			long id = 0;
 
-				String sqlSEL = "SELECT * FROM customer WHERE cust_name= ?" ;
+				String sqlSEL = "SELECT * FROM " + DatabaseInfo.getDBname() + ".customer "
+						+ "WHERE cust_name= ?" ;
 				PreparedStatement prep = DBconnector.getConnection().prepareStatement(sqlSEL);
 				prep.setString(1, custName);
 				ResultSet rs = prep.executeQuery();
@@ -207,7 +212,7 @@ public class CustomerDBDAO implements CustomerDAO {
 	@Override
     public Collection<Customer> getAllCustomers() throws DaoException{
 		
-		String sql = "SELECT * FROM customer";
+		String sql = "SELECT * FROM " + DatabaseInfo.getDBname() + ".customer";
 		Collection<Customer> customers = new HashSet<>();
 		Customer c = null;
 		ResultSet rs = null;
@@ -236,12 +241,12 @@ public class CustomerDBDAO implements CustomerDAO {
 	public Collection<Coupon> getCoupons(long custID) throws DaoException {
 		Collection<Coupon> coupons = new HashSet<>(); 
 		try {
-			String sql = "SELECT coupon.* "
-					+ "FROM customer_coupon "
-					+ "LEFT JOIN coupon USING (coup_id) "
-					+ "WHERE customer_coupon.cust_id =" + custID + " "
-					+ "AND customer_coupon.Coup_ID = coupon.Coup_id "
-					+ "AND customer_coupon.Coup_ID IS NOT NULL";
+			String sql = "SELECT " + DatabaseInfo.getDBname() + ".coupon.* "
+					+ "FROM " + DatabaseInfo.getDBname() + ".customer_coupon "
+					+ "LEFT JOIN " + DatabaseInfo.getDBname() + ".coupon USING (coup_id) "
+					+ "WHERE " + DatabaseInfo.getDBname() + ".customer_coupon.cust_id =" + custID + " "
+					+ "AND " + DatabaseInfo.getDBname() + ".customer_coupon.Coup_ID = " + DatabaseInfo.getDBname() + ".coupon.Coup_id "
+					+ "AND " + DatabaseInfo.getDBname() + ".customer_coupon.Coup_ID IS NOT NULL";
 			Statement stat = DBconnector.getConnection().createStatement();
 			ResultSet rs = stat.executeQuery(sql);
 			while (rs.next()) {
@@ -287,7 +292,8 @@ public class CustomerDBDAO implements CustomerDAO {
 		PreparedStatement prep = null;
 		ResultSet rs = null;
 		// Check if the customer has coupons BEFORE Deleting the customer.
-		String sqlCheckExist = "SELECT * FROM customer_coupon WHERE Cust_ID=" + custID;
+		String sqlCheckExist = "SELECT * FROM " + DatabaseInfo.getDBname() + ".customer_coupon "
+				+ "WHERE Cust_ID=" + custID;
 		try {
    		prep = DBconnector.getConnection().prepareStatement(sqlCheckExist);
    		rs = prep.executeQuery();
@@ -298,11 +304,11 @@ public class CustomerDBDAO implements CustomerDAO {
 			prep.clearBatch();			
    		if(hasRow == true) {
 
-   			String sqlDeleteALL = "DELETE customer_coupon.*, customer.*"
-						+ " FROM customer"
-						+ " LEFT JOIN customer_coupon USING (cust_id)"
-						+ " WHERE customer.cust_id=" + custID
-						+ " AND customer.cust_id IS NOT NULL";
+   			String sqlDeleteALL = "DELETE " + DatabaseInfo.getDBname() + ".customer_coupon.*, " + DatabaseInfo.getDBname() + ".customer.*"
+						+ " FROM " + DatabaseInfo.getDBname() + ".customer"
+						+ " LEFT JOIN " + DatabaseInfo.getDBname() + ".customer_coupon USING (cust_id)"
+						+ " WHERE " + DatabaseInfo.getDBname() + ".customer.cust_id=" + custID
+						+ " AND " + DatabaseInfo.getDBname() + ".customer.cust_id IS NOT NULL";
 				prep = DBconnector.getConnection().prepareStatement(sqlDeleteALL);
 				prep.executeUpdate();
 				prep.clearBatch();
@@ -332,10 +338,10 @@ public class CustomerDBDAO implements CustomerDAO {
 					
 			try{
 				// check if we have the coupon in stock
-				String sqlCheckAmount = "SELECT coupon.*"
-						+ "FROM coupon "
-						+ "WHERE coupon.Coup_id=" + coupon.getId() + " " 
-						+ "AND coupon.Amount > 0";
+				String sqlCheckAmount = "SELECT " + DatabaseInfo.getDBname() + ".coupon.*"
+						+ "FROM " + DatabaseInfo.getDBname() + ".coupon "
+						+ "WHERE " + DatabaseInfo.getDBname() + ".coupon.Coup_id=" + coupon.getId() + " " 
+						+ "AND " + DatabaseInfo.getDBname() + ".coupon.Amount > 0";
 				PreparedStatement prep = DBconnector.getConnection().prepareStatement(sqlCheckAmount);
 				ResultSet rs = prep.executeQuery();
 				rs.next();
@@ -351,7 +357,7 @@ public class CustomerDBDAO implements CustomerDAO {
 				prep.clearBatch();
 				
 				// Updating the amount
-				String sqlUpdateAmount = "UPDATE `coupon`.`coupon` "
+				String sqlUpdateAmount = "UPDATE `"+ DatabaseInfo.getDBname() + "`.`coupon` "
 						+ "SET `amount`='" + currentAmount + "' "
 						+ "WHERE `coup_id`='" + coupon.getId() +"'";
 				prep = DBconnector.getConnection().prepareStatement(sqlUpdateAmount);
@@ -361,7 +367,7 @@ public class CustomerDBDAO implements CustomerDAO {
 				prep.clearBatch();
 
 				// Adding the coupon to customer_coupon
-				String sqlAddCoupon = "INSERT INTO customer_coupon (cust_id, coup_id)" 
+				String sqlAddCoupon = "INSERT INTO " + DatabaseInfo.getDBname() + ".customer_coupon (cust_id, coup_id)" 
 				+ "VALUES(" + custID + "," + coupon.getId() + ")";	
 				prep = DBconnector.getConnection().prepareStatement(sqlAddCoupon);
 				prep.executeUpdate();
@@ -386,7 +392,7 @@ public class CustomerDBDAO implements CustomerDAO {
 		boolean answer = false;
 
 		try {
-			String sqlName = "SELECT Cust_ID FROM customer WHERE "
+			String sqlName = "SELECT Cust_ID FROM " + DatabaseInfo.getDBname() + ".customer WHERE "
 					+ "Cust_ID= " + custID;
 					
 					stat = DBconnector.getConnection().createStatement();
@@ -417,7 +423,7 @@ public class CustomerDBDAO implements CustomerDAO {
 		boolean answer = false;
 		  
 		   try {
-				String sqlName = "SELECT Cust_name FROM customer WHERE "
+				String sqlName = "SELECT Cust_name FROM " + DatabaseInfo.getDBname() + ".customer WHERE "
 						+ "cust_name= '" + custName + "'";
 				stat = DBconnector.getConnection().createStatement();
 				rs = stat.executeQuery(sqlName);
