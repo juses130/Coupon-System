@@ -63,7 +63,7 @@ public class Company {
 
 	public void setCompName(String compName) throws FiledErrorException {
 		
-		if(compName.isEmpty()) {
+		if(compName.equals(null) || compName.isEmpty()) {
 			throw new FiledErrorException("Error: Setting Company Name - FAILED (empty field)");
 		} // if
 		else {

@@ -12,6 +12,7 @@ import com.exceptionerrors.FiledErrorException;
 import com.javabeans.Coupon;
 import com.javabeans.Customer;
 import com.task.and.singleton.DBconnector;
+import com.task.and.singleton.DatabaseInfo;
 
 /**
  * This is Customer Database DAO Class.

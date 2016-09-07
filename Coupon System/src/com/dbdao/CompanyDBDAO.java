@@ -8,6 +8,7 @@ import com.exceptionerrors.DaoException;
 import com.exceptionerrors.FiledErrorException;
 import com.javabeans.*;
 import com.task.and.singleton.DBconnector;
+import com.task.and.singleton.DatabaseInfo;
 
 
 /**
@@ -113,6 +114,10 @@ public class CompanyDBDAO implements CompanyDAO {
 		if (compnayExistByID(company.getId()) == true) {
 			removeCompanyMethod(company.getId());
 		} // if - Exist
+		else if (compnayExistByName(company.getCompName()) == true) {
+			company = getCompany(company.getCompName());
+			removeCompanyMethod(company.getId());
+		}
 		else {
 			throw new DaoException("Error: Removing Company - FAILED (Company is not exist in the DataBase)");
 		} // else - Exist

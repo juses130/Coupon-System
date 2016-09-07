@@ -17,6 +17,7 @@ import com.javabeans.Company;
 import com.javabeans.Coupon;
 import com.javabeans.CouponType;
 import com.task.and.singleton.DBconnector;
+import com.task.and.singleton.DatabaseInfo;
 
 
 /**

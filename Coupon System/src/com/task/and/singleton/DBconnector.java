@@ -2,7 +2,6 @@ package com.task.and.singleton;
 
 import java.sql.*;
 
-import com.dbdao.DatabaseInfo;
 import com.exceptionerrors.ConnectorException;
 
 
