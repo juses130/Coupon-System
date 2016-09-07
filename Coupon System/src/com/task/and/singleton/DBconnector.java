@@ -2,6 +2,7 @@ package com.task.and.singleton;
 
 import java.sql.*;
 
+import com.dbdao.DatabaseInfo;
 import com.exceptionerrors.ConnectorException;
 
 
@@ -14,12 +15,7 @@ import com.exceptionerrors.ConnectorException;
 public class DBconnector {
 
 	// Attributes
-	private static final String url = "jdbc:mysql://localhost:3306/coupon?characterEncoding=UTF-8&useSSL=false";
-	private static final String driverClass = "com.mysql.jdbc.Driver";
-	private static final String userDBname = "root";
-	private static final String passowrdDB = "1234";
 	private static Connection con = null;
-	
 	// private constructor
 		private DBconnector(){}
 
@@ -34,14 +30,20 @@ public class DBconnector {
 						
 				try {
 					// This 'Class.forName' line fixed the exception of: "No suitable driver found for jdbc"
-			           Class.forName(driverClass);
-					con = DriverManager.getConnection(url, userDBname, passowrdDB);
+			           Class.forName(DatabaseInfo.getDriverclass());
+					con = DriverManager.getConnection(
+							DatabaseInfo.getUrl(), 
+							DatabaseInfo.getUserdbname(), 
+							DatabaseInfo.getPassowrddb());
+					
 				} catch (NullPointerException | SQLException | ClassNotFoundException e) {
+					e.printStackTrace();
 					throw new ConnectorException("Error: Connection to the Database - FAILED (Check Your Connection To The Internet " 
 							+ "OR Check User and Password of the Database)");
 				} // catch
 				try {
-					Class.forName(driverClass);
+					
+					Class.forName(DatabaseInfo.getDriverclass());
 				} catch (ClassNotFoundException e) {
 					throw new ConnectorException("Error: Connection to the Driver - FAILED (check the location of your driver)");
 				} // catch

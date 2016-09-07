@@ -30,7 +30,7 @@ public class CompanyDBDAO implements CompanyDAO {
 		
 		boolean hasRows = false;
         try {
-			String sqlLoginCompany = "SELECT Comp_name, password FROM company WHERE "
+			String sqlLoginCompany = "SELECT Comp_name, password FROM " + DatabaseInfo.getDBname() + ".company WHERE "
 					+ "Comp_name= '" + compName + "'" + " AND " + "password= '" 
 					+ password + "'";
 			Statement stat = DBconnector.getConnection().createStatement();
@@ -63,7 +63,7 @@ public class CompanyDBDAO implements CompanyDAO {
 		// check if the company not exist (is checking also if the fields are empty in the 'Company' javaBeans)
 		if (compnayExistByName(company.getCompName()) == false) {
 				try {
-					String sqlQuery = "INSERT INTO company (comp_name, password, email) VALUES(?,?,?)";
+					String sqlQuery = "INSERT INTO " + DatabaseInfo.getDBname() + ".company (comp_name, password, email) VALUES(?,?,?)";
 					PreparedStatement prep = DBconnector.getConnection().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
 					
 					prep.setString(1, company.getCompName());
@@ -93,7 +93,7 @@ public class CompanyDBDAO implements CompanyDAO {
 				|| existInDB.couponFoundInJoinTables(coupon, company, CheckCouponBy.BY_ID) == false) {
 			try{
 				// Now insert the coupon to the Join Tables.
-				String sqlAddCompanyCoupn = "INSERT INTO company_coupon (Comp_id, Coup_id) VALUES (" + company.getId() + "," + coupon.getId() + ");";
+				String sqlAddCompanyCoupn = "INSERT INTO " + DatabaseInfo.getDBname() + ".company_coupon (Comp_id, Coup_id) VALUES (" + company.getId() + "," + coupon.getId() + ");";
 				PreparedStatement prep = DBconnector.getConnection().prepareStatement(sqlAddCompanyCoupn);
 				prep.executeUpdate();
 			} // try
@@ -124,7 +124,7 @@ public class CompanyDBDAO implements CompanyDAO {
 		// check if the company exist
 		if (compnayExistByID(company.getId()) == true) {
 			try {
-				String sqlUpdate = "UPDATE coupon.company SET Comp_name=?, password=?, email=? WHERE Comp_ID=?";
+				String sqlUpdate = "UPDATE " + DatabaseInfo.getDBname() + ".company SET Comp_name=?, password=?, email=? WHERE Comp_ID=?";
 				PreparedStatement prep = DBconnector.getConnection().prepareStatement (sqlUpdate);
 				prep.setString(1, company.getCompName());
 				prep.setString(2, company.getPassword());
@@ -166,7 +166,7 @@ public class CompanyDBDAO implements CompanyDAO {
 			
 			try {
 
-				String sqlSEL = "SELECT * FROM company WHERE Comp_ID= ?" ;
+				String sqlSEL = "SELECT * FROM " + DatabaseInfo.getDBname() + ".company WHERE Comp_ID= ?" ;
 				PreparedStatement prep = DBconnector.getConnection().prepareStatement(sqlSEL);
 				prep.setLong(1, id);
 				ResultSet rs = prep.executeQuery();
@@ -198,7 +198,7 @@ public class CompanyDBDAO implements CompanyDAO {
 					String email, name, password;
 					long id;
 				
-				String sqlSEL = "SELECT * FROM company WHERE comp_name= ?";
+				String sqlSEL = "SELECT * FROM " + DatabaseInfo.getDBname() + ".company WHERE comp_name= ?";
 				PreparedStatement prep = DBconnector.getConnection().prepareStatement(sqlSEL);
 				prep.setString(1, compName);
 				ResultSet rs = prep.executeQuery();
@@ -221,7 +221,7 @@ public class CompanyDBDAO implements CompanyDAO {
 	@Override
 	public Collection<Company> getAllCompanies() throws DaoException{
 		
-		String sql = "SELECT * FROM company";
+		String sql = "SELECT * FROM " + DatabaseInfo.getDBname() + ".company";
 		Collection<Company> companies = new HashSet<>();
 		Company company = null;
 		ResultSet rs = null;
@@ -252,7 +252,7 @@ public class CompanyDBDAO implements CompanyDAO {
 	public Collection<Coupon> getCoupons(long compID) throws DaoException {
 		Collection<Coupon> coupons = new HashSet<>(); 
 		try {
-			String sql = "SELECT * FROM coupon WHERE owner_ID=" + compID;
+			String sql = "SELECT * FROM " + DatabaseInfo.getDBname() + ".coupon WHERE owner_ID=" + compID;
 			Statement stat = DBconnector.getConnection().createStatement();
 			ResultSet rs = stat.executeQuery(sql);
 			while (rs.next()) {
@@ -308,7 +308,7 @@ public class CompanyDBDAO implements CompanyDAO {
 		PreparedStatement prep = null;
 		ResultSet rs = null;
 		// Check if the company has any coupons BEFORE Deleting the company.
-		String sqlCheckExist = "SELECT * FROM company_coupon WHERE Comp_ID=" + compID;
+		String sqlCheckExist = "SELECT * FROM " + DatabaseInfo.getDBname() + ".company_coupon WHERE Comp_ID=" + compID;
 		try {
     		prep = DBconnector.getConnection().prepareStatement(sqlCheckExist);
     		rs = prep.executeQuery();
@@ -320,12 +320,15 @@ public class CompanyDBDAO implements CompanyDAO {
 			prep.clearBatch();
 			
     		if(hasRow == true) {
-    			String sqlDeleteALL = "DELETE coupon.*, company.*, company_coupon.*"
-						+ " FROM company_coupon"
-						+ " LEFT JOIN coupon USING (coup_id)"
-						+ " LEFT JOIN company USING (comp_id)"
-						+ " WHERE company_coupon.Comp_ID=" + compID
-						+ " AND company_coupon.Comp_ID IS NOT NULL";
+    			String sqlDeleteALL = "DELETE " 
+    					+ DatabaseInfo.getDBname() + ".coupon.*, "
+    					+ DatabaseInfo.getDBname() + ".company.*, "
+    					+ DatabaseInfo.getDBname() + ".company_coupon.*"
+						+ " FROM " + DatabaseInfo.getDBname() + ".company_coupon"
+						+ " LEFT JOIN " + DatabaseInfo.getDBname() + ".coupon USING (coup_id)"
+						+ " LEFT JOIN " + DatabaseInfo.getDBname() + ".company USING (comp_id)"
+						+ " WHERE " + DatabaseInfo.getDBname() + ".company_coupon.Comp_ID=" + compID
+						+ " AND " + DatabaseInfo.getDBname() + ".company_coupon.Comp_ID IS NOT NULL";
 				prep = DBconnector.getConnection().prepareStatement(sqlDeleteALL);
 				prep.executeUpdate();
 				prep.clearBatch();
@@ -333,7 +336,7 @@ public class CompanyDBDAO implements CompanyDAO {
     		} // if - hasRow		
 			else {
 
-				String sqlOnlyFromCompany = "DELETE FROM company WHERE Comp_ID=" + compID;
+				String sqlOnlyFromCompany = "DELETE FROM " + DatabaseInfo.getDBname() + ".company WHERE Comp_ID=" + compID;
 				PreparedStatement prep2 = DBconnector.getConnection().prepareStatement(sqlOnlyFromCompany);
 				prep2.executeUpdate();
 				prep2.clearBatch();
@@ -358,7 +361,7 @@ public class CompanyDBDAO implements CompanyDAO {
     	if(compID > 0) {
     		
     		try {
-        		String sqlName = "SELECT Comp_ID FROM company WHERE "
+        		String sqlName = "SELECT Comp_ID FROM " + DatabaseInfo.getDBname() + ".company WHERE "
         		+ "Comp_ID= " + "'" + compID + "'";
         		
         		Statement stat = DBconnector.getConnection().createStatement();
@@ -392,7 +395,7 @@ public class CompanyDBDAO implements CompanyDAO {
  		boolean answer = false;
  		
  		  try {
-				String sqlName = "SELECT Comp_name FROM company WHERE "
+				String sqlName = "SELECT Comp_name FROM " + DatabaseInfo.getDBname() + ".company WHERE "
 				+ "comp_name= '" + compName + "'";
 				stat = DBconnector.getConnection().createStatement();
 				rs = stat.executeQuery(sqlName);
