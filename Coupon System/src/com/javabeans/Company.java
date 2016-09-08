@@ -10,7 +10,7 @@ import com.exceptionerrors.FiledErrorException;
 public class Company {
 	
 	// Attributes
-	
+	// TODO: fixed the logical thinking here -> What to do with the Nulls and empty fileds? i Can't get a collection of objects when they have null because is doing checks to every object!
 	private long id = 0;
 	private String compName = null;
 	private String password = null;
@@ -58,44 +58,65 @@ public class Company {
 	} // setId
 
 	public String getCompName() {
-		return compName;
+		return compName == null ? "" : compName;
 	} // getCompName
 
 	public void setCompName(String compName) throws FiledErrorException {
 		
-		if(!compName.isEmpty()) {
-			this.compName = compName;
-		} // if
+		// check if compName is null, if yes - put it as empty field.
+		if(compName != null) {
+			if(!compName.isEmpty()) {
+				this.compName = compName;
+			} // if
+			else {
+				throw new FiledErrorException("Error: Setting Company Name - FAILED (empty field)");	
+			}
+			
+		} // if - null
 		else {
-			throw new FiledErrorException("Error: Setting Company Name - FAILED (empty field)");
+			throw new FiledErrorException("Error: Setting Company Name - FAILED (NULL field)");
 		} // else
 	} // setCompName
 
 	public String getEmail() {
-		return email;
+		// The condition says "if email IS null, put empty String, else- return the email.
+		return email == null ? "" : email;
 	} // getEmail
 
 	public void setEmail(String email) throws FiledErrorException{
 		
-		if(!email.isEmpty() && email.contains("@")) {
-			this.email = email;
-		} // if
-		else {
-			throw new FiledErrorException("Error: Setting Email To Company - FAILED (maybe you forgot '@' ?)");
-		} // else
+		if(email != null) {
+			if(!email.isEmpty() && email.contains("@")) {
+				this.email = email;
+			} // if
+			else {
+				throw new FiledErrorException("Error: Setting Email To Company - FAILED (maybe you forgot '@' ?)");
+			} // else
+		} // if - null
+		throw new FiledErrorException("Error: Setting Email To Company - FAILED (NULL field)");
 	} // setEmail
 	
 	public String getPassword() {
-		return password;
+		return password == null ? "" : password;
 	} // getPassword
 	
 	public void setPassword(String password) throws FiledErrorException {
-		if(!password.isEmpty()) {
-			this.password = password;
-		} // if
+		
+		// check if password is null, if yes - put it as empty field.
+		if(password != null) {
+			if(!password.isEmpty()) {
+				this.password = password;
+			} // if
+			else {
+				throw new FiledErrorException("Error: Setting Password - FAILED (empty field)");
+			} // else
+		} // if - null
 		else {
-			throw new FiledErrorException("Error: Setting Password - FAILED (empty field)");
+			throw new FiledErrorException("Error: Setting Password - FAILED (NULL field)");
 		} // else
+		
+		// Check if password is empty, if no - insert it into 'this.password' (Attribute)
+
 	} // setPassword
 	
 	// ToString

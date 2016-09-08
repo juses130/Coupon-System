@@ -247,7 +247,6 @@ public class CompanyDBDAO implements CompanyDAO {
 			} // while loop
 
 		} catch (SQLException | FiledErrorException e) {
-			e.printStackTrace();
 			throw new DaoException("Error: Getting all Companies - FAILED");
 		} // catch
 
