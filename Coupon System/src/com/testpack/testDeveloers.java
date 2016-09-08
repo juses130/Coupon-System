@@ -1117,7 +1117,8 @@ public class testDeveloers {
      * @category CustomerFacade Section
      * @author Raziel
      */
-    private static void getAllCouponsByPrice_T() {
+    @SuppressWarnings("resource")
+	private static void getAllCouponsByPrice_T() {
     	System.out.println("Here is your Customer Coupons List: ");
     	Scanner sc = new Scanner(System.in);
     	System.out.print("Type your Maximum Price: ");

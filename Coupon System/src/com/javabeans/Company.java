@@ -63,11 +63,11 @@ public class Company {
 
 	public void setCompName(String compName) throws FiledErrorException {
 		
-		if(compName.equals(null) || compName.isEmpty()) {
-			throw new FiledErrorException("Error: Setting Company Name - FAILED (empty field)");
+		if(!compName.isEmpty()) {
+			this.compName = compName;
 		} // if
 		else {
-			this.compName = compName;
+			throw new FiledErrorException("Error: Setting Company Name - FAILED (empty field)");
 		} // else
 	} // setCompName
 
@@ -77,7 +77,7 @@ public class Company {
 
 	public void setEmail(String email) throws FiledErrorException{
 		
-		if(email.contains("@")) {
+		if(!email.isEmpty() && email.contains("@")) {
 			this.email = email;
 		} // if
 		else {
@@ -90,11 +90,11 @@ public class Company {
 	} // getPassword
 	
 	public void setPassword(String password) throws FiledErrorException {
-		if(password.isEmpty()) {
-			throw new FiledErrorException("Error: Setting Password - FAILED (empty field)");
+		if(!password.isEmpty()) {
+			this.password = password;
 		} // if
 		else {
-			this.password = password;
+			throw new FiledErrorException("Error: Setting Password - FAILED (empty field)");
 		} // else
 	} // setPassword
 	
