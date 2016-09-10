@@ -1,9 +1,10 @@
 package com.dao.interfaces;
 
 import java.util.Collection;
+
+import com.beans.*;
 import com.exceptionerrors.DaoException;
 import com.exceptionerrors.FiledErrorException;
-import com.javabeans.*;
 
 /**
  * <p>Customer DAO - Interface</p>

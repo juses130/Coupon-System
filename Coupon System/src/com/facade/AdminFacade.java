@@ -4,11 +4,11 @@ import java.util.Collection;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.beans.*;
 import com.dao.interfaces.CompanyDAO;
 import com.dao.interfaces.CouponDAO;
 import com.dao.interfaces.CustomerDAO;
 import com.exceptionerrors.*;
-import com.javabeans.*;
 import com.task.and.singleton.CouponClientFacade;
 import com.task.and.singleton.CouponSystem;
 
@@ -71,7 +71,7 @@ public class AdminFacade implements CouponClientFacade{
 			}
 	} // createCompany - function
 	
-	public void removeCompany(Company company) throws DaoException{
+	public void removeCompanyByID(Company company) throws DaoException{
 		/* Iv'e added to the DataBase a new Column named - OwnerID.
 		 * When we looking in the Coupons list, we may want to know 
 		 * who is the owner of this coupon?
@@ -82,12 +82,22 @@ public class AdminFacade implements CouponClientFacade{
 		
 		// Security Access Check	
 		if(adminIsConnected != false) {
-			compDao.removeCompany(company);
+			compDao.removeCompanyByID(company);
 			}
 			else {
 				throw new DaoException("Error: Access Denied [Admin] - FAILED (Unidentified user)");
 			}
-	} // removeCompanyA
+	} // removeCompanyByID
+	
+	public void removeCompanyByName(Company company) throws DaoException{
+		// check if the company exist
+		if(adminIsConnected != false) {
+			compDao.removeCompanyByName(company);
+			} // if
+			else {
+				throw new DaoException("Error: Access Denied [Admin] - FAILED (Unidentified user)");
+			} // else
+	} // removeCompany - By ID 
 	
 	public void updateCompany(Company company) throws DaoException{
 		
@@ -175,14 +185,11 @@ public class AdminFacade implements CouponClientFacade{
 		
 		// Security Access Check	
 		if(adminIsConnected != false) {
-			Customer customer = new Customer();
-			customer = custDao.getCustomer(id);
-			
-			if(customer != null) {
-			// set the Collection of the Coupons.
-				customer.setCoupons(custDao.getCoupons(customer.getId()));
-			} // if
-			return customer;
+				Customer customer = new Customer();
+				customer = custDao.getCustomer(id);
+				// set the Collection of the Coupons.
+//				customer.setCoupons(custDao.getCoupons(customer.getId()));
+				return customer;
 			} // if - adminIsConnected
 			else {
 				throw new DaoException("Error: Access Denied [Admin] - FAILED (Unidentified user)");

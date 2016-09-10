@@ -6,11 +6,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashSet;
+
+import com.beans.Coupon;
+import com.beans.Customer;
 import com.dao.interfaces.CustomerDAO;
 import com.exceptionerrors.DaoException;
 import com.exceptionerrors.FiledErrorException;
-import com.javabeans.Coupon;
-import com.javabeans.Customer;
 import com.task.and.singleton.DBconnector;
 import com.task.and.singleton.DatabaseInfo;
 
@@ -57,8 +58,7 @@ public class CustomerDBDAO implements CustomerDAO {
 		// check if the customer is not exist (Name and ID)
 		if (custotmerExistByID(customer.getId()) == false 
 				&& custotmerExistByName(customer.getCustName()) == false) {
-			try {
-				
+			try {			
 				String sqlQuery = "INSERT INTO " + DatabaseInfo.getDBname() + ".customer (CUST_NAME, PASSWORD) VALUES(?,?)";
 				PreparedStatement prep = DBconnector.getConnection().prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
 				
@@ -103,7 +103,7 @@ public class CustomerDBDAO implements CustomerDAO {
 				removeCustomerMethod(customer.getId());
 				
 			} // if - id
-			else if (customerDetectInDB(customer) == DetectionBy.USERNAME) {
+			else if (customerDetectInDB(customer) == DetectionBy.NAME) {
 				customer = getCustomer(customer.getCustName());
 				removeCustomerMethod(customer.getId());
 			} // else if - name
@@ -151,7 +151,6 @@ public class CustomerDBDAO implements CustomerDAO {
 		
 		// check if the customer exist
 		if (custotmerExistByID(custID) == true) {
-			
 			Customer customer = null;
 			String custName = null, password = null;
 			
@@ -167,11 +166,11 @@ public class CustomerDBDAO implements CustomerDAO {
 				} // while
 				
 				customer = new Customer(custID, custName, password);	
+				return customer;
 			} // try
 			catch (SQLException | FiledErrorException e) {
 				throw new DaoException("Error: Getting Customer By ID - FAILED");
 			} // catch
-			return customer;
 		} // if
 		else {
 			throw new DaoException("Error: Getting Customer - FAILED (Customer is not exist in the DataBase)");
@@ -200,14 +199,14 @@ public class CustomerDBDAO implements CustomerDAO {
 				} // while
 				
 				customer = new Customer(id, custName, password);	
+				return customer;
 		} // if
 		else {
-			throw new DaoException("Error: Getting Customer By ID - FAILED");
+			throw new DaoException("Error: Getting Customer By Name - FAILED");
 		} // else - exist
 		} catch (SQLException | FiledErrorException e) {
 			throw new DaoException("Error: Getting Customer By Name - FAILED (Customer is not exist in the DataBase)");
 		} // catch
-		return customer;
 	} // getCustomer - Name String
 
 	@Override
@@ -271,12 +270,7 @@ public class CustomerDBDAO implements CustomerDAO {
 		} catch (SQLException | FiledErrorException e) {
 			throw new DaoException("Error: Getting Coupons of Customer - FAILED (something went wrong)");
 		} // catch
-		if(!coupons.isEmpty()) {
-			return coupons;
-		} // if
-		else {
-			throw new DaoException("Error: No Coupons Found");
-		}  // else - Set<> is empty
+		return coupons;
 	} // getCoupons
 	
 	/**
@@ -464,7 +458,7 @@ public class CustomerDBDAO implements CustomerDAO {
 		} // if 
 		else if(!customer.getCustName().equals(null) || !customer.getCustName().isEmpty()) {
 			if(custotmerExistByName(customer.getCustName()) == true) {
-				return DetectionBy.USERNAME;
+				return DetectionBy.NAME;
 			} // if - inner
 			else {
 				throw new DaoException("Error: Detection By Name - FAILED (The customer dosen't exist in the DataBase)");

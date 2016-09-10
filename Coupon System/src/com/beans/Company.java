@@ -1,4 +1,4 @@
-package com.javabeans;
+package com.beans;
 
 import java.util.Collection;
 
@@ -12,9 +12,9 @@ public class Company {
 	// Attributes
 	// TODO: fixed the logical thinking here -> What to do with the Nulls and empty fileds? i Can't get a collection of objects when they have null because is doing checks to every object!
 	private long id = 0;
-	private String compName = null;
-	private String password = null;
-	private String email = null;
+	private String compName = "";
+	private String password = "";
+	private String email = "";
 	private Collection<Coupon> coupons;
 	
 	// Constructor
@@ -84,16 +84,18 @@ public class Company {
 	} // getEmail
 
 	public void setEmail(String email) throws FiledErrorException{
-		
+
 		if(email != null) {
-			if(!email.isEmpty() && email.contains("@")) {
+			if(email.contains("@")) {
 				this.email = email;
 			} // if
 			else {
 				throw new FiledErrorException("Error: Setting Email To Company - FAILED (maybe you forgot '@' ?)");
 			} // else
 		} // if - null
-		throw new FiledErrorException("Error: Setting Email To Company - FAILED (NULL field)");
+		else {
+			throw new FiledErrorException("Error: Setting Email To Company - FAILED (NULL field)");
+		} // else - null
 	} // setEmail
 	
 	public String getPassword() {

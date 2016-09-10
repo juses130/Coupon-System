@@ -9,13 +9,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.beans.Company;
+import com.beans.Coupon;
+import com.beans.CouponType;
+import com.beans.Customer;
 import com.dao.interfaces.CouponDAO;
 import com.exceptionerrors.DaoException;
 import com.exceptionerrors.FiledErrorException;
 import com.facade.ClientType;
-import com.javabeans.Company;
-import com.javabeans.Coupon;
-import com.javabeans.CouponType;
 import com.task.and.singleton.DBconnector;
 import com.task.and.singleton.DatabaseInfo;
 
@@ -580,5 +581,5 @@ public class CouponDBDAO implements CouponDAO{
 		} // else
     } // getCouponMethod
 
-	
+		
 } // Class

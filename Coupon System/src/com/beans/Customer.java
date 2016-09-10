@@ -1,4 +1,4 @@
-package com.javabeans;
+package com.beans;
 
 import java.util.Collection;
 
@@ -29,6 +29,15 @@ public class Customer {
 		this.password = password;
 	} // Constructor
 	
+	public Customer(String custName, String password) throws FiledErrorException {
+		
+		setCustName(custName);
+		setPassword(password);
+		
+		this.custName = custName;
+		this.password = password;
+	} // Constructor
+	
 	//Getters && Setters
 
 	public long getId() {
@@ -47,7 +56,7 @@ public class Customer {
 	} // setId
 
 	public String getCustName() {
-		return custName;
+		return custName == null  ? "" : custName;
 	} // getCustName
 
 	public void setCustName(String custName) throws FiledErrorException {
@@ -84,7 +93,7 @@ public class Customer {
 	} // toString
 
 	public String getPassword() {
-		return password;
+		return password == null ? "" : password;
 	} // getPassword
 	
 } // Class

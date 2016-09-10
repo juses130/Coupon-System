@@ -3,10 +3,10 @@ package com.dbdao;
 import java.sql.*;
 import java.util.*;
 
+import com.beans.*;
 import com.dao.interfaces.*;
 import com.exceptionerrors.DaoException;
 import com.exceptionerrors.FiledErrorException;
-import com.javabeans.*;
 import com.task.and.singleton.DBconnector;
 import com.task.and.singleton.DatabaseInfo;
 
@@ -109,12 +109,21 @@ public class CompanyDBDAO implements CompanyDAO {
 	} // createCoupon
 	
 	@Override
-	public void removeCompany(Company company) throws DaoException{
+	public void removeCompanyByID(Company company) throws DaoException{
 		// check if the company exist
 		if (compnayExistByID(company.getId()) == true) {
 			removeCompanyMethod(company.getId());
 		} // if - Exist
-		else if (compnayExistByName(company.getCompName()) == true) {
+		else {
+			throw new DaoException("Error: Removing Company - FAILED (Company is not exist in the DataBase)");
+		} // else - Exist
+
+	} // removeCompany - By ID 
+	
+	@Override
+	public void removeCompanyByName(Company company) throws DaoException{
+		// check if the company exist
+		if (compnayExistByName(company.getCompName()) == true) {
 			company = getCompany(company.getCompName());
 			removeCompanyMethod(company.getId());
 		}
@@ -129,14 +138,16 @@ public class CompanyDBDAO implements CompanyDAO {
 		// check if the company exist
 		if (compnayExistByID(company.getId()) == true) {
 			try {
-				String sqlUpdate = "UPDATE " + DatabaseInfo.getDBname() + ".company SET Comp_name=?, password=?, email=? WHERE Comp_ID=?";
+				System.out.println(company.toString());
+				String sqlUpdate = "UPDATE " + DatabaseInfo.getDBname() + ".company SET  password=?, email=? WHERE Comp_ID=?";
 				PreparedStatement prep = DBconnector.getConnection().prepareStatement (sqlUpdate);
-				prep.setString(1, company.getCompName());
-				prep.setString(2, company.getPassword());
-				prep.setString(3, company.getEmail());
-				prep.setLong(4, company.getId());
+				prep.setString(1, company.getPassword());
+				prep.setString(2, company.getEmail());
+				prep.setLong(3, company.getId());
 				
 				prep.executeUpdate();
+				
+				System.out.println(company.toString());
 				prep.clearBatch();
 				
 				} catch (SQLException e) {
@@ -237,12 +248,14 @@ public class CompanyDBDAO implements CompanyDAO {
 			rs = stat.executeQuery(sql);
 			
 			while(rs.next()) {
-				company = new Company();
-				company.setId(rs.getLong("Comp_ID"));
-				company.setCompName(rs.getString("Comp_name"));
-				company.setPassword(rs.getString("password"));
-				company.setEmail(rs.getString("email"));
 				
+				company = new Company(
+						rs.getLong("Comp_ID"),
+						rs.getString("Comp_name"),
+						rs.getString("password"),
+						rs.getString("email")
+						);
+
 				companies.add(company);
 			} // while loop
 

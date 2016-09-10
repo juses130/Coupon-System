@@ -1,4 +1,4 @@
-package com.javabeans;
+package com.beans;
 
 public enum CouponType {
 

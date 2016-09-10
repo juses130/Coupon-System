@@ -4,12 +4,12 @@ import java.sql.*;
 import java.time.*;
 import java.util.*;
 
+import com.beans.*;
 import com.exceptionerrors.*;
 import com.exceptionerrors.DaoException;
 import com.exceptionerrors.FiledErrorException;
 import com.exceptionerrors.LoginException;
 import com.facade.*;
-import com.javabeans.*;
 import com.task.and.singleton.CouponClientFacade;
 import com.task.and.singleton.CouponSystem;
 import com.task.and.singleton.DBconnector;
@@ -189,7 +189,7 @@ public class testDeveloers {
 		System.out.println("****************************************************" + "\n");
 
 	}
-	
+
 
 	public static void printCompanyRemoved() {
 		System.out.println("\n" + "------------ Company Removed Successfully ----------" + "\n");
@@ -619,7 +619,7 @@ public class testDeveloers {
     			else {	
     			      try {
     			    	  company.setId(SharingData.getLongNum1());
-    			    	  CouponSystem.getInstance().getCompDao().removeCompany(company);
+    			    	  CouponSystem.getInstance().getCompDao().removeCompanyByID(company);
     			    	  
 					  } catch (Exception e) {
 						System.out.println(e.getMessage());

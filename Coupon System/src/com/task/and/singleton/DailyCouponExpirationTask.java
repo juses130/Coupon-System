@@ -39,7 +39,7 @@ public class DailyCouponExpirationTask implements Runnable {
 			 */
 			while (running) {
 			System.out.println("\n" + "Wait! - " +"[Deleting Expired Coupons]");
-			deleteCoupon();
+			deleteExpiredCoupon();
 
 			running = false;
 			
@@ -53,7 +53,7 @@ public class DailyCouponExpirationTask implements Runnable {
 				} // catch
 	} // run()
 	
-	private void deleteCoupon() throws DaoException {
+	private void deleteExpiredCoupon() throws DaoException {
 			
 			try {
 				String sqlSelectByEndDate = "DELETE coupon.*, company_coupon.*, customer_coupon.* "
@@ -72,24 +72,6 @@ public class DailyCouponExpirationTask implements Runnable {
 			} // catch
 	} // deleteCoupon
 
-	// TODO: create method that's deleting all the NULL objects!
-	private void deleteNullObjects() throws DaoException {
-		
-		try {
-			// Delete Null Coupon
-			String sqlSelectByNull = "DELETE company.*, company_coupon.* "
-					+ "FROM company "
-					+ "LEFT JOIN company_coupon USING (coup_id) "
-					+ "WHERE company.coup_id IS NULL";
-
-			 PreparedStatement prep = DBconnector.getConnection().prepareStatement(sqlSelectByNull, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
-			prep.executeUpdate();
-			
-		} catch (SQLException e) {
-			throw new DaoException("Error: Deleting Expired Coupon - FAILD (something went wrong..)");
-		} // catch
-} // deleteCoupon
-	
 	public void stop() {
 		running = false;
 	} // stop

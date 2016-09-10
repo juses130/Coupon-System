@@ -2,9 +2,9 @@ package com.dao.interfaces;
 
 import java.util.*;
 
+import com.beans.*;
 import com.exceptionerrors.DaoException;
 import com.facade.ClientType;
-import com.javabeans.*;
 
 /**
  * <p>Coupon DAO - Interface</p>

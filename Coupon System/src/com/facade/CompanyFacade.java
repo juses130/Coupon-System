@@ -1,10 +1,11 @@
 package com.facade;
 
 import java.util.*;
+
+import com.beans.*;
 import com.dao.interfaces.CompanyDAO;
 import com.dao.interfaces.CouponDAO;
 import com.exceptionerrors.*;
-import com.javabeans.*;
 import com.task.and.singleton.CouponClientFacade;
 import com.task.and.singleton.CouponSystem;
 

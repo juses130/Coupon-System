@@ -2,8 +2,8 @@ package com.dao.interfaces;
 
 import java.util.*;
 
+import com.beans.*;
 import com.exceptionerrors.DaoException;
-import com.javabeans.*;
 
 public interface CompanyDAO {
 
@@ -37,7 +37,7 @@ public interface CompanyDAO {
 	 * @param company a {@code Company} Object
 	 * @throws DAOException
 	 */
-	public void removeCompany(Company company) throws DaoException;
+	public void removeCompanyByID(Company company) throws DaoException;
 	
 	/**
 	 * Updates a Company in the underlying database (or any other persistence storage), from a given {@code Company} object. The fields affected are Name, Email, Password and Salt.
@@ -86,5 +86,7 @@ public interface CompanyDAO {
 	 * @throws DaoException
 	 */
 	public Collection<Coupon> getCoupons(long compID) throws DaoException;
+
+	void removeCompanyByName(Company company) throws DaoException;
 
 }

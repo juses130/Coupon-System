@@ -3,9 +3,9 @@ package com.dbdao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.beans.Company;
+import com.beans.Coupon;
 import com.exceptionerrors.DaoException;
-import com.javabeans.Company;
-import com.javabeans.Coupon;
 import com.task.and.singleton.DBconnector;
 
 /**

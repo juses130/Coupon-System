@@ -1,4 +1,4 @@
-package com.javabeans;
+package com.beans;
 import java.time.LocalDate;
 import java.util.HashSet;
 
@@ -81,7 +81,7 @@ public class Coupon {
 	} // setId
 
 	public String getTitle() {
-		return title;
+		return title == null ? "" : title;
 	} // getTitle
 
 
@@ -178,7 +178,7 @@ public class Coupon {
 
 
 	public String getImage() {
-		return image;
+		return image == null ? "" : image;
 	} // getImage
 
 
