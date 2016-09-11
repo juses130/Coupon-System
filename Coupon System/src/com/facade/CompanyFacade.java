@@ -39,6 +39,7 @@ public class CompanyFacade implements CouponClientFacade{
 	    		return this;
 	    	}
 			else {
+				companyIsConnected = false;
 			throw new DaoException("Error: Access Denied [Company] - FAILED (Unidentified user)");
 			}
 	} // login - function
