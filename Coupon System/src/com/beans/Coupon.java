@@ -22,11 +22,14 @@ public class Coupon {
 	private double price;
 	private String image;
 	private long ownerID;
-	
+		
+	private String startDateParsed ;
+	private String endDateParsed ;
+		
 	// Constructor
 	public Coupon(){}
 	
-	public Coupon(long id, String title, LocalDate startDate, LocalDate endDate, int amount, String category, String message, double price, String image, long ownerID) throws FiledErrorException{
+	public Coupon(long id, String title, LocalDate startDate, LocalDate endDate, int amount, String category, String message, double price, String image, long ownerID) throws FiledErrorException {
 		/**
 		 * This part of the setters - is just for security. 
 		 * When the user create new coupon = the constructor will have to set the values to the setters 
@@ -42,8 +45,8 @@ public class Coupon {
 		
 		setId(id);
 		setTitle(title);
-		setStartDate(startDate);
-		setEndDate(endDate);
+//		setStartDate(startDate);
+//		setEndDate(endDate);
 		setAmount(amount);
 		setCategory(category);
 		setMessage(message);
@@ -61,6 +64,9 @@ public class Coupon {
 		this.price = price;
 		this.image = image;
 		this.ownerID = ownerID;
+		
+//		this.startDateParsed = getStartDateParsed(startDate);
+//		this.endDateParsed = getEndDateParsed(endDate);
 	} // Constructor
 	
 	//Getters && Setters
@@ -103,11 +109,13 @@ public class Coupon {
 
 		if(startDate.isAfter(LocalDate.now()) ) {
 			this.startDate = startDate;
+//			this.startDateParsed = getStartDateParsed(startDate);
 		} // if
 		else if(startDate.isBefore(LocalDate.now())) {
 			// Default start date will be LocalDate.now()
 			startDate = LocalDate.now();
 			this.startDate = startDate;
+//			this.startDateParsed = getStartDateParsed(startDate);
 		} // else if 
 		else {
 			throw new FiledErrorException("Error: The End-Date Of The Coupon Has To Be AFTER Today AND The Start-Date!");
@@ -126,6 +134,7 @@ public class Coupon {
 		} // if
 		else {
 			this.endDate = endDate;
+//			this.endDateParsed = getEndDateParsed(endDate);
 		} // else
 	} // setEndDate
 
@@ -243,10 +252,21 @@ public class Coupon {
 		} // else
 	} // setOwnerID
 
+//	public String getStartDateParsed(LocalDate startDate) throws LocalDateAdapterException {
+//		
+//		startDateParsed = xmlParsing.marshal(startDate);
+//		return startDateParsed;
+//	}
+
+//	public String getEndDateParsed(LocalDate endDate) throws LocalDateAdapterException {
+//		startDateParsed = xmlParsing.marshal(endDate);
+//		return endDateParsed;
+//	}
+	
 	// ToString
 	@Override
 	public String toString() {
-		return "\n" + "Coupon [id=" + id + ", title=" + title + ", startDate=" + startDate + ", endDate=" + endDate
+		return "\n" + "Coupon [id=" + id + ", title=" + title + ", startDate=" + startDate.toString() + ", endDate=" + endDate.toString()
 				+ ", Category= " + category + ", amount=" + amount + ", message=" + message + ", price=" + price + "$ " + ", image=" + image + " Owner ID=" + ownerID + "]";
 	} // toString
 } // Class

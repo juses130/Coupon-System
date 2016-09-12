@@ -54,7 +54,7 @@ public class CompanyFacade implements CouponClientFacade{
 			else {
 				throw new DaoException("Error: Access Denied [Company] - FAILED (Unidentified user)");
 			} // else - companyIsConnected
-	} // createCouponF
+	} // addCoupon
 	
 	public Collection<Coupon> getAllCoupons() throws DaoException{
 

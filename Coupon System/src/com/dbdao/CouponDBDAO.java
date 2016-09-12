@@ -66,6 +66,7 @@ public class CouponDBDAO implements CouponDAO{
 				prep.clearBatch();
 			} // try
 			catch (SQLException | NullPointerException | FiledErrorException e) {
+				e.printStackTrace();
 				throw new DaoException("Error: Creating Coupon By Company- FAILED (something went wrong..)");
 			} // catch
 			return coupon;
@@ -143,24 +144,35 @@ public class CouponDBDAO implements CouponDAO{
 			ResultSet rs = stat.executeQuery(sql);
 			
 			while (rs.next()) {	
-				Coupon coupon = new Coupon();
+//				Coupon coupon = new Coupon();
 
-				coupon.setId(rs.getLong("coup_id"));
-				coupon.setTitle(rs.getString("Title"));
-				coupon.setStartDate(rs.getDate("start_date").toLocalDate());
-				coupon.setEndDate(rs.getDate("end_date").toLocalDate());
-				coupon.setAmount(rs.getInt("amount"));
-				coupon.setCategory(rs.getString("Category"));
-				coupon.setMessage(rs.getString("Message"));
-				coupon.setPrice(rs.getDouble("Price"));
-				coupon.setImage(rs.getString("image"));
-				coupon.setOwnerID(rs.getLong("owner_ID"));
+//				coupon.setId(rs.getLong("coup_id"));
+//				coupon.setTitle(rs.getString("Title"));
+//				coupon.setStartDate(rs.getDate("start_date").toLocalDate());
+//				coupon.setEndDate(rs.getDate("end_date").toLocalDate());
+//				coupon.setAmount(rs.getInt("amount"));
+//				coupon.setCategory(rs.getString("Category"));
+//				coupon.setMessage(rs.getString("Message"));
+//				coupon.setPrice(rs.getDouble("Price"));
+//				coupon.setImage(rs.getString("image"));
+//				coupon.setOwnerID(rs.getLong("owner_ID"));
+				
+				Coupon coupon = new Coupon(
+						rs.getLong("coup_id"),
+						rs.getString("Title"),
+						rs.getDate("start_date").toLocalDate(),
+						rs.getDate("end_date").toLocalDate(),
+						rs.getInt("amount"),
+						rs.getString("Category"),
+						rs.getString("Message"),
+						rs.getDouble("Price"),
+						rs.getString("image"),
+						rs.getLong("owner_ID"));
 				
 				// adding the current coupon to the collection
 				coupons.add(coupon);
 			} // while
 		} catch (SQLException | FiledErrorException e) {
-			e.printStackTrace();
 			throw new DaoException("Error: Getting All Coupons By ADMIN - FAILED (something went wrong)");
 		} // catch
 		if(!coupons.isEmpty()) {

@@ -2,9 +2,9 @@ package com.task.and.singleton;
 
 import java.sql.*;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import com.exceptionerrors.ConnectorException;
-
-
 /**
  * This is the updated Version 3 of DataBase Connector.
  * 
@@ -36,7 +36,6 @@ public class DBconnector {
 							DatabaseInfo.getPassowrddb());
 					
 				} catch (NullPointerException | SQLException | ClassNotFoundException e) {
-					e.printStackTrace();
 					throw new ConnectorException("Error: Connection to the Database - FAILED (Check Your Connection To The Internet " 
 							+ "OR Check User and Password of the Database)");
 				} // catch

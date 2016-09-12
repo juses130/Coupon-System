@@ -6,9 +6,6 @@ import java.util.*;
 
 import com.beans.*;
 import com.exceptionerrors.*;
-import com.exceptionerrors.DaoException;
-import com.exceptionerrors.FiledErrorException;
-import com.exceptionerrors.LoginException;
 import com.facade.*;
 import com.task.and.singleton.CouponClientFacade;
 import com.task.and.singleton.CouponSystem;

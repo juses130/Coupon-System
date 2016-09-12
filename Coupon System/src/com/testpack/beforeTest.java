@@ -1,11 +1,6 @@
 package com.testpack;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Locale.Category;
-
 import com.beans.Company;
 import com.beans.Coupon;
 import com.beans.CouponType;

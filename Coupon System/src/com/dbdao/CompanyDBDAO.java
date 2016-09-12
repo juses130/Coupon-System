@@ -89,7 +89,6 @@ public class CompanyDBDAO implements CompanyDAO {
 	
 	@Override
 	public Coupon addCoupon(Coupon coupon, Company company) throws DaoException{
-		
 		if(existInDB.couponFoundInJoinTables(coupon, company, CheckCouponBy.BY_NAME) == false 
 				|| existInDB.couponFoundInJoinTables(coupon, company, CheckCouponBy.BY_ID) == false) {
 			try{
