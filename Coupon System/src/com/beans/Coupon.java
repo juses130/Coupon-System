@@ -193,7 +193,7 @@ public class Coupon {
 
 	public void setImage(String image) {
 		
-		if(image.isEmpty()) {
+		if(image == null || image.isEmpty()) {
 			image = "No Image";
 			this.image = image;
 		} // if
