@@ -39,7 +39,7 @@ public class AdminFacade implements CouponClientFacade{
 	} // AdminFacade() - constructor
 
 	@Override
-	public AdminFacade login(String adminName, String password, ClientType client) throws LoginException, DaoException {
+	public AdminFacade login(String adminName, String password, ClientType client) throws DaoException {
 		if(adminName != null && password != null && client.equals(ClientType.ADMIN)) {
 			if(adminName.toLowerCase().equals(adminUser) && String.valueOf(password).equals(adminPassword) 
 					&& client == ClientType.ADMIN) {
@@ -48,11 +48,13 @@ public class AdminFacade implements CouponClientFacade{
 			} // if
 			else {
 				adminIsConnected = false;
-				throw new LoginException ("Admin Login - FAILED (Incorrect password or username)");
+				return null;
+//				throw new LoginException ("Admin Login - FAILED (Incorrect password or username)");
 				} // else
 		} // if - null check
 		else {
-			throw new LoginException ("Admin Login - FAILED (empty values or null)");
+			return null;
+//			throw new LoginException ("Admin Login - FAILED (empty values or null)");
 		} // else - null
 	} // login
 	
