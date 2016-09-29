@@ -18,22 +18,17 @@ public class DatabaseInfo {
 	 * This is for MySql Online
 	 */
 	
-//	private static final String databaseName ="sql6129033";
-//	private static final String driverClass = "com.mysql.jdbc.Driver";
-//	private static final String userDBname = "sql6129033"; 	
-//	private static final String passowrdDB = "cqeQXQ4dRC";
-//	private static final String url = "jdbc:mysql://sql6.freemysqlhosting.net:3306/" + databaseName + "?characterEncoding=UTF-8&useSSL=false";
+	private static final String databaseName ="sql6129033";
+	private static final String driverClass = "com.mysql.jdbc.Driver";
+	private static final String userDBname = "sql6129033"; 	
+	private static final String passowrdDB = "cqeQXQ4dRC";
+	private static final String url = "jdbc:mysql://sql6.freemysqlhosting.net:3306/" + databaseName + "?characterEncoding=UTF-8&useSSL=false";
 
 //	private static final String test = "jdbc:mysql://localhost:3306/coupon?user=root&password=12345?characterEncoding=UTF-8&useSSL=false";
 	
 	/*
 	 * This is for MySql LOCAL
 	 */
-	private static final String databaseName ="coupon";
-	private static final String driverClass = "com.mysql.jdbc.Driver";
-	private static final String userDBname = "root"; 	
-	private static final String passowrdDB = "12345";
-	private static final String url = "jdbc:mysql://localhost:3306/" + databaseName + "?characterEncoding=UTF-8&useSSL=false";
 
 
 	
