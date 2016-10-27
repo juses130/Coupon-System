@@ -79,6 +79,10 @@ public class CompanyDBDAO implements CompanyDAO {
 					} // while
 				} // try 
 				catch (SQLException e) {
+//					e.printStackTrace();
+					if(e.getMessage().equals("Duplicate entry '" + company.getEmail() + "' for key 'email'")) {
+						throw new DaoException("Error: Creating New Company - FAILED (Duplicate Email)");
+					}
 					throw new DaoException("Error: Creating New Company - FAILED (something went wrong)");
 				} // catch
 		} // if - existOrNotByName
@@ -392,6 +396,7 @@ public class CompanyDBDAO implements CompanyDAO {
     			stat.clearBatch();
     			
     		} catch (SQLException e) {
+    			e.printStackTrace();
     			throw new DaoException("Error: cannot make sure if the company is in the DataBase");
     		} // catch
     		return answer;
