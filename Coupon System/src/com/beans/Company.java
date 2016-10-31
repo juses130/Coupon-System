@@ -2,20 +2,25 @@ package com.beans;
 
 import java.util.Collection;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import com.exceptionerrors.FiledErrorException;
-@XmlRootElement
+
+@XmlAccessorType(XmlAccessType.FIELD)
 
 public class Company {
 	
 	// Attributes
 	// TODO: fixed the logical thinking here -> What to do with the Nulls and empty fileds? i Can't get a collection of objects when they have null because is doing checks to every object!
-	private long id = 0;
-	private String compName = "";
-	private String password = "";
-	private String email = "";
-	private Collection<Coupon> coupons;
+	 @XmlElement private long id = 0;
+	 @XmlElement private String compName = "";
+	 @XmlTransient private String password = "";
+	 @XmlElement private String email = "";
+	 @XmlElement private Collection<Coupon> coupons;
 	
 	// Constructor
 	public Company(){}

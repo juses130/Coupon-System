@@ -13,7 +13,7 @@ import com.task.and.singleton.DatabaseInfo;
 
 /**
  * This is Company Database DAO Class. (DBDAO in short)</br>
- * Just implement the methods from CompanyDAO interfaces. 
+// * Just implement the methods from CompanyDAO interfaces. 
  * 
  * @author Raziel
  */
@@ -241,7 +241,7 @@ public class CompanyDBDAO implements CompanyDAO {
 	public Collection<Company> getAllCompanies() throws DaoException{
 		
 		String sql = "SELECT * FROM " + DatabaseInfo.getDBname() + ".company";
-		Collection<Company> companies = new HashSet<>();
+		List<Company> companies = new ArrayList<>();
 		Company company = null;
 		ResultSet rs = null;
 		
@@ -427,6 +427,8 @@ public class CompanyDBDAO implements CompanyDAO {
  					answer = true;
  				} // if
  	            } catch (SQLException e) {
+ 	            	// Under surveillance
+ 	            	e.printStackTrace();
  	 	   			throw new DaoException("Error: cannot make sure if the company is in the DataBase");
  	            } // catch
  		  return answer;
