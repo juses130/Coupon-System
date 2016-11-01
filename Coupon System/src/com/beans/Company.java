@@ -15,12 +15,13 @@ import com.exceptionerrors.FiledErrorException;
 public class Company {
 	
 	// Attributes
-	// TODO: fixed the logical thinking here -> What to do with the Nulls and empty fileds? i Can't get a collection of objects when they have null because is doing checks to every object!
-	 @XmlElement private long id = 0;
-	 @XmlElement private String compName = "";
+	 private long id = 0;
+	 private String compName = "";
+	 // No need to map a password.
 	 @XmlTransient private String password = "";
-	 @XmlElement private String email = "";
-	 @XmlElement private Collection<Coupon> coupons;
+	 private String email = "";
+	 // Cannot parse this Collection.
+	 @XmlTransient private Collection<Coupon> coupons;
 	
 	// Constructor
 	public Company(){}
