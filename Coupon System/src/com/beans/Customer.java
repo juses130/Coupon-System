@@ -2,17 +2,21 @@ package com.beans;
 
 import java.util.Collection;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
 
 import com.exceptionerrors.FiledErrorException;
-@XmlRootElement
+
+@XmlAccessorType(XmlAccessType.FIELD)
+
 public class Customer {
 	
 	// Attributes
 	
 	private long id;
 	private String custName = "";
-	private String password = "";
+	@XmlTransient private String password = "";
 	private Collection<Coupon> coupons;
 	
 	// Constructor

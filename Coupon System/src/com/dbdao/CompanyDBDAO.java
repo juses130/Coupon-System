@@ -81,7 +81,7 @@ public class CompanyDBDAO implements CompanyDAO {
 				catch (SQLException e) {
 //					e.printStackTrace();
 					if(e.getMessage().equals("Duplicate entry '" + company.getEmail() + "' for key 'email'")) {
-						throw new DaoException("Error: Creating New Company - FAILED (Duplicate Email)");
+						throw new DaoException("Error: Creating New Company - FAILED (Email Address is already registered)");
 					}
 					throw new DaoException("Error: Creating New Company - FAILED (something went wrong)");
 				} // catch
@@ -263,6 +263,7 @@ public class CompanyDBDAO implements CompanyDAO {
 			} // while loop
 
 		} catch (SQLException | FiledErrorException e) {
+			e.printStackTrace();
 			throw new DaoException("Error: Getting all Companies - FAILED");
 		} // catch
 

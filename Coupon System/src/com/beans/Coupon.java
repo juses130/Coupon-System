@@ -2,11 +2,13 @@ package com.beans;
 import java.time.LocalDate;
 import java.util.HashSet;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.exceptionerrors.FiledErrorException;
 
-@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 
 public class Coupon {
 
@@ -23,8 +25,8 @@ public class Coupon {
 	private String image;
 	private long ownerID;
 		
-	private String startDateParsed ;
-	private String endDateParsed ;
+//	private String startDateParsed ;
+//	private String endDateParsed ;
 		
 	// Constructor
 	public Coupon(){}
