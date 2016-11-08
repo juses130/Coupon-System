@@ -33,7 +33,7 @@ public class Coupon {
 	
 	public Coupon(long id, String title, LocalDate startDate, LocalDate endDate, int amount, String category, String message, double price, String image, long ownerID) throws FiledErrorException {
 		/**
-		 * This part of the setters - is just for security. 
+		 * The next part of this method - is just for security. 
 		 * When the user create new coupon = the constructor will have to set the values to the setters 
 		 * before setting them to himself and actually create a new coupon.
 		 * 
