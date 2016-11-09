@@ -105,7 +105,10 @@ public class AdminFacade implements CouponClientFacade{
 		
 		// Security Access Check
 		if(adminIsConnected != false) {
-		compDao.updateCompany(company);
+			// check if company is exist
+			if(compDao.getCompany(company.getId()) != null) {
+				compDao.updateCompany(company);
+			}
 		}
 		else {
 			throw new DaoException("Error: Access Denied [Admin] - FAILED (Unidentified user)");
