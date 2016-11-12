@@ -192,8 +192,6 @@ public class AdminFacade implements CouponClientFacade{
 		if(adminIsConnected != false) {
 				Customer customer = new Customer();
 				customer = custDao.getCustomer(id);
-				// set the Collection of the Coupons.
-//				customer.setCoupons(custDao.getCoupons(customer.getId()));
 				return customer;
 			} // if - adminIsConnected
 			else {
@@ -244,6 +242,24 @@ public class AdminFacade implements CouponClientFacade{
 				throw new DaoException("Error: Access Denied [Admin] - FAILED (Unidentified user)");
 			} // else - adminIsConnected
 	} // removeCoupon
+	
+	public Coupon getCoupon(long coupID) throws Exception {
+		
+		try {
+			// Security Access Check	
+			if(adminIsConnected != false) {
+					Coupon coupon = new Coupon();
+					coupon = coupDao.getCoupon(coupID, ClientType.ADMIN);
+					return coupon;
+				} // if - adminIsConnected
+				else {
+					throw new DaoException("Error: Access Denied [Admin] - FAILED (Unidentified user)");
+				} // else - adminIsConnected
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		}
+	}
 	
 	public Collection<Coupon> getCouponByPrice(double maxPrice) throws DaoException {
 		// Security Access Check	

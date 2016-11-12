@@ -110,7 +110,7 @@ public class CustomerDBDAO implements CustomerDAO {
 			else {
 				throw new DaoException("Error: Removing Customer - FAILED (Customer dosen't exist in the DataBase)");
 			} // else
-	}
+	} // removeCustomer - Function
 
 	@Override
 	public void updateCustomer(Customer customer) throws DaoException{
@@ -137,12 +137,12 @@ public class CustomerDBDAO implements CustomerDAO {
 					prep1.executeUpdate();
 
 					} catch (SQLException e) {
-						throw new DaoException("Error - Updating Company - FAILED (something went wrong..)");
+						throw new DaoException("Error - Updating Customer - FAILED (something went wrong..)");
 					} // catch
 			
 		}// if - exist
 		else {
-			throw new DaoException("Error: Removing Company - FAILED (Company is not exist in the DataBase)");
+			throw new DaoException("Error: Removing Customer - FAILED (Customer is not exist in the DataBase)");
 		} // else	
 	} // updateCustomer
 	
@@ -202,7 +202,7 @@ public class CustomerDBDAO implements CustomerDAO {
 				return customer;
 		} // if
 		else {
-			throw new DaoException("Error: Getting Customer By Name - FAILED");
+			throw new DaoException("Error: Getting Customer By Name - FAILED (Customer is not exist in the DataBase)");
 		} // else - exist
 		} catch (SQLException | FiledErrorException e) {
 			throw new DaoException("Error: Getting Customer By Name - FAILED (Customer is not exist in the DataBase)");
@@ -310,14 +310,14 @@ public class CustomerDBDAO implements CustomerDAO {
    		} // if - hasRow		
 			else {
 
-				String sqlOnlyFromCompany = "DELETE FROM customer WHERE Cust_ID=" + custID;
-				PreparedStatement prep2 = DBconnector.getConnection().prepareStatement(sqlOnlyFromCompany);
+				String sqlOnlyFromCustomer = "DELETE FROM customer WHERE Cust_ID=" + custID;
+				PreparedStatement prep2 = DBconnector.getConnection().prepareStatement(sqlOnlyFromCustomer);
 				prep2.executeUpdate();
 				prep2.clearBatch();
 			} // else - hasRow
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new DaoException("Error: Removing Company - FAILED (something went wrong..)");
+			throw new DaoException("Error: Removing Customer - FAILED (something went wrong..)");
 		} // catch
 	} // removeMethodPart2
 	

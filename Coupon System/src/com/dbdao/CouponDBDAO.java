@@ -476,7 +476,7 @@ public class CouponDBDAO implements CouponDAO{
 				double price;
 				long ownerID = -1;
 			
-					String sqlSEL = "SELECT * FROM " + DatabaseInfo.getDBname() + ".Coupon WHERE Coup_ID= ?" ;
+					String sqlSEL = "SELECT * FROM " + DatabaseInfo.getDBname() + ".coupon WHERE Coup_ID= ?" ;
 					PreparedStatement prep = DBconnector.getConnection().prepareStatement(sqlSEL);
 					prep.setLong(1, id);
 					
@@ -503,6 +503,7 @@ public class CouponDBDAO implements CouponDAO{
 				throw new DaoException("Error: Getting Coupon By ID - FAILED (Coupon dosen't exist in the DataBase)");
 			} // else - exist
 			} catch (SQLException | FiledErrorException e) {
+				e.printStackTrace();
 				throw new DaoException("Error: Getting Coupon By ID - FAILED (something went wrong)");
 			} // catch
 		} // if - admin
