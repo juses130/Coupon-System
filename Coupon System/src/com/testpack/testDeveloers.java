@@ -942,7 +942,7 @@ public class testDeveloers {
    	System.out.print("Please insert your CATEGORY: ");
    	
    	try {
-   		Collection<Coupon> couponsByType = compF.getCouponsByType(userInputString());
+   		Collection<Coupon> couponsByType = compF.getCouponsCompanyByType(userInputString());
 	   	System.out.println(couponsByType.toString());
 	} catch (DaoException | FiledErrorException e) {
 		System.out.println(e.getMessage());
@@ -957,7 +957,7 @@ public class testDeveloers {
 
     	
     	try {
-    		Collection<Coupon> coupons = compF.getCouponsOfCompanyByPrice(maxPrice);
+    		Collection<Coupon> coupons = compF.getCouponsCompanyByPrice(maxPrice);
 			System.out.println(coupons.toString() + "\n");
 			System.out.println("Results: [" + coupons.size() + "] Coupons");
 		} catch (DaoException e) {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding="com/checkpackage/|com/unusedclasses/|checkingpack/|com/added/functions/IsExistDB.java|com/added/functions/DataRowGetter.java|GUI/" kind="src" path="src"/>
-	<classpathentry exported="true" kind="lib" path="D:/תוכנות/Java lab/mysql-connector-java-5.1.39/mysql-connector-java-5.1.39-bin.jar"/>
+	<classpathentry kind="lib" path="D:/JavaLab/mysql-connector-java-5.1.39-bin.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>

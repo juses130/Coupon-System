@@ -40,7 +40,7 @@ public class CompanyFacade implements CouponClientFacade{
 	    	}
 			else {
 				companyIsConnected = false;
-			throw new DaoException("Error: Access Denied [Company] - FAILED (Unidentified user)");
+				return null;
 			}
 	} // login - function
 	
@@ -118,7 +118,7 @@ public class CompanyFacade implements CouponClientFacade{
 			} // else - companyIsConnected
 	} // getCoupon
 	
-	public Collection<Coupon> getCouponsByType(String category) throws DaoException, FiledErrorException{
+	public Collection<Coupon> getCouponsCompanyByType(String category) throws DaoException, FiledErrorException{
 
 		// Security Access Check	
 		if(companyIsConnected != false) {
@@ -133,7 +133,7 @@ public class CompanyFacade implements CouponClientFacade{
 			} // else - companyIsConnected
 	} // getCouponsByType
 	
-	public Collection<Coupon> getCouponsOfCompanyByPrice(double maxPrice) throws DaoException{
+	public Collection<Coupon> getCouponsCompanyByPrice(double maxPrice) throws DaoException{
 		// Security Access Check	
 		if(companyIsConnected != false) {
 			Collection<Coupon> coupons = coupDao.getCouponByPrice(company.getId(), maxPrice, ClientType.COMPANY);
