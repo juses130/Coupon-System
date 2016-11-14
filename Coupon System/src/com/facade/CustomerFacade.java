@@ -29,27 +29,25 @@ public class CustomerFacade implements CouponClientFacade {
     public CustomerFacade login(String custName, String password, ClientType client) throws LoginException, DaoException {
     	
     	boolean loginSuccessful  = false;
-    	try {
-    		loginSuccessful  = custDao.login(custName, password);
-		} catch (Exception e) {
-			throw new LoginException("Customer Login Failed");
-		} // catch
+    	loginSuccessful  = custDao.login(custName, password);
     	
     	if(loginSuccessful == true) {
+			// If the login was Successful, save it in the private Customer instance.
     		this.customer = custDao.getCustomer(custName);
     		customerIsConnected = true;
     		return this;
     	} // if - true
     	else {
-			throw new LoginException("Customer Login Failed.");
+    		customerIsConnected = true;
+    		return null;
 		} // else
 	} // login 
 	
-	public Coupon purchaseCoupon(Coupon coupon) throws DaoException {
+	public Coupon purchaseCoupon(Coupon coupon) throws DaoException, FiledErrorException {
 
 		// Security Access Check	
 		if(customerIsConnected != false) {
-			coupon = coupDao.getCoupon(coupon.getId(), ClientType.CUSTOMER);
+			coupon = coupDao.getCoupon(coupon.getId(), customer.getId(), ClientType.CUSTOMER);
 			custDao.addCoupon(coupon, customer.getId());
 			return coupon;
 			} // if - customerIsConnected

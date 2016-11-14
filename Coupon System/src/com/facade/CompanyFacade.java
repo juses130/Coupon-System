@@ -74,7 +74,7 @@ public class CompanyFacade implements CouponClientFacade{
 		// Security Access Check	
 		if(companyIsConnected != false) {
 			coupon.setOwnerID(company.getId());
-			coupDao.removeCoupon(coupon, ClientType.COMPANY);
+			coupDao.removeCoupon(coupon, company.getId(), ClientType.COMPANY);
 			} // if - companyIsConnected
 			else {
 				throw new DaoException("Error: Access Denied [Company] - FAILED (Unidentified user)");
@@ -85,7 +85,7 @@ public class CompanyFacade implements CouponClientFacade{
 		
 		// Security Access Check	
 		if(companyIsConnected != false) {
-			coupDao.updateCoupon(coupon);
+			coupDao.updateCoupon(coupon, company);
 			return coupon;
 			} // if - companyIsConnected
 			else {
@@ -105,12 +105,13 @@ public class CompanyFacade implements CouponClientFacade{
 			} // else - companyIsConnected
 	} // viewCompay
 	
-	public Coupon getCoupon(long id) throws DaoException, FiledErrorException{
+	public Coupon getCoupon(long coupID) throws DaoException, FiledErrorException{
 		
 		// Security Access Check	
 		if(companyIsConnected != false) {
 			Coupon coupon = new Coupon();
-			coupon = coupDao.getCoupon(id, ClientType.COMPANY);
+			coupon = coupDao.getCoupon(coupID, company.getId(), ClientType.COMPANY);
+//			System.out.println("Facade says: " + coupon.toString());
 			return coupon;
 			} // if - companyIsConnected
 			else {

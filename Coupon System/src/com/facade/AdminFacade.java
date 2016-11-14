@@ -236,7 +236,8 @@ public class AdminFacade implements CouponClientFacade{
 		
 		// Security Access Check	
 		if(adminIsConnected != false) {
-			coupDao.removeCoupon(coupon, ClientType.ADMIN);
+			// is null because the Admin delete it from the entire DB
+			coupDao.removeCoupon(coupon, 0,ClientType.ADMIN);
 			} // if - adminIsConnected
 			else {
 				throw new DaoException("Error: Access Denied [Admin] - FAILED (Unidentified user)");
@@ -249,7 +250,7 @@ public class AdminFacade implements CouponClientFacade{
 			// Security Access Check	
 			if(adminIsConnected != false) {
 					Coupon coupon = new Coupon();
-					coupon = coupDao.getCoupon(coupID, ClientType.ADMIN);
+					coupon = coupDao.getCoupon(coupID,  0,ClientType.ADMIN);
 					return coupon;
 				} // if - adminIsConnected
 				else {

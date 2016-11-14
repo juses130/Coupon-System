@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.beans.*;
 import com.exceptionerrors.DaoException;
+import com.exceptionerrors.FiledErrorException;
 import com.facade.ClientType;
 
 /**
@@ -33,10 +34,11 @@ public interface CouponDAO {
 	 * Remove a Coupon from the underlying database (or any other persistence storage).
 	 * 
 	 * @param coupon a {@code Coupon} Object
+	 * @param clientID {@code long} id number
 	 * @param client a {@code ClientType} Enum
 	 * @throws DaoException
 	 */
-	public void removeCoupon(Coupon coupon, ClientType client) throws DaoException;
+	public void removeCoupon(Coupon coupon, long clientID, ClientType client) throws DaoException;
 	
 	/**
 	 * Updates a Coupon from the underlying database (or any other persistence storage).
@@ -45,25 +47,27 @@ public interface CouponDAO {
 	 * @return a {@code Coupon} Object
 	 * @throws DaoException
 	 */
-	public Coupon updateCoupon(Coupon coupon) throws DaoException;
+	public Coupon updateCoupon(Coupon coupon, Company company) throws DaoException;
 	
 	/**
 	 * Returns a {@code Coupon} object from the underlying database 
 	 * (or any other persistence storage).
 	 * 
-	 * @param id {@code long} of the Client (it can be Customer or Company)
+	 * @param coupID {@code long} of the coupon id
+	 * @param clientID {@code long} of the Client (it can be Customer or Company)
 	 * @param client {@code ClientType} Enum
 	 * @return a {@code Coupon} Object
 	 * @throws DaoException
+	 * @throws FiledErrorException 
 	 */
-	public Coupon getCoupon(long id, ClientType client) throws DaoException;
+	public Coupon getCoupon(long coupID, long clientID ,ClientType client) throws DaoException, FiledErrorException;
 	
 	/**
 	 * Returns a {@code Collection<Coupon>} of all Coupons from the 
 	 * underlying database (or any other persistence storage).
+	 * </br>
+	 *<b> Admin Access ONLY! </b>
 	 * 
-	 * @param id {@code long} of the Client (it can be Customer or Company)
-	 * @param client {@code ClientType} Enum 
 	 * @return a {@code Collection<Coupon>}
 	 * @throws DaoException
 	 */
@@ -79,7 +83,7 @@ public interface CouponDAO {
 	 * @return a {@code Set<Coupon>} 
 	 * @throws DaoException
 	 */
-	public Collection<Coupon> getCouponByPrice(long id, double price,ClientType client) throws DaoException;
+	public Collection<Coupon> getCouponByPrice(long clientID, double price ,ClientType client) throws DaoException;
 	
 	/**
 	 * Returns a {@code Set<Coupon>} of all Coupons by the Category {@code CouponType} from the 
@@ -91,6 +95,6 @@ public interface CouponDAO {
 	 * @return a {@code Set<Coupon>} 
 	 * @throws DaoException
 	 */
-	public Collection<Coupon> getCouponByType(long id, CouponType category, ClientType client) throws DaoException;
+	public Collection<Coupon> getCouponByType(long clientID, CouponType category, ClientType client) throws DaoException;
 	
 }

@@ -32,11 +32,11 @@ public class CustomerDBDAO implements CustomerDAO {
 	public boolean login(String userName, String password) throws DaoException {
 		
 		boolean hasRows = false;
-        String sqlName = "SELECT Cust_id, Cust_name, password "
-        		+ DatabaseInfo.getDBname() + ".FROM customer "
+        String sqlName = "SELECT * "
+        		+"FROM " + DatabaseInfo.getDBname() + ".customer "
         		+ "WHERE "
-				+ "Cust_name= '" + userName + "'" + " AND " + "password= '" 
-				+ password + "'";
+				+ "customer.Cust_name= '" + userName + "'" 
+        		+ " AND " + "customer.password= '" + password + "' ";
 		try {
 			Statement stat = DBconnector.getConnection().createStatement();
 			ResultSet rs = stat.executeQuery(sqlName);
@@ -47,7 +47,8 @@ public class CustomerDBDAO implements CustomerDAO {
 				} // if
 			
 		} catch (SQLException | NullPointerException e) {
-			throw new DaoException("Error: Customer Login - FAILED");
+			
+			throw new DaoException("Error: Customer Login - FAILED (something went wrong..)");
 		} // catch
 	return hasRows;
 	} // login
