@@ -30,7 +30,6 @@ public class CustomerFacade implements CouponClientFacade {
     	
     	boolean loginSuccessful  = false;
     	loginSuccessful  = custDao.login(custName, password);
-    	
     	if(loginSuccessful == true) {
 			// If the login was Successful, save it in the private Customer instance.
     		this.customer = custDao.getCustomer(custName);
@@ -38,22 +37,24 @@ public class CustomerFacade implements CouponClientFacade {
     		return this;
     	} // if - true
     	else {
-    		customerIsConnected = true;
+    		customerIsConnected = false;
     		return null;
 		} // else
 	} // login 
 	
 	public Coupon purchaseCoupon(Coupon coupon) throws DaoException, FiledErrorException {
-
-		// Security Access Check	
-		if(customerIsConnected != false) {
-			coupon = coupDao.getCoupon(coupon.getId(), customer.getId(), ClientType.CUSTOMER);
-			custDao.addCoupon(coupon, customer.getId());
-			return coupon;
-			} // if - customerIsConnected
-			else {
-				throw new DaoException("Error: Access Denied [Customer] - FAILED (Unidentified user)");
-			} // else - customerIsConnected
+		
+			// Security Access Check	
+			if(customerIsConnected != false) {
+				coupon = coupDao.getCoupon(coupon.getId(), customer.getId(), ClientType.CUSTOMER);
+				custDao.addCoupon(coupon, customer.getId());
+				return coupon;
+				} // if - customerIsConnected
+				else {
+					throw new DaoException("Error: Access Denied [Customer] - FAILED (Unidentified user)");
+				} // else - customerIsConnected
+		
+		
 	} // purchaseCoupon
 	
 	public Customer getCustomer() throws DaoException {
@@ -94,6 +95,19 @@ public class CustomerFacade implements CouponClientFacade {
 				throw new DaoException("Error: Access Denied [Customer] - FAILED (Unidentified user)");
 			} // else - customerIsConnected
 	} // getAllCoupons
+	
+	public Collection<Coupon> getCouponForPurchase() throws DaoException {
+		
+		// Security Access Check	
+		if(customerIsConnected != false) {
+			Collection<Coupon> coupons = custDao.getCouponForPurchase(customer.getId());
+			return coupons;
+			} // if - customerIsConnected
+			else {
+				throw new DaoException("Error: Access Denied [Customer] - FAILED (Unidentified user)");
+			} // else - customerIsConnected
+	} // getCouponForPurchase
+	
 	
 	public Collection<Coupon> getAllCouponsByPrice(double maxPrice) throws DaoException {
 		

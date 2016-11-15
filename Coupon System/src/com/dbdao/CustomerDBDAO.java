@@ -272,7 +272,50 @@ public class CustomerDBDAO implements CustomerDAO {
 			throw new DaoException("Error: Getting Coupons of Customer - FAILED (something went wrong)");
 		} // catch
 		return coupons;
-	} // getCoupons
+	} // getCouponsno 
+	
+	@Override
+	public Collection<Coupon> getCouponForPurchase(long custID) throws DaoException{
+// TODO: NO WORKING YET...
+		Collection<Coupon> coupons = new HashSet<>(); 
+		
+        try {
+			String sql = "SELECT " + DatabaseInfo.getDBname() + ".coupon.* "
+					+ "FROM " + DatabaseInfo.getDBname() + ".customer_coupon "
+					+ "LEFT JOIN " + DatabaseInfo.getDBname() + ".coupon USING (Coup_ID) "
+					+ "WHERE "  + DatabaseInfo.getDBname() + ".customer_coupon.Cust_ID <> " + custID + " "
+					+ "AND " +  DatabaseInfo.getDBname() + ".coupon.Coup_id IS NOT NULL";
+			Statement stat = DBconnector.getConnection().createStatement();
+			ResultSet rs = stat.executeQuery(sql);
+			
+			while (rs.next()) {				
+				Coupon coupon = new Coupon(
+						rs.getLong("coup_id"),
+						rs.getString("Title"),
+						rs.getDate("start_date").toLocalDate(),
+						rs.getDate("end_date").toLocalDate(),
+						rs.getInt("amount"),
+						rs.getString("Category"),
+						rs.getString("Message"),
+						rs.getDouble("Price"),
+						rs.getString("image"),
+						rs.getLong("owner_ID"));
+				
+				// adding the current coupon to the collection
+				coupons.add(coupon);
+			} // while
+			stat.clearBatch();
+		} catch (SQLException | FiledErrorException e) {
+			e.printStackTrace();
+			throw new DaoException("Error: Getting All Coupons By CUSTOMER- FAILED (something went wrong)");
+		} // catch
+		if(!coupons.isEmpty()) {
+			return coupons;
+		} // if - empty
+		else {
+			throw new DaoException("Error: No Coupons Found");
+		}  // else - Set<> is empty
+	} // getAllCoupons
 	
 	/**
 	 * 

@@ -555,7 +555,7 @@ public class CouponDBDAO implements CouponDAO{
 			} // else - existInDB.couponFoundInJoinTables
 		} // else - COMPANY
 		else if (client == ClientType.CUSTOMER
-				&& existInDB.purchasedBefore(coupID, clientID) == true) {
+				&& existInDB.purchasedBefore(coupID, clientID) == false) {
 			
 			try {
 			if(existInDB.couponExistByID(coupon) == true) {
@@ -595,7 +595,7 @@ public class CouponDBDAO implements CouponDAO{
 			} // catch
 		} // else if - ClientType.CUSTOMER
 		else {
-			throw new DaoException("Error: Getting Coupon - FAILED (Unidentified user)");
+			throw new DaoException("Error: You can buy the coupon only once!");
 		} // else
     } // getCouponMethod
 

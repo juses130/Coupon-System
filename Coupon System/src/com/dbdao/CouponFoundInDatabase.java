@@ -7,6 +7,7 @@ import com.beans.Company;
 import com.beans.Coupon;
 import com.exceptionerrors.DaoException;
 import com.task.and.singleton.DBconnector;
+import com.task.and.singleton.DatabaseInfo;
 
 /**
  * This is a helper <b>Protected</b> Class.</br>
@@ -32,7 +33,7 @@ public class CouponFoundInDatabase {
 		
 		boolean isExist = false;
 		try {
-			String sqlQuery = "SELECT * FROM coupon WHERE Title='" + coupon.getTitle() + "'";
+			String sqlQuery = "SELECT * FROM " + DatabaseInfo.getDBname() + ".coupon WHERE Title='" + coupon.getTitle() + "'";
 			java.sql.Statement stat = DBconnector.getConnection().createStatement();
 			ResultSet rs = stat.executeQuery(sqlQuery);
 			rs.next();
@@ -69,11 +70,11 @@ public class CouponFoundInDatabase {
 		
 		if(type == CheckCouponBy.BY_NAME) {
 			
-			String sqlQueryByName = "SELECT coupon.* "
-					+ "FROM company_coupon, coupon "
-					+ "WHERE coupon.title='" + coupon.getTitle() + "' " 
-					+ "AND company_coupon.comp_ID=" + company.getId() + " "
-					+ "AND company_coupon.Coup_ID = coupon.Coup_id";
+			String sqlQueryByName = "SELECT " + DatabaseInfo.getDBname() + ".coupon.* "
+					+ "FROM " + DatabaseInfo.getDBname() + ".company_coupon, coupon "
+					+ "WHERE " + DatabaseInfo.getDBname() + ".coupon.title='" + coupon.getTitle() + "' " 
+					+ "AND " + DatabaseInfo.getDBname() + ".company_coupon.comp_ID=" + company.getId() + " "
+					+ "AND " + DatabaseInfo.getDBname() + ".company_coupon.Coup_ID = coupon.Coup_id";
 
 				state = DBconnector.getConnection().createStatement();
 				rs = state.executeQuery(sqlQueryByName);
@@ -81,11 +82,11 @@ public class CouponFoundInDatabase {
 		} // if
 		else if(type == CheckCouponBy.BY_ID) {
 			
-			String sqlQueryByID = "SELECT coupon.* "
-					+ "FROM company_coupon, coupon "
-					+ "WHERE coupon.coup_id=" + coupon.getId() + " "
-					+ "AND company_coupon.comp_ID=" + company.getId() + " "
-					+ "AND company_coupon.Coup_ID = coupon.Coup_id";
+			String sqlQueryByID = "SELECT " + DatabaseInfo.getDBname() + ".coupon.* "
+					+ "FROM " + DatabaseInfo.getDBname() + ".company_coupon, coupon "
+					+ "WHERE " + DatabaseInfo.getDBname() + ".coupon.coup_id=" + coupon.getId() + " "
+					+ "AND " + DatabaseInfo.getDBname() + ".company_coupon.comp_ID=" + company.getId() + " "
+					+ "AND " + DatabaseInfo.getDBname() + ".company_coupon.Coup_ID = coupon.Coup_id";
 			
 			state = DBconnector.getConnection().createStatement();
 			rs = state.executeQuery(sqlQueryByID);
@@ -114,7 +115,9 @@ public class CouponFoundInDatabase {
 		
 		boolean isExist = false;
 		try {
-			String sqlQuery = "SELECT * FROM coupon WHERE coup_id=" + coupon.getId();
+			String sqlQuery = "SELECT * "
+					+ " FROM  " + DatabaseInfo.getDBname() + ".coupon "
+					+ " WHERE coup_id=" + coupon.getId();
 		java.sql.Statement stat = DBconnector.getConnection().createStatement();
 		ResultSet rs = stat.executeQuery(sqlQuery);
 			rs.next();
@@ -145,11 +148,11 @@ public class CouponFoundInDatabase {
 		boolean isExist = false;
 		try {
 			
-			String sqlQueryByID = "SELECT coupon.* "
-					+ "FROM customer_coupon, coupon "
-					+ "WHERE coupon.coup_id=" + coupID + " "
-					+ "AND customer_coupon.cust_id=" + custID + " "
-					+ "AND customer_coupon.Coup_ID = coupon.Coup_id";
+			String sqlQueryByID = "SELECT " + DatabaseInfo.getDBname() + ".* "
+					+ "FROM " + DatabaseInfo.getDBname() + ".customer_coupon, coupon "
+					+ "WHERE " + DatabaseInfo.getDBname() + ".coupon.coup_id=" + coupID + " "
+					+ "AND " + DatabaseInfo.getDBname() + ".customer_coupon.cust_id=" + custID + " "
+					+ "AND " + DatabaseInfo.getDBname() + ".customer_coupon.Coup_ID = coupon.Coup_id";
 			
 			java.sql.Statement state = DBconnector.getConnection().createStatement();
 			ResultSet rs = state.executeQuery(sqlQueryByID);
