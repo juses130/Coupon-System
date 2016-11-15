@@ -280,11 +280,15 @@ public class CustomerDBDAO implements CustomerDAO {
 		Collection<Coupon> coupons = new HashSet<>(); 
 		
         try {
-			String sql = "SELECT " + DatabaseInfo.getDBname() + ".coupon.* "
-					+ "FROM " + DatabaseInfo.getDBname() + ".customer_coupon "
-					+ "LEFT JOIN " + DatabaseInfo.getDBname() + ".coupon USING (Coup_ID) "
-					+ "WHERE "  + DatabaseInfo.getDBname() + ".customer_coupon.Cust_ID <> " + custID + " "
-					+ "AND " +  DatabaseInfo.getDBname() + ".coupon.Coup_id IS NOT NULL";
+//			String sql = "SELECT " + DatabaseInfo.getDBname() + ".coupon.* "
+//					+ "FROM " + DatabaseInfo.getDBname() + ".customer_coupon "
+//					+ "LEFT JOIN " + DatabaseInfo.getDBname() + ".coupon USING (Coup_ID) "
+//					+ "WHERE "  + DatabaseInfo.getDBname() + ".customer_coupon.Cust_ID <> " + custID + " "
+//					+ "AND " +  DatabaseInfo.getDBname() + ".coupon.Coup_id IS NOT NULL";
+        	String sql = "SELECT * "
+        			+ " FROM " + DatabaseInfo.getDBname() + ".coupon"
+        			+ " WHERE " + DatabaseInfo.getDBname() + ".coupon.coup_id NOT IN ("
+        					+ "SELECT coup_id FROM " +  DatabaseInfo.getDBname() + ".customer_coupon WHERE cust_id =" + custID + ")"  ;
 			Statement stat = DBconnector.getConnection().createStatement();
 			ResultSet rs = stat.executeQuery(sql);
 			
