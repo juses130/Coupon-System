@@ -57,7 +57,7 @@ public class CustomerFacade implements CouponClientFacade {
 		
 	} // purchaseCoupon
 	
-	public Customer getCustomer() throws DaoException {
+	public Customer viewCustomer() throws DaoException {
 		
 		// Security Access Check	
 		if(customerIsConnected != false) {

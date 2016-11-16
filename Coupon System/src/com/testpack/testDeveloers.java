@@ -1597,7 +1597,7 @@ public class testDeveloers {
      		case 5: {
      			System.out.println("Your Customer Details: ");
      			try {
-					System.out.print(cusF.getCustomer());
+					System.out.print(cusF.viewCustomer());
 				} catch (DaoException e) {
 					System.out.println(e.getMessage());
 				}

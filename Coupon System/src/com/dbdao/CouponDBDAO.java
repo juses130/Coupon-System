@@ -24,6 +24,7 @@ import com.task.and.singleton.DatabaseInfo;
 /**
  * This is Coupon Database DAO Class.
  * Just implements the methods from CouponDAO in 'com.dao.intefaces' package. </br>
+ * 
  * @author Raziel
  *
  */
