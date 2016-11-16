@@ -147,12 +147,12 @@ public class CouponFoundInDatabase {
     	
 		boolean isExist = false;
 		try {
-			
-			String sqlQueryByID = "SELECT " + DatabaseInfo.getDBname() + ".* "
-					+ "FROM " + DatabaseInfo.getDBname() + ".customer_coupon, coupon "
-					+ "WHERE " + DatabaseInfo.getDBname() + ".coupon.coup_id=" + coupID + " "
-					+ "AND " + DatabaseInfo.getDBname() + ".customer_coupon.cust_id=" + custID + " "
-					+ "AND " + DatabaseInfo.getDBname() + ".customer_coupon.Coup_ID = coupon.Coup_id";
+			// TOOD: add here the databaseInfo
+			String sqlQueryByID = "SELECT coupon.* "
+					+ "FROM customer_coupon, coupon "
+					+ "WHERE coupon.coup_id=" + coupID + " "
+					+ "AND customer_coupon.cust_id=" + custID + " "
+					+ "AND customer_coupon.Coup_ID = coupon.Coup_id";
 			
 			java.sql.Statement state = DBconnector.getConnection().createStatement();
 			ResultSet rs = state.executeQuery(sqlQueryByID);
@@ -164,6 +164,7 @@ public class CouponFoundInDatabase {
 				
 			}// if
 		} catch (SQLException e) {
+			e.printStackTrace();
 			throw new DaoException("Error: Checking Coupon before Purchase - FAILD (something went wrong)");
 		} // catch
 		return isExist;

@@ -49,7 +49,7 @@ public class Coupon {
 		setTitle(title);
 //		setStartDate(startDate);
 //		setEndDate(endDate);
-		setAmount(amount);
+//		setAmount(amount);
 		setCategory(category);
 		setMessage(message);
 		setPrice(price);
@@ -145,14 +145,7 @@ public class Coupon {
 	} // getAmount
 
 	public void setAmount(int amount) throws FiledErrorException {
-		
-		if(amount <= 0) {
-			throw new FiledErrorException("Error: Setting Amount - FAILED (Field Empty or Under Zero!)");
-		} // if
-		else 
-		{
 			this.amount = amount;
-		} // else
 	} // setAmount
 
 

@@ -248,6 +248,7 @@ public class CustomerDBDAO implements CustomerDAO {
 					+ "WHERE " + DatabaseInfo.getDBname() + ".customer_coupon.cust_id =" + custID + " "
 					+ "AND " + DatabaseInfo.getDBname() + ".customer_coupon.Coup_ID = " + DatabaseInfo.getDBname() + ".coupon.Coup_id "
 					+ "AND " + DatabaseInfo.getDBname() + ".customer_coupon.Coup_ID IS NOT NULL";
+			
 			Statement stat = DBconnector.getConnection().createStatement();
 			ResultSet rs = stat.executeQuery(sql);
 			while (rs.next()) {
