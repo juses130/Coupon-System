@@ -246,7 +246,6 @@ public class AdminFacade implements CouponClientFacade{
 	
 	public Coupon getCoupon(long coupID) throws Exception {
 		
-		try {
 			// Security Access Check	
 			if(adminIsConnected != false) {
 					Coupon coupon = new Coupon();
@@ -256,10 +255,6 @@ public class AdminFacade implements CouponClientFacade{
 				else {
 					throw new DaoException("Error: Access Denied [Admin] - FAILED (Unidentified user)");
 				} // else - adminIsConnected
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new Exception(e.getMessage());
-		}
 	}
 	
 	public Collection<Coupon> getCouponByPrice(double maxPrice) throws DaoException {

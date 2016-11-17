@@ -504,7 +504,6 @@ public class CouponDBDAO implements CouponDAO{
 				throw new DaoException("Error: Getting Coupon By ID - FAILED (Coupon dosen't exist in the DataBase)");
 			} // else - exist
 			} catch (SQLException | FiledErrorException e) {
-				e.printStackTrace();
 				throw new DaoException("Error: Getting Coupon By ID - FAILED (something went wrong)");
 			} // catch
 		} // if - admin
