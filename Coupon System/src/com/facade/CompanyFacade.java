@@ -15,7 +15,7 @@ public class CompanyFacade implements CouponClientFacade{
 	private CompanyDAO compDao = null;
 	private CouponDAO coupDao = null;
 	
-	// Instance of Security Access Check
+	// Instance of Security Access Check - This class can protect himself without counting on other classes.
 	private static boolean companyIsConnected = false;
 	
 	// Constructor

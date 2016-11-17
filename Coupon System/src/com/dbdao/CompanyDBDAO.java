@@ -43,7 +43,7 @@ public class CompanyDBDAO implements CompanyDAO {
 			 */
 			rs.next();
 			if(rs.getRow() == 0) {
-	        	throw new DaoException("Error: Company Login - FAILD (one or more of the fields is incurrect or empty)");
+	        	hasRows = false;
 		    }
 			else {
 				hasRows = true;
